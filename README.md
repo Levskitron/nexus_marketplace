@@ -45,7 +45,7 @@ This project is built collaboratively by a 5-member development team, combining 
 - **Flask**
 - **Flask-SQLAlchemy** 
 - **Flask-WTF / WTForms**
-- **Werkzeug** (password hashing)
+- **Werkzeug**
 
 ### **Database**
 - SQLite
