@@ -53,7 +53,7 @@ This project is built collaboratively by a 5-member development team, combining 
 ### **Frontend**
 - HTML5  
 - CSS3
-- Jinja2 templating  
+- Jinja2  
 - JavaScript
 
 ### **Other Tools**
