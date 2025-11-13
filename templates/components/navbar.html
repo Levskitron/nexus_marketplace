@@ -1,0 +1,30 @@
+<nav class="navbar">
+    <div class="nav-container">
+
+        <div class="nav-logo">
+            <a href="{{ url_for('home.home') }}">Nexus Marketplace</a>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="{{ url_for('home.home') }}">Home</a></li>
+
+            <li>
+                <a href="{{ url_for('shop.shop') }}">Shop</a>
+                <!-- Submenu optional -->
+            </li>
+
+            <li>
+                <a href="{{ url_for('home.about') }}">About</a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('account.account') }}">Account</a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('auth.login') }}">Login</a>
+            </li>
+        </ul>
+
+    </div>
+</nav>

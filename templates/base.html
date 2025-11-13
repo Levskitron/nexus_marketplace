@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Nexus Marketplace{% endblock %}</title>
+
+    <!-- Global CSS file (frontend will style this later) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+    <!-- Shared Navbar -->
+    {% include "components/navbar.html" %}
+
+    <!-- Main page content -->
+    <main class="page-content">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Shared Footer -->
+    {% include "components/footer.html" %}
+
+</body>
+</html>

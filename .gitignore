@@ -1,0 +1,31 @@
+# Python __pycache__ and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+env/
+.venv/
+ENV/
+
+# Instance folder (Flask uses this for database + secret files)
+instance/
+*.db
+
+# Environment variables / secrets
+.env
+*.env
+
+# VSCode local settings
+.vscode/
+
+# macOS system files (if anyone uses Mac)
+.DS_Store
+
+# Windows thumbnail files
+Thumbs.db
+
+# Flask-specific
+*.log
