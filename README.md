@@ -52,9 +52,9 @@ This project is built collaboratively by a 5-member development team, combining 
 
 ### **Frontend**
 - HTML5  
-- CSS3 (page-specific + base styling)  
+- CSS3
 - Jinja2 templating  
-- (JavaScript optional depending on team choices)
+- JavaScript
 
 ### **Other Tools**
 - Git & GitHub
