@@ -1,5 +1,5 @@
-from database import db
 from datetime import datetime
+from database import db
 
 class User(db.Model):
     __tablename__ = "users"
@@ -10,7 +10,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(255), nullable=False)
 
     role = db.Column(db.String(20), nullable=False, default="buyer")
-    credits_balance = db.Column(db.Numeric(10,2), default=0.00)
+    credits_balance = db.Column(db.Numeric(10, 2), nullable=False, default=0.00)
     shipping_address = db.Column(db.String(200))
 
     date_joined = db.Column(db.DateTime, default=datetime.utcnow)
