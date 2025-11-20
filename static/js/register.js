@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             if (data.success) {
                 // Redirect later (for now it's fine)
-                // window.location.href = "/";
+                window.location.href = "/";
             }
 
         } catch (err) {
