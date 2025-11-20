@@ -9,19 +9,41 @@
 
     <h1>Welcome to Nexus Marketplace</h1>
     <p>This is a temporary homepage for demo purposes.</p>
-    <p>The login system is working correctly!</p>
+    <p><strong>The login system is working correctly!</strong></p>
 
     <hr>
 
     {% if session.get("user_id") %}
-        <h2>Logged-in User Details</h2>
-        <ul>
-            <li><strong>User ID:</strong> {{ session.get("user_id") }}</li>
-            <li><strong>Username:</strong> {{ session.get("username") }}</li>
-            <li><strong>Email:</strong> {{ session.get("email") }}</li>
-        </ul>
+        
+        <h2>Your Account</h2>
+
+        <table border="1" cellpadding="8" cellspacing="0">
+            <tr>
+                <th align="left">User ID</th>
+                <td>{{ session.get("user_id") }}</td>
+            </tr>
+            <tr>
+                <th align="left">Username</th>
+                <td>{{ session.get("username") }}</td>
+            </tr>
+            <tr>
+                <th align="left">Email</th>
+                <td>{{ session.get("email") }}</td>
+            </tr>
+        </table>
+
+        <br>
+
+        <a href="{{ url_for('auth.logout') }}">
+            <button>Logout</button>
+        </a>
+
     {% else %}
         <p><em>No user logged in.</em></p>
+
+        <a href="{{ url_for('auth.register_page') }}">
+            <button>Go to Login / Register</button>
+        </a>
     {% endif %}
 
 </body>
