@@ -78,7 +78,7 @@ def api_login():
     # Save user details into session
     session["user_id"] = user.user_id
     session["username"] = user.username
-    session["email"] = user.email   # <<-- added so homepage can display it
+    session["email"] = user.email  
 
     # Update last login
     user.last_login = datetime.utcnow()
