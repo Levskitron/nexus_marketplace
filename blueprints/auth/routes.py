@@ -1,4 +1,5 @@
 from flask import render_template, request, jsonify, session
+from flask import redirect, url_for
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -84,3 +85,9 @@ def api_login():
     db.session.commit()
 
     return jsonify(success=True, message="Logged in successfully."), 200
+
+# API: Logout
+@auth_bp.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("auth.register_page"))
