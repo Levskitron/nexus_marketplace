@@ -1,27 +1,21 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from database import db
+from models import User   # IMPORTANT
 
-# Initialize Flask app
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your_secret_key'
-
-# SQLite Database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///nexus.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = "supersecretkey"
 
-db = SQLAlchemy(app)
+db.init_app(app)
 
-# Import and register blueprints
-from blueprints.home import home_bp
-from blueprints.auth import auth_bp
-from blueprints.shop import shop_bp
-from blueprints.account import account_bp
+with app.app_context():
+    db.create_all()
 
-app.register_blueprint(home_bp)
-app.register_blueprint(auth_bp)
-app.register_blueprint(shop_bp)
-app.register_blueprint(account_bp)
+# TEMP test route
+@app.route("/")
+def home():
+    return "Database initialized. Users table created."
 
-# Run App
 if __name__ == "__main__":
     app.run(debug=True)
