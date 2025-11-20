@@ -7,10 +7,9 @@ from database import db
 from models import User
 
 
-# PAGE: combined Sign In / Register UI
+# PAGE: Combined Sign In / Register UI
 @auth_bp.route("/register", methods=["GET"])
 def register_page():
-    # This renders templates/auth/register.html
     return render_template("auth/register.html")
 
 
@@ -31,7 +30,7 @@ def api_register():
     if password != confirm:
         return jsonify(success=False, message="Passwords do not match."), 400
 
-    # Check if username or email already exists
+    # Check if username OR email already in use
     existing_user = User.query.filter(
         (User.username == username) | (User.email == email)
     ).first()
@@ -75,10 +74,12 @@ def api_login():
     if user is None or not check_password_hash(user.password_hash, password):
         return jsonify(success=False, message="Invalid username or password."), 401
 
-    # Store login in session (for future pages)
+    # Save user details into session
     session["user_id"] = user.user_id
     session["username"] = user.username
+    session["email"] = user.email   # <<-- added so homepage can display it
 
+    # Update last login
     user.last_login = datetime.utcnow()
     db.session.commit()
 

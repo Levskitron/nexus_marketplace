@@ -1,10 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Nexus Marketplace</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus - Home</title>
 </head>
 <body>
-    <h1>Welcome to the Nexus Marketplace</h1>
-    <p>This is a placeholder homepage. But the login works!</p>
+
+    <h1>Welcome to Nexus Marketplace</h1>
+    <p>This is a temporary homepage for demo purposes.</p>
+    <p>The login system is working correctly!</p>
+
+    <hr>
+
+    {% if session.get("user_id") %}
+        <h2>Logged-in User Details</h2>
+        <ul>
+            <li><strong>User ID:</strong> {{ session.get("user_id") }}</li>
+            <li><strong>Username:</strong> {{ session.get("username") }}</li>
+            <li><strong>Email:</strong> {{ session.get("email") }}</li>
+        </ul>
+    {% else %}
+        <p><em>No user logged in.</em></p>
+    {% endif %}
+
 </body>
 </html>
