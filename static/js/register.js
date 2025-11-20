@@ -40,44 +40,40 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
     // LOGIN FORM SUBMISSION
-    const loginForm = document.getElementById("login-form");
+const loginForm = document.getElementById("login-form");
 
-    loginForm.addEventListener("submit", async function(event) {
-        event.preventDefault();
+loginForm.addEventListener("submit", async function(event) {
+    event.preventDefault();
 
-        const username = document.getElementById("username").value.trim();
-        const password = document.getElementById("password").value;
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value;
 
-        if (!username || !password) {
-            alert("Please fill in both fields.");
-            return;
-        }
+    if (!username || !password) {
+        alert("Please fill in both fields.");
+        return;
+    }
 
-        try {
-            const response = await fetch("/auth/api/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    username: username,
-                    password: password
-                })
-            });
+    try {
+        const response = await fetch("/auth/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
 
-            const data = await response.json();
+        const data = await response.json();
+
+        if (data.success) {
+            // redirect immediately
+            window.location.href = "/";
+        } else {
             alert(data.message);
-
-            if (data.success) {
-                // Redirect later (for now it's fine)
-                window.location.href = "/";
-            }
-
-        } catch (err) {
-            console.error(err);
-            alert("Error: Could not connect to server.");
         }
-    });
+
+    } catch (err) {
+        console.error(err);
+        alert("Error: Could not connect to server.");
+    }
+});
 
 
 
