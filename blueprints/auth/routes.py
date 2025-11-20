@@ -7,13 +7,14 @@ from database import db
 from models import User
 
 
-# Page that shows the combined Sign In / Register UI
+# PAGE: combined Sign In / Register UI
 @auth_bp.route("/register", methods=["GET"])
 def register_page():
+    # This renders templates/auth/register.html
     return render_template("auth/register.html")
 
 
-# API endpoint for registering a new user
+# API: Register a new user (called via fetch from JS)
 @auth_bp.route("/api/register", methods=["POST"])
 def api_register():
     data = request.get_json() or {}
@@ -24,29 +25,32 @@ def api_register():
     confirm = data.get("confirm_password") or ""
 
     # Basic validation
-    if not username or not email or not password:
+    if not username or not email or not password or not confirm:
         return jsonify(success=False, message="All fields are required."), 400
 
     if password != confirm:
         return jsonify(success=False, message="Passwords do not match."), 400
 
-    # Check if username or email already taken
-    existing = User.query.filter(
+    # Check if username or email already exists
+    existing_user = User.query.filter(
         (User.username == username) | (User.email == email)
     ).first()
 
-    if existing:
+    if existing_user:
         return jsonify(success=False, message="Username or email already in use."), 400
 
+    # Hash password
+    password_hash = generate_password_hash(password)
+
     # Create user
-    hashed = generate_password_hash(password)
     user = User(
         username=username,
         email=email,
-        password_hash=hashed,
+        password_hash=password_hash,
         role="buyer",
         account_status="active",
         date_joined=datetime.utcnow(),
+        credits_balance=0.00,
     )
 
     db.session.add(user)
@@ -55,7 +59,7 @@ def api_register():
     return jsonify(success=True, message="Account created successfully. You can now sign in."), 200
 
 
-# API endpoint for logging in
+# API: Login (called via fetch from JS)
 @auth_bp.route("/api/login", methods=["POST"])
 def api_login():
     data = request.get_json() or {}
@@ -71,7 +75,7 @@ def api_login():
     if user is None or not check_password_hash(user.password_hash, password):
         return jsonify(success=False, message="Invalid username or password."), 401
 
-    # Save session (for later use on other pages)
+    # Store login in session (for future pages)
     session["user_id"] = user.user_id
     session["username"] = user.username
 

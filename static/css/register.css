@@ -127,7 +127,8 @@ h2 {
 }
 
 input[type="text"],
-input[type="password"] {
+input[type="password"],
+input[type="email"] {
     width: 100%;
     padding: 14px;
     border: 1px solid #ddd;
@@ -137,7 +138,8 @@ input[type="password"] {
 }
 
 input[type="text"]:focus,
-input[type="password"]:focus {
+input[type="password"]:focus,
+input[type="email"]:focus {
     outline: none; /* Always remove the default browser outline */
     border-color: #ddd; /* Keep the original border color or make it slightly darker if preferred */
     
