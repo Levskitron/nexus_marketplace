@@ -93,8 +93,8 @@ nexus_marketplace/
 │ ├── js/
 │ └── images/
 │
-└── instance/
-└── (SQLite database generated here)
+├── instance/
+│ └── nexus.db
 ```
 
 --- 
