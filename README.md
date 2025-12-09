@@ -1,126 +1,36 @@
-# Nexus Marketplace  
-*A PC Parts & Gaming Marketplace — HND Final Project*
+# 📘 README for Aidan
 
-The **Nexus Marketplace** is the final project for the **HND Professional Practice in Software Development** module.  
-It is a full-stack web application designed for users to:
+## Your Assigned Pages
+You are responsible for the following files:
 
-- Buy and sell **PC parts**
-- Browse and purchase **games and accessories**
-- Request **build services**, including:
-  - Custom prebuilts
-  - PC repairs
-  - Upgrades
-  - Hardware consultation
+- **my_account.html**
+- **my_account.css**
+- **my_account.js**
 
-This project is built collaboratively by a 5-member development team, combining backend engineering, frontend design, and professional workflow practices.
+The HTML for your page has already been fully created by **Levi**, including backend-connected elements.
 
 ---
 
-## 👥 Team Members
+## ⚠️ Important Rules
 
-### **Tristan Duffy — Team Leader & Front-End Developer**
-- N/A  
+### **1. Do NOT edit backend logic**
+All backend functionality in the HTML must remain untouched.
 
-### **Levi Mair — Full Stack Developer**
-- Backend architecture  
-- Database design & integration  
-- Initial project setup & GitHub repository management  
-- Blueprint structure and HTML base template implementation  
+### **2. Avoid modifying the HTML unless absolutely necessary**
+Levi’s HTML already includes all IDs and classes you need.
 
-### **Aidan Gibb — Front-End Developer**
-- N/A 
+### **3. Use the existing IDs and classes**
+If your previous CSS uses different selectors, you can ask ChatGPT to rewrite it or rewrite it yourself, just make it work.
 
-### **Imdad Chaklader — Front-End Developer**
-- N/A 
+### **4. CSS file location**
+Your CSS should be created at:
+`static/css/my_account.css`
 
-### **Nathan Morgan — Front-End Developer**
-- N/A 
 
----
-
-## 🛠️ Tech Stack
-
-### **Backend**
-- **Python 3**
-- **Flask**
-- **Flask-SQLAlchemy** 
-- **Flask-WTF / WTForms**
-- **Werkzeug**
-
-### **Database**
-- SQLite
-
-### **Frontend**
-- HTML5  
-- CSS3
-- Jinja2  
-- JavaScript
-
-### **Other Tools**
-- Git & GitHub
-- Visual Studio Code
+### **5. Inline `<style>` tags**
+If support.html contains any temporary `<style>` blocks, you may delete them, it was just for me to understand it.
 
 ---
 
-## 📁 Project Structure
-```
-nexus_marketplace/
-│
-├── app.py
-├── models.py
-├── forms.py
-├── database.py
-├── config.py
-├── requirements.txt
-├── .gitignore
-│
-├── blueprints/
-│ ├── auth/
-│ ├── home/
-│ ├── shop/
-│ └── account/
-│
-├── templates/
-│ ├── base.html
-│ ├── components/
-│ ├── auth/
-│ ├── home/
-│ ├── shop/
-│ └── account/
-│
-├── static/
-│ ├── css/
-│ ├── js/
-│ └── images/
-│
-├── instance/
-│ └── nexus.db
-```
-
---- 
-
-## 🚀 How to Run the Project Locally
-
-1. Install dependencies:
-   ```pip install -r requirements.txt```
-
-2. Run the Flask app:
-   ```python app.py```
-
-3. Open your browser and visit:
-   ```http://127.0.0.1:5000/```
-
----
-
-## 📜 License
-
-This project is licensed under the **PolyForm Noncommercial License 1.0.0**.
-
-This means:
-
-- You may **use**, **modify**, and **share** the project freely  
-- You may **not** use the project for any **commercial purposes**  
-- This includes selling, offering paid services, or using it within a commercial product  
-
-For full details, see the license text:  
-https://polyformproject.org/licenses/noncommercial/1.0.0/
+## 🎯 Goal
+Make **my_account.html** polished, responsive, and visually complete using CSS (and JS if needed).
