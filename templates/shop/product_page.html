@@ -4,37 +4,6 @@
     <meta charset="UTF-8">
     <title>{{ product.name }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
-    <style>
-        .product-container {
-            display: flex;
-            gap: 40px;
-            padding: 30px;
-        }
-        .product-image {
-            width: 350px;
-            border: 1px solid #ccc;
-            padding: 10px;
-        }
-        .product-details {
-            max-width: 700px;
-        }
-        .price {
-            font-size: 28px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-        .reviews-section {
-            margin-top: 50px;
-        }
-        .review-box {
-            border-bottom: 1px solid #ddd;
-            padding: 10px 0;
-        }
-        .rating {
-            color: gold;
-            font-size: 18px;
-        }
-    </style>
 </head>
 <body>
 
@@ -61,7 +30,9 @@
 
             <p><strong>Condition:</strong> {{ product.condition }}</p>
 
-            <p><strong>Category:</strong> {{ product.category.category_name }}</p>
+            <p><strong>Category:</strong> 
+                {{ product.category.category_name if product.category else "Uncategorised" }}
+            </p>
 
             <p><strong>Stock:</strong> {{ product.stock_quantity }} available</p>
 
@@ -81,26 +52,79 @@
     <div class="reviews-section">
         <h2>Customer Reviews</h2>
 
-        {% if product.reviews.count() == 0 %}
+        <!-- AVERAGE RATING -->
+        {% if review_count == 0 %}
             <p>No reviews yet.</p>
         {% else %}
-            <!-- Average rating -->
-            {% set avg = (product.reviews.with_entities(db.func.avg(models.Review.rating)).scalar()) %}
-            <p><strong>Average Rating:</strong> {{ "%.1f"|format(avg) }} ★</p>
-            <p>Based on {{ product.reviews.count() }} review(s)</p>
-
+            <p><strong>Average Rating:</strong> {{ "%.1f"|format(average_rating) }} / 5</p>
+            <p>Based on {{ review_count }} review(s)</p>
             <hr>
-
-            <!-- List all reviews -->
-            {% for r in product.reviews.order_by(models.Review.date_posted.desc()).all() %}
-                <div class="review-box">
-                    <p class="rating">{{ "★" * r.rating }}</p>
-                    <p><strong>{{ r.user.username }}</strong> - 
-                       {{ r.date_posted.strftime('%d %B %Y') }}</p>
-                    <p>{{ r.review_text }}</p>
-                </div>
-            {% endfor %}
         {% endif %}
+
+        <!-- REVIEW FORM (ONLY IF LOGGED IN + PURCHASED) -->
+        {% if session.get("user_id") %}
+
+            {% if user_has_bought %}
+                <h3>{{ existing_review and "Edit Your Review" or "Write a Review" }}</h3>
+
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+
+                    <p>
+                        {{ form.rating.label }}<br>
+                        {{ form.rating() }}
+                    </p>
+
+                    <p>
+                        {{ form.review_text.label }}<br>
+                        {{ form.review_text(rows=4, cols=60) }}
+                    </p>
+
+                    <p>{{ form.submit() }}</p>
+                </form>
+
+                {% if existing_review %}
+                    <form method="POST" action="{{ url_for('shop.delete_review', product_id=product.product_id) }}">
+                        <button type="submit">Delete Review</button>
+                    </form>
+                {% endif %}
+
+                <hr>
+
+            {% else %}
+                <p><em>You must purchase this product before leaving a review.</em></p>
+                <hr>
+            {% endif %}
+
+        {% else %}
+            <p><a href="{{ url_for('auth.register_page') }}">Sign in</a> to leave a review.</p>
+            <hr>
+        {% endif %}
+
+
+        <!-- LIST OF REVIEWS -->
+        {% for r in product.reviews.order_by(models.Review.date_posted.desc()).all() %}
+            <div class="review-box">
+                <p><strong>{{ r.user.username }}</strong></p>
+
+                <p>
+                    Rating: {{ r.rating }} / 5<br>
+                    Posted: {{ r.date_posted.strftime('%d %B %Y') }}
+                    {% if r.edited_at %}
+                        <br><em>Edited: {{ r.edited_at.strftime('%d %B %Y') }}</em>
+                    {% endif %}
+                </p>
+
+                {% if r.review_text %}
+                    <p>{{ r.review_text }}</p>
+                {% else %}
+                    <p><em>No comment provided.</em></p>
+                {% endif %}
+
+                <hr>
+            </div>
+        {% endfor %}
+
     </div>
 
 </body>

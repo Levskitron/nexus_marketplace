@@ -3,7 +3,7 @@ from wtforms import (
     StringField, TextAreaField, DecimalField,
     IntegerField, SelectField, SubmitField
 )
-from wtforms.validators import DataRequired, NumberRange, Optional
+from wtforms.validators import DataRequired, NumberRange, Optional, InputRequired
 from flask_wtf.file import FileField, FileAllowed
 
 
@@ -28,7 +28,6 @@ class ProductForm(FlaskForm):
         validators=[Optional()],
     )
 
-    # NEW — actual file upload
     image_upload = FileField(
         "Upload Image",
         validators=[
@@ -37,7 +36,23 @@ class ProductForm(FlaskForm):
         ]
     )
 
-    # Optional: user can give URL instead of upload
     image_url = StringField("Image URL (optional)", validators=[Optional()])
 
     submit = SubmitField("Save Product")
+
+
+class ReviewForm(FlaskForm):
+    rating = SelectField(
+        "Rating",
+        coerce=int,
+        validators=[InputRequired()],
+        choices=[
+            (5, "★★★★★ (5)"),
+            (4, "★★★★☆ (4)"),
+            (3, "★★★☆☆ (3)"),
+            (2, "★★☆☆☆ (2)"),
+            (1, "★☆☆☆☆ (1)"),
+        ],
+    )
+    review_text = TextAreaField("Comment (optional)", validators=[Optional()])
+    submit = SubmitField("Submit Review")
