@@ -14,7 +14,7 @@ class ProductForm(FlaskForm):
     brand = StringField("Brand", validators=[Optional()])
 
     price = DecimalField("Price (£)", validators=[DataRequired(), NumberRange(min=0)])
-    stock_quantity = IntegerField("Stock Quantity", validators=[NumberRange(min=0)], default=1)
+    stock_quantity = IntegerField("Stock Qty", validators=[NumberRange(min=0)], default=1)
 
     category_id = SelectField("Category", coerce=int, validators=[Optional()])
 
@@ -28,17 +28,39 @@ class ProductForm(FlaskForm):
         validators=[Optional()],
     )
 
+    # Upload image
     image_upload = FileField(
         "Upload Image",
         validators=[
             Optional(),
-            FileAllowed(['jpg', 'jpeg', 'png', 'webp'], "Images only!")
+            FileAllowed(["jpg", "jpeg", "png", "webp"], "Images only!")
         ]
     )
 
+    # OR image URL
     image_url = StringField("Image URL (optional)", validators=[Optional()])
 
     submit = SubmitField("Save Product")
+
+    # ---------------------------
+    # CUSTOM VALIDATION:
+    # Must provide either upload or URL
+    # ---------------------------
+    def validate(self, extra_validators=None):
+        # Run default validators
+        initial_validation = super().validate(extra_validators)
+        if not initial_validation:
+            return False
+
+        # Require: at least one image source must exist
+        has_upload = self.image_upload.data and getattr(self.image_upload.data, "filename", "")
+        has_url = self.image_url.data and self.image_url.data.strip()
+
+        if not has_upload and not has_url:
+            self.image_url.errors.append("You must upload an image OR provide an image URL.")
+            return False
+
+        return True
 
 
 class ReviewForm(FlaskForm):
