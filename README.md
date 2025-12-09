@@ -65,36 +65,81 @@ This project is built collaboratively by a 5-member development team, combining 
 ## 📁 Project Structure
 ```
 nexus_marketplace/
-│
 ├── app.py
-├── models.py
-├── forms.py
-├── database.py
 ├── config.py
-├── requirements.txt
-├── .gitignore
-│
-├── blueprints/
-│ ├── auth/
-│ ├── home/
-│ ├── shop/
-│ └── account/
+├── database.py
+├── forms.py
+├── models.py
+├── seed_categories.py
 │
 ├── templates/
-│ ├── base.html
-│ ├── components/
-│ ├── auth/
-│ ├── home/
-│ ├── shop/
-│ └── account/
+│   ├── account/
+│   │   ├── cart.html
+│   │   ├── checkout.html
+│   │   ├── my_account.html
+│   │   ├── order_confirmation.html
+│   │   ├── order_history.html
+│   │   └── support.html
+│   │
+│   ├── auth/
+│   │   └── register.html
+│   │
+│   ├── components/
+│   │   └── navbar.html
+│   │
+│   ├── home/
+│   │   ├── about.html
+│   │   ├── contact.html
+│   │   ├── home.html
+│   │   ├── our_story.html
+│   │   └── policies.html
+│   │
+│   ├── seller/
+│   │   ├── add_product.html
+│   │   ├── dashboard.html
+│   │   ├── edit_product.html
+│   │   ├── my_products.html
+│   │   └── orders.html
+│   │
+│   └── shop/
+│       ├── category_page.html
+│       ├── product_page.html
+│       └── search_results.html
 │
 ├── static/
-│ ├── css/
-│ ├── js/
-│ └── images/
+│   ├── css/
+│   │   └── 
+│   │
+│   ├── images/
+│   │   ├── arrow.svg
+│   │   ├── plus.svg
+│   │   ├── test.png
+│   │   ├── products/
+│   │   └── profile/
+│   │
+│   └── js/
+│       └── 
 │
-├── instance/
-│ └── nexus.db
+└── blueprints/
+    ├── account/
+    │   ├── __init__.py
+    │   └── routes.py
+    │
+    ├── auth/
+    │   ├── __init__.py
+    │   └── routes.py
+    │
+    ├── home/
+    │   ├── __init__.py
+    │   └── routes.py
+    │
+    ├── seller/
+    │   ├── __init__.py
+    │   └── routes.py
+    │
+    └── shop/
+        ├── __init__.py
+        └── routes.py
 ```
 
 --- 
