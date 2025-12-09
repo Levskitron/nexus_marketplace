@@ -23,11 +23,17 @@
 
         <h3>Product Image</h3>
 
-        <p>{{ form.image_upload.label }} {{ form.image_upload() }}</p>
+        <p>
+            {{ form.image.label }}<br>
+            {{ form.image() }}
+        </p>
 
         <p><strong>OR</strong></p>
 
-        <p>{{ form.image_url.label }} {{ form.image_url() }}</p>
+        <p>
+            {{ form.image_url.label }}<br>
+            {{ form.image_url() }}
+        </p>
 
         <p>{{ form.category_id.label }} {{ form.category_id() }}</p>
 

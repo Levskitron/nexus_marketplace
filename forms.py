@@ -106,3 +106,17 @@ class ProductForm(FlaskForm):
     image_url = StringField("Image URL (optional)", validators=[Optional()])
 
     submit = SubmitField("Save Product")
+
+class CheckoutForm(FlaskForm):
+    full_name = StringField("Full Name", validators=[DataRequired()])
+    address = StringField("Address", validators=[DataRequired()])
+    city = StringField("City", validators=[DataRequired()])
+    postcode = StringField("Postcode", validators=[DataRequired()])
+    country = StringField("Country", validators=[DataRequired()])
+
+    card_number = StringField("Card Number", validators=[DataRequired()])
+    card_expiry = StringField("Expiry Date (MM/YY)", validators=[DataRequired()])
+    card_cvv = StringField("CVV", validators=[DataRequired()])
+    card_name = StringField("Name on Card", validators=[DataRequired()])
+
+    submit = SubmitField("Complete Purchase")

@@ -6,11 +6,15 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
 </head>
 <body>
+
     {% include "components/navbar.html" %}
 
     <h1>Checkout</h1>
     <hr>
 
+    <!-- ----------------------------- -->
+    <!-- ORDER SUMMARY -->
+    <!-- ----------------------------- -->
     <h2>Order Summary</h2>
 
     <table border="1" cellpadding="8" cellspacing="0">
@@ -20,27 +24,85 @@
             <th>Qty</th>
             <th>Subtotal</th>
         </tr>
+
         {% for item in cart_items %}
-            <tr>
-                <td>{{ item.product.name }}</td>
-                <td>£{{ item.product.price }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>£{{ item.line_total }}</td>
-            </tr>
+        <tr>
+            <td>{{ item.product.name }}</td>
+            <td>£{{ item.product.price }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>£{{ item.line_total }}</td>
+        </tr>
         {% endfor %}
     </table>
 
     <p><strong>Total:</strong> £{{ cart_total }}</p>
-
     <hr>
 
-    <h2>Shipping Address</h2>
 
+    <!-- ----------------------------- -->
+    <!-- CHECKOUT FORM -->
+    <!-- ----------------------------- -->
     <form method="POST">
-        <textarea name="shipping_address" rows="4" cols="60">{{ user.shipping_address or "" }}</textarea>
-        <br><br>
-        <button type="submit">Confirm Purchase</button>
+        {{ form.hidden_tag() }}
+
+        <!-- SHIPPING INFO -->
+        <h2>Shipping Information</h2>
+
+        <p>
+            {{ form.full_name.label }}<br>
+            {{ form.full_name() }}
+        </p>
+
+        <p>
+            {{ form.address.label }}<br>
+            {{ form.address() }}
+        </p>
+
+        <p>
+            {{ form.city.label }}<br>
+            {{ form.city() }}
+        </p>
+
+        <p>
+            {{ form.postcode.label }}<br>
+            {{ form.postcode() }}
+        </p>
+
+        <p>
+            {{ form.country.label }}<br>
+            {{ form.country() }}
+        </p>
+
+        <hr>
+
+        <!-- PAYMENT INFO -->
+        <h2>Payment Details</h2>
+
+        <p>
+            {{ form.card_number.label }}<br>
+            {{ form.card_number() }}
+        </p>
+
+        <p>
+            {{ form.card_expiry.label }}<br>
+            {{ form.card_expiry() }}
+        </p>
+
+        <p>
+            {{ form.card_cvv.label }}<br>
+            {{ form.card_cvv() }}
+        </p>
+
+        <p>
+            {{ form.card_name.label }}<br>
+            {{ form.card_name() }}
+        </p>
+
+        <hr>
+
+        <p>{{ form.submit() }}</p>
     </form>
 
 </body>
 </html>
+

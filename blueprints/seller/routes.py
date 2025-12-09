@@ -73,10 +73,10 @@ def add_product():
         # -----------------------------------------------------
         image_path = None
 
-        upload = form.image_upload.data
-        url = form.image_url.data
+        upload = form.image.data      # ✅ Correct field
+        url = form.image_url.data     # optional text field
 
-        # Prefer uploaded file if provided
+        # Prefer uploaded file
         if upload:
             filename = secure_filename(upload.filename)
             unique_name = f"{uuid.uuid4().hex}_{filename}"
@@ -89,8 +89,9 @@ def add_product():
 
             image_path = f"/static/images/products/{unique_name}"
 
+        # Otherwise use user-provided URL
         elif url:
-            image_path = url  # user provided a remote image
+            image_path = url.strip()
 
         # -----------------------------------------------------
         # CREATE PRODUCT
@@ -134,23 +135,27 @@ def edit_product(product_id):
         # ----------------------------
         # HANDLE OPTIONAL IMAGE UPLOAD
         # ----------------------------
-        upload = form.image.data   # ← FIXED (no more image_upload)
+        upload = form.image.data      # ✅ Correct field
         image_url = form.image_url.data.strip() if form.image_url.data else None
 
-        # If the user uploads a file
+        # File upload takes priority
         if upload:
             filename = secure_filename(upload.filename)
             unique_name = f"{uuid.uuid4().hex}_{filename}"
-            save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], unique_name)
+
+            upload_folder = os.path.join(current_app.root_path, "static/images/products")
+            os.makedirs(upload_folder, exist_ok=True)
+
+            save_path = os.path.join(upload_folder, unique_name)
             upload.save(save_path)
 
             product.image_url = f"/static/images/products/{unique_name}"
 
-        # If user typed a URL, override the upload
+        # If user typed a URL, override
         elif image_url:
             product.image_url = image_url
 
-        # Update basic fields
+        # Update fields
         product.name = form.name.data
         product.description = form.description.data
         product.brand = form.brand.data
