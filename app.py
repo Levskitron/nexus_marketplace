@@ -4,6 +4,7 @@ from blueprints.home import home_bp
 from blueprints.auth import auth_bp
 from blueprints.shop import shop_bp
 from blueprints.account import account_bp
+from blueprints.seller import seller_bp
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
