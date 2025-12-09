@@ -1,6 +1,5 @@
 <nav class="navbar">
 
-
     <!-- Left: Nexus Brand -->
     <div class="nav-left">
         <a href="{{ url_for('home.home') }}" class="brand">Nexus</a>
@@ -26,7 +25,6 @@
 
                     <a href="{{ url_for('account.my_account') }}">My Account</a>
                     <a href="{{ url_for('account.order_history') }}">My Orders</a>
-
 
                     {% if user and user.role in ["seller", "admin", "super_admin"] %}
                         <div class="dropdown-divider"></div>
@@ -65,27 +63,27 @@
             <!-- Games & Accessories -->
             <div class="dropdown-section">
                 <p class="section-title">Games & Accessories</p>
-                <a href="{{ url_for('shop.games') }}">Games</a>
-                <a href="{{ url_for('shop.accessories') }}">Accessories</a>
+                <a href="{{ url_for('shop.category_page', slug='games') }}">Games</a>
+                <a href="{{ url_for('shop.category_page', slug='accessories') }}">Accessories</a>
             </div>
 
             <!-- PC Parts -->
             <div class="dropdown-section">
                 <p class="section-title">PC Parts</p>
-                <a href="{{ url_for('shop.cpu') }}">CPU</a>
-                <a href="{{ url_for('shop.gpu') }}">GPU</a>
-                <a href="{{ url_for('shop.motherboard') }}">Motherboard</a>
-                <a href="{{ url_for('shop.power_supplies') }}">Power Supplies</a>
-                <a href="{{ url_for('shop.ram') }}">RAM</a>
-                <a href="{{ url_for('shop.storage') }}">Storage</a>
+                <a href="{{ url_for('shop.category_page', slug='cpu') }}">CPU</a>
+                <a href="{{ url_for('shop.category_page', slug='gpu') }}">GPU</a>
+                <a href="{{ url_for('shop.category_page', slug='motherboard') }}">Motherboard</a>
+                <a href="{{ url_for('shop.category_page', slug='power-supplies') }}">Power Supplies</a>
+                <a href="{{ url_for('shop.category_page', slug='ram') }}">RAM</a>
+                <a href="{{ url_for('shop.category_page', slug='storage') }}">Storage</a>
             </div>
 
             <!-- Services -->
             <div class="dropdown-section">
                 <p class="section-title">Services</p>
-                <a href="{{ url_for('shop.consultation') }}">Consultation</a>
-                <a href="{{ url_for('shop.prebuilt') }}">Prebuilt PCs</a>
-                <a href="{{ url_for('shop.repair_upgrade') }}">Repair & Upgrades</a>
+                <a href="{{ url_for('shop.category_page', slug='consultation') }}">Consultation</a>
+                <a href="{{ url_for('shop.category_page', slug='prebuilt') }}">Prebuilt PCs</a>
+                <a href="{{ url_for('shop.category_page', slug='repair-upgrade') }}">Repair & Upgrades</a>
             </div>
 
         </div>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ slug|capitalize }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+</head>
+<body>
+
+{% include "components/navbar.html" %}
+
+<h1>{{ slug.replace('-', ' ').capitalize() }}</h1>
+<hr>
+
+{% if products.items %}
+    <div class="product-grid">
+        {% for p in products.items %}
+            <div class="product-card">
+                <img src="{{ p.image_url }}" alt="{{ p.name }}" width="150">
+                <h3>{{ p.name }}</h3>
+                <p>£{{ p.price }}</p>
+                <a href="{{ url_for('shop.product_page', product_id=p.product_id) }}">View</a>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>No products in this category yet.</p>
+{% endif %}
+
+<!-- PAGINATION -->
+<div class="pagination">
+    {% if products.has_prev %}
+        <a href="{{ url_for('shop.category_page', slug=slug, page=products.prev_num) }}">« Prev</a>
+    {% endif %}
+
+    <span>Page {{ products.page }} of {{ products.pages }}</span>
+
+    {% if products.has_next %}
+        <a href="{{ url_for('shop.category_page', slug=slug, page=products.next_num) }}">Next »</a>
+    {% endif %}
+</div>
+
+</body>
+</html>
