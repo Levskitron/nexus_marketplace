@@ -9,6 +9,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from . import account_bp
 from database import db
 from models import User, Product, Order, OrderItem, Transaction
+from forms import CheckoutForm
 
 
 # --- HELPERS ---
@@ -36,7 +37,6 @@ def save_cart(cart):
 @account_bp.route("/my-account", methods=["GET", "POST"])
 def my_account():
 
-    # User must be logged in
     if not require_login():
         return redirect(url_for("auth.register_page"))
 
@@ -45,7 +45,6 @@ def my_account():
     if request.method == "POST":
         action = request.form.get("action")
 
-        # --- UPDATE USERNAME ---
         if action == "update_username":
             new_username = (request.form.get("new_username") or "").strip()
             if new_username:
@@ -54,7 +53,6 @@ def my_account():
                 db.session.commit()
                 flash("Username updated!", "success")
 
-        # --- UPDATE PASSWORD ---
         elif action == "update_password":
             new_password = request.form.get("new_password")
             if new_password:
@@ -62,7 +60,6 @@ def my_account():
                 db.session.commit()
                 flash("Password updated!", "success")
 
-        # --- UPDATE EMAIL ---
         elif action == "update_email":
             new_email = (request.form.get("new_email") or "").strip().lower()
             if new_email:
@@ -71,14 +68,12 @@ def my_account():
                 db.session.commit()
                 flash("Email updated!", "success")
 
-        # --- UPDATE SHIPPING ADDRESS ---
         elif action == "update_address":
             new_address = (request.form.get("shipping_address") or "").strip()
             user.shipping_address = new_address or None
             db.session.commit()
             flash("Shipping address updated.", "success")
 
-        # (Optional) Checkbox settings
         elif action == "update_settings":
             flash("Settings saved.", "success")
 
@@ -87,13 +82,14 @@ def my_account():
     return render_template("account/my_account.html", user=user)
 
 
+
 # ------------------------------------------------
 # CART ROUTES
 # ------------------------------------------------
 
 @account_bp.route("/cart/add/<int:product_id>", methods=["POST"])
 def add_to_cart(product_id):
-    """Add one unit of a product to the cart."""
+
     if not require_login():
         flash("Please sign in to add items to your cart.", "error")
         return redirect(url_for("auth.register_page"))
@@ -118,9 +114,9 @@ def add_to_cart(product_id):
     return redirect(url_for("shop.product_page", product_id=product_id))
 
 
+
 @account_bp.route("/cart/remove/<int:product_id>", methods=["POST"])
 def remove_from_cart(product_id):
-    """Remove a product from the cart completely."""
     cart = get_cart()
     key = str(product_id)
     if key in cart:
@@ -130,18 +126,18 @@ def remove_from_cart(product_id):
     return redirect(url_for("account.view_cart"))
 
 
+
 @account_bp.route("/cart/clear", methods=["POST"])
 def clear_cart():
-    """Empty the entire cart."""
     if "cart" in session:
         session.pop("cart")
         flash("Cart cleared.", "success")
     return redirect(url_for("account.view_cart"))
 
 
+
 @account_bp.route("/cart")
 def view_cart():
-    """Display the contents of the cart."""
     cart = get_cart()
     if not cart:
         return render_template("account/cart.html", cart_items=[], cart_total=Decimal("0.00"))
@@ -169,13 +165,14 @@ def view_cart():
     return render_template("account/cart.html", cart_items=items, cart_total=total)
 
 
+
 # ------------------------------------------------
-# CHECKOUT + ORDER CREATION
+# CHECKOUT + ORDER CREATION (FIXED)
 # ------------------------------------------------
 
 @account_bp.route("/checkout", methods=["GET", "POST"])
 def checkout():
-    """Show checkout page and place order(s)."""
+
     if not require_login():
         return redirect(url_for("auth.register_page"))
 
@@ -185,20 +182,22 @@ def checkout():
         return redirect(url_for("account.view_cart"))
 
     user = User.query.get(session["user_id"])
-
     product_ids = [int(pid) for pid in cart.keys()]
     products = Product.query.filter(Product.product_id.in_(product_ids)).all()
     product_map = {p.product_id: p for p in products}
 
-    if request.method == "POST":
-        # Use submitted address or fall back to stored one
-        shipping_address = (request.form.get("shipping_address") or "").strip()
-        if not shipping_address:
-            shipping_address = user.shipping_address or ""
+    form = CheckoutForm()
 
-        if not shipping_address:
-            flash("Shipping address is required.", "error")
-            return redirect(url_for("account.checkout"))
+    # POST — Process checkout
+    if form.validate_on_submit():
+
+        shipping_address = f"""
+{form.full_name.data}
+{form.address.data}
+{form.city.data}
+{form.postcode.data}
+{form.country.data}
+""".strip()
 
         created_order_ids = []
 
@@ -211,24 +210,22 @@ def checkout():
             if not product:
                 continue
 
-            # Check stock
             if qty > product.stock_quantity:
                 flash(f"Not enough stock for {product.name}.", "error")
                 return redirect(url_for("account.view_cart"))
 
             line_total = product.price * qty
 
-            # Create one order per product (simpler, one seller per order)
             order = Order(
                 buyer_id=user.user_id,
                 seller_id=product.seller_id,
                 total_amount=line_total,
-                payment_status="completed",   # always succeed
+                payment_status="completed",  # always succeed
                 shipping_address=shipping_address,
                 delivery_status="processing",
             )
             db.session.add(order)
-            db.session.flush()  # get order.order_id
+            db.session.flush()
 
             order_item = OrderItem(
                 order_id=order.order_id,
@@ -239,12 +236,10 @@ def checkout():
             )
             db.session.add(order_item)
 
-            # Decrease stock
             product.stock_quantity -= qty
             if product.stock_quantity <= 0:
                 product.status = "sold_out"
 
-            # Record transaction (purchase)
             tx = Transaction(
                 user_id=user.user_id,
                 related_order_id=order.order_id,
@@ -257,13 +252,12 @@ def checkout():
 
         db.session.commit()
 
-        # Clear cart and remember what we just bought
         session.pop("cart", None)
         session["last_order_ids"] = created_order_ids
 
         return redirect(url_for("account.order_confirmation"))
 
-    # GET: show summary
+    # GET — Show checkout page
     items = []
     total = Decimal("0.00")
 
@@ -287,31 +281,32 @@ def checkout():
         cart_items=items,
         cart_total=total,
         user=user,
+        form=form
     )
+
 
 
 @account_bp.route("/order-confirmation")
 def order_confirmation():
-    """Show confirmation for the most recent order(s)."""
+
     if not require_login():
         return redirect(url_for("auth.register_page"))
 
     order_ids = session.get("last_order_ids")
     if not order_ids:
-        # Fallback: go to order history
         return redirect(url_for("account.order_history"))
 
     orders = Order.query.filter(Order.order_id.in_(order_ids)).all()
 
-    # Optionally clear so refresh doesn't re-show
     session.pop("last_order_ids", None)
 
     return render_template("account/order_confirmation.html", orders=orders)
 
 
+
 @account_bp.route("/order-history")
 def order_history():
-    """List all orders for the logged-in buyer."""
+
     if not require_login():
         return redirect(url_for("auth.register_page"))
 
