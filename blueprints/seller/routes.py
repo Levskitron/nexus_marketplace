@@ -1,30 +1,22 @@
 import os
 import uuid
+from functools import wraps
+
 from flask import (
     render_template, request, redirect,
     url_for, session, flash, current_app
 )
 from werkzeug.utils import secure_filename
-from functools import wraps
 
 from . import seller_bp
 from database import db
-from models import User, Product, Category
-from forms import ProductForm
-
-from flask import render_template, request, redirect, url_for, session, flash, current_app
-from functools import wraps
-import os, uuid
-
-from werkzeug.utils import secure_filename
-
-from . import seller_bp
-from database import db
-from models import User, Product, Category, Order   # <-- add Order
+from models import User, Product, Category, Order
 from forms import ProductForm
 
 
-
+# ---------------------------------------
+# HELPER: Require seller/admin role
+# ---------------------------------------
 def seller_required(view_func):
     @wraps(view_func)
     def wrapped(*args, **kwargs):
@@ -43,6 +35,55 @@ def seller_required(view_func):
     return wrapped
 
 
+# ---------------------------------------
+# HELPER: Save uploaded image & delete old
+# ---------------------------------------
+def _save_product_image(upload_file, existing_path=None):
+    """
+    Save an uploaded image into static/images/products,
+    optionally deleting the previous image file.
+    Returns the URL path (e.g. /static/images/products/xyz.png)
+    or existing_path if no valid file is provided.
+    """
+    if not upload_file:
+        return existing_path
+
+    filename = secure_filename(upload_file.filename)
+    if not filename:
+        return existing_path
+
+    # Ensure folder exists
+    upload_folder = os.path.join(
+        current_app.root_path, "static", "images", "products"
+    )
+    os.makedirs(upload_folder, exist_ok=True)
+
+    # Generate unique filename
+    unique_name = f"{uuid.uuid4().hex}_{filename}"
+    save_path = os.path.join(upload_folder, unique_name)
+
+    # Save new file
+    upload_file.save(save_path)
+
+    # Delete old file if it's in our products folder
+    if existing_path and existing_path.startswith("/static/images/products/"):
+        old_fs_path = os.path.join(
+            current_app.root_path,
+            existing_path.lstrip("/").replace("/", os.sep)
+        )
+        if os.path.exists(old_fs_path):
+            try:
+                os.remove(old_fs_path)
+            except OSError:
+                # Fail silently – not critical
+                pass
+
+    return f"/static/images/products/{unique_name}"
+
+
+# ---------------------------------------
+# SELLER DASHBOARD
+# ---------------------------------------
 @seller_bp.route("/dashboard")
 @seller_required
 def dashboard():
@@ -56,46 +97,31 @@ def dashboard():
     return render_template("seller/dashboard.html", products=products)
 
 
+# ---------------------------------------
+# ADD PRODUCT
+# ---------------------------------------
 @seller_bp.route("/add-product", methods=["GET", "POST"])
 @seller_required
 def add_product():
     form = ProductForm()
 
-    # Populate dropdown
+    # Populate category dropdown
     categories = Category.query.order_by(Category.category_name).all()
     form.category_id.choices = [(c.category_id, c.category_name) for c in categories]
 
     if form.validate_on_submit():
         user_id = session["user_id"]
 
-        # -----------------------------------------------------
-        # HANDLE IMAGE UPLOAD OR IMAGE URL
-        # -----------------------------------------------------
+        # Handle image upload or URL
+        upload = form.image.data
+        image_url_text = form.image_url.data.strip() if form.image_url.data else None
+
         image_path = None
-
-        upload = form.image.data      # ✅ Correct field
-        url = form.image_url.data     # optional text field
-
-        # Prefer uploaded file
         if upload:
-            filename = secure_filename(upload.filename)
-            unique_name = f"{uuid.uuid4().hex}_{filename}"
+            image_path = _save_product_image(upload_file=upload)
+        elif image_url_text:
+            image_path = image_url_text
 
-            upload_folder = os.path.join(current_app.root_path, "static/images/products")
-            os.makedirs(upload_folder, exist_ok=True)
-
-            save_path = os.path.join(upload_folder, unique_name)
-            upload.save(save_path)
-
-            image_path = f"/static/images/products/{unique_name}"
-
-        # Otherwise use user-provided URL
-        elif url:
-            image_path = url.strip()
-
-        # -----------------------------------------------------
-        # CREATE PRODUCT
-        # -----------------------------------------------------
         product = Product(
             seller_id=user_id,
             category_id=form.category_id.data or None,
@@ -118,11 +144,17 @@ def add_product():
     return render_template("seller/add_product.html", form=form)
 
 
+# ---------------------------------------
+# EDIT PRODUCT
+# ---------------------------------------
 @seller_bp.route("/edit-product/<int:product_id>", methods=["GET", "POST"])
 @seller_required
 def edit_product(product_id):
     user_id = session["user_id"]
-    product = Product.query.filter_by(product_id=product_id, seller_id=user_id).first_or_404()
+    product = Product.query.filter_by(
+        product_id=product_id,
+        seller_id=user_id
+    ).first_or_404()
 
     form = ProductForm(obj=product)
 
@@ -131,31 +163,22 @@ def edit_product(product_id):
     form.category_id.choices = [(c.category_id, c.category_name) for c in categories]
 
     if form.validate_on_submit():
+        # Optional new image or URL
+        upload = form.image.data
+        image_url_text = form.image_url.data.strip() if form.image_url.data else None
 
-        # ----------------------------
-        # HANDLE OPTIONAL IMAGE UPLOAD
-        # ----------------------------
-        upload = form.image.data      # ✅ Correct field
-        image_url = form.image_url.data.strip() if form.image_url.data else None
-
-        # File upload takes priority
         if upload:
-            filename = secure_filename(upload.filename)
-            unique_name = f"{uuid.uuid4().hex}_{filename}"
+            # Save new file, delete old if needed
+            product.image_url = _save_product_image(
+                upload_file=upload,
+                existing_path=product.image_url
+            )
+        elif image_url_text:
+            # Just switch to a new URL, no local deletion necessary
+            # (If old was local, we could delete it here too if you want)
+            product.image_url = image_url_text
 
-            upload_folder = os.path.join(current_app.root_path, "static/images/products")
-            os.makedirs(upload_folder, exist_ok=True)
-
-            save_path = os.path.join(upload_folder, unique_name)
-            upload.save(save_path)
-
-            product.image_url = f"/static/images/products/{unique_name}"
-
-        # If user typed a URL, override
-        elif image_url:
-            product.image_url = image_url
-
-        # Update fields
+        # Update other fields
         product.name = form.name.data
         product.description = form.description.data
         product.brand = form.brand.data
@@ -174,13 +197,19 @@ def edit_product(product_id):
     return render_template("seller/edit_product.html", form=form, product=product)
 
 
-
+# ---------------------------------------
+# DELETE PRODUCT (soft delete)
+# ---------------------------------------
 @seller_bp.route("/delete-product/<int:product_id>", methods=["POST"])
 @seller_required
 def delete_product(product_id):
     user_id = session["user_id"]
-    product = Product.query.filter_by(product_id=product_id, seller_id=user_id).first_or_404()
+    product = Product.query.filter_by(
+        product_id=product_id,
+        seller_id=user_id
+    ).first_or_404()
 
+    # Soft delete
     product.status = "removed"
     db.session.commit()
 
@@ -188,6 +217,9 @@ def delete_product(product_id):
     return redirect(url_for("seller.dashboard"))
 
 
+# ---------------------------------------
+# MY PRODUCTS (alias of dashboard list)
+# ---------------------------------------
 @seller_bp.route("/my-products")
 @seller_required
 def my_products():
@@ -200,10 +232,10 @@ def my_products():
     )
     return render_template("seller/my_products.html", products=products)
 
-# ------------------------------------------------
-# SELLER ORDERS (sales received)
-# ------------------------------------------------
 
+# ---------------------------------------
+# SELLER ORDERS (sales received)
+# ---------------------------------------
 @seller_bp.route("/orders")
 @seller_required
 def seller_orders():
@@ -226,7 +258,10 @@ def update_order_status(order_id):
     """Update delivery status: processing -> shipped / delivered."""
     user_id = session["user_id"]
 
-    order = Order.query.filter_by(order_id=order_id, seller_id=user_id).first_or_404()
+    order = Order.query.filter_by(
+        order_id=order_id,
+        seller_id=user_id
+    ).first_or_404()
 
     action = request.form.get("action")
 
