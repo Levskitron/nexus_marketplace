@@ -1,14 +1,124 @@
+/* --- Navbar Layout --- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background-color: #ffffff;
+    border-bottom: 2px solid #ddd;
+
+    position: relative;
+    z-index: 2;
+}
+
+/* Left (Nexus Text) */
+.nav-left .brand {
+    font-size: 32px;
+    font-weight: bold;
+    color: black;
+    text-decoration: none;
+}
+
+/* Middle (Logo) */
+.nav-center .logo-box {
+    width: 60px;
+    height: 60px;
+    border: 2px solid black;
+    object-fit: contain;
+    padding: 5px;
+}
+
+/* Right (User Actions) */
+.nav-right {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+}
+
+/* Login button (not logged in) */
+.login-btn {
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+}
+
+/* --- User Dropdown --- */
+.user-menu {
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.user-trigger {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    width: 180px;
+    display: none;
+    flex-direction: column;
+    z-index: 10;
+}
+
+.user-dropdown a {
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+    display: block;
+}
+
+.user-dropdown a:hover {
+    background-color: #f3f3f3;
+}
+
+.user-menu:hover .user-dropdown {
+    display: flex;
+}
+
+/* --- Second Row Links --- */
+.nav-links {
+    width: 100%;
+    background: white;
+    border-bottom: 2px solid #ddd;
+    padding: 10px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center; /* FIXED */
+    gap: 50px;
+
+    position: relative;
+    z-index: 1;
+}
+
+.nav-links a,
+.shop-trigger {
+    text-decoration: none;
+    font-size: 18px;
+    color: black;
+}
+
+
 /* ------------------------- */
-/* SHOP DROPDOWN */
+/* SHOP DROPDOWN (FIXED) */
 /* ------------------------- */
 
 .shop-menu {
     position: relative;
+    display: inline-flex;      /* FIX: behave like nav link */
+    align-items: center;
     cursor: pointer;
 }
 
 .shop-trigger {
     font-size: 18px;
+    padding: 5px 0;            /* Align visually with links */
     color: black;
 }
 
@@ -16,16 +126,18 @@
     position: absolute;
     top: 100%;
     left: 0;
+
     background: white;
     border: 1px solid #ccc;
-    display: none;
     padding: 15px;
-    z-index: 20;
-    width: 300px;
 
-    display: flex;
+    display: none;             /* Hidden until hover */
+    flex-direction: row;       /* FIXED */
     gap: 30px;
-    align-items: flex-start;
+
+    min-width: 350px;          /* Prevent collapsing */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    z-index: 20;
 }
 
 .dropdown-section {
@@ -52,7 +164,7 @@
     display: flex;
 }
 
-/* Divider inside dropdown */
+/* Divider line inside user dropdown */
 .dropdown-divider {
     height: 1px;
     background-color: #ddd;

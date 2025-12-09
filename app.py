@@ -9,6 +9,17 @@ from blueprints.seller import seller_bp
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 
+@app.context_processor
+def inject_user():
+    from models import User  # local import to avoid circular import
+    user = None
+
+    if session.get("user_id"):
+        user = User.query.get(session["user_id"])
+
+    return dict(user=user)
+
+
 # SQLite Database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///nexus.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
