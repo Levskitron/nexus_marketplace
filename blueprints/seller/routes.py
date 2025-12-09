@@ -44,13 +44,34 @@ def dashboard():
 def add_product():
     form = ProductForm()
 
-    # populate category dropdown
     categories = Category.query.order_by(Category.category_name).all()
     form.category_id.choices = [(c.category_id, c.category_name) for c in categories]
 
     if form.validate_on_submit():
         user_id = session["user_id"]
 
+        # ----------------------------
+        # HANDLE IMAGE UPLOAD
+        # ----------------------------
+        image_file = form.image.data
+        image_url = None
+
+        if image_file:
+            filename = secure_filename(image_file.filename)
+            unique_name = f"{uuid.uuid4().hex}_{filename}"
+            save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], unique_name)
+            image_file.save(save_path)
+
+            # This is what will display on website
+            image_url = f"/static/images/products/{unique_name}"
+
+        # If user manually entered a URL, use that instead
+        if form.image_url.data:
+            image_url = form.image_url.data
+
+        # ----------------------------
+        # CREATE THE PRODUCT
+        # ----------------------------
         product = Product(
             seller_id=user_id,
             category_id=form.category_id.data or None,
@@ -60,12 +81,13 @@ def add_product():
             price=form.price.data,
             stock_quantity=form.stock_quantity.data,
             condition=form.condition.data or None,
-            image_url=form.image_url.data or None,
+            image_url=image_url,
             status="active",
         )
 
         db.session.add(product)
         db.session.commit()
+
         flash("Product created successfully.", "success")
         return redirect(url_for("seller.dashboard"))
 
