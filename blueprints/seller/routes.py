@@ -113,9 +113,9 @@ def add_product():
         user_id = session["user_id"]
 
         # -----------------------------------------------------
-        # IMAGE HANDLING (THIS IS SECTION #2)
+        # IMAGE HANDLING
         # -----------------------------------------------------
-        upload = form.image_upload.data
+        upload = form.image.data              # <-- FIXED
         url = form.image_url.data.strip() if form.image_url.data else None
 
         image_path = None
@@ -182,19 +182,15 @@ def edit_product(product_id):
     form.category_id.choices = [(c.category_id, c.category_name) for c in categories]
 
     if form.validate_on_submit():
-        # Optional new image or URL
-        upload = form.image.data
+        upload = form.image.data               # <-- FIXED
         image_url_text = form.image_url.data.strip() if form.image_url.data else None
 
         if upload:
-            # Save new file, delete old if needed
             product.image_url = _save_product_image(
                 upload_file=upload,
                 existing_path=product.image_url
             )
         elif image_url_text:
-            # Just switch to a new URL, no local deletion necessary
-            # (If old was local, we could delete it here too if you want)
             product.image_url = image_url_text
 
         # Update other fields
@@ -210,7 +206,6 @@ def edit_product(product_id):
         flash("Product updated.", "success")
         return redirect(url_for("seller.dashboard"))
 
-    # Pre-fill the category
     form.category_id.data = product.category_id
 
     return render_template("seller/edit_product.html", form=form, product=product)
