@@ -1,0 +1,108 @@
+/* --- Navbar Layout --- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background-color: #ffffff;
+    border-bottom: 2px solid #ddd;
+
+    /* FIX: ensure dropdown stacks above other elements */
+    position: relative;
+    z-index: 2;
+}
+
+/* Left (Nexus Text) */
+.nav-left .brand {
+    font-size: 32px;
+    font-weight: bold;
+    color: black;
+    text-decoration: none;
+}
+
+/* Middle (Logo) */
+.nav-center .logo-box {
+    width: 60px;
+    height: 60px;
+    border: 2px solid black;
+    object-fit: contain;
+    padding: 5px;
+}
+
+/* Right (User Actions) */
+.nav-right {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+}
+
+/* Login button (not logged in) */
+.login-btn {
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+}
+
+/* --- Logged In: User Dropdown --- */
+.user-menu {
+    position: relative;
+    cursor: pointer;
+    display: inline-block; /* FIX: ensures hover area is continuous */
+}
+
+.user-trigger {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* FIXED DROPDOWN */
+.user-dropdown {
+    position: absolute;
+    top: 100%;         /* FIX: attach directly below trigger */
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    width: 160px;
+    display: none;
+    flex-direction: column;
+
+    /* FIX: appear above nav-links */
+    z-index: 10;
+}
+
+.user-dropdown a {
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+    display: block;
+}
+
+.user-dropdown a:hover {
+    background-color: #f3f3f3;
+}
+
+/* Show dropdown on hover */
+.user-menu:hover .user-dropdown {
+    display: flex;
+}
+
+/* --- Second Row Links --- */
+.nav-links {
+    width: 100%;
+    background: white;
+    border-bottom: 2px solid #ddd;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+
+    /* FIX: dropdown must be above this */
+    position: relative;
+    z-index: 1;
+}
+
+.nav-links a {
+    text-decoration: none;
+    font-size: 18px;
+    color: black;
+}

@@ -91,3 +91,5 @@ def api_login():
 def logout():
     session.clear()
     return redirect(url_for("auth.register_page"))
+
+

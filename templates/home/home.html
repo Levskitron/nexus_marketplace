@@ -4,8 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexus - Home</title>
+
+    <!-- Navbar stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
 </head>
 <body>
+
+    <!-- NAVBAR -->
+    {% include "components/navbar.html" %}
+    <!-- END NAVBAR -->
 
     <h1>Welcome to Nexus Marketplace</h1>
     <p>This is a temporary homepage for demonstrating the functioning frontend and backend implementation on Nexus Marketplace.</p>

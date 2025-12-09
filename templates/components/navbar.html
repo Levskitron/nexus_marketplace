@@ -1,25 +1,48 @@
 <nav class="navbar">
-    <div class="nav-container">
 
-        <div class="nav-logo">
-            <a href="{{ url_for('home.home') }}">Nexus Marketplace</a>
-        </div>
+    <!-- Left: Nexus Brand -->
+    <div class="nav-left">
+        <a href="{{ url_for('home.home') }}" class="brand">Nexus</a>
+    </div>
 
-        <ul class="nav-links">
-            <li><a href="{{ url_for('home.home') }}">Home</a></li>
+    <!-- Middle: Logo -->
+    <div class="nav-center">
+        <img src="{{ url_for('static', filename='images/logo_placeholder.png') }}" 
+             alt="Logo" class="logo-box">
+    </div>
 
-            <li>
-                <a href="{{ url_for('home.about') }}">About</a>
-            </li>
+    <!-- Right: User Section -->
+    <div class="nav-right">
 
-            <li>
-                <a href="{{ url_for('account.account') }}">Account</a>
-            </li>
+        {% if session.get("user_id") %}
+            <!-- LOGGED-IN DROPDOWN -->
+            <div class="user-menu">
+                <div class="user-trigger">
+                    {{ session.get("username") }} ▼
+                </div>
 
-            <li>
-                <a href="{{ url_for('auth.register') }}">Login / Register</a>
-            </li>
-        </ul>
+                <div class="user-dropdown">
+                    <a href="{{ url_for('account.my_account') }}">My Account</a>
+                    <a href="#">My Orders</a>
+                    <a href="{{ url_for('auth.logout') }}">Logout</a>
+                </div>
+            </div>
+
+        {% else %}
+            <!-- NOT LOGGED IN -->
+            <a href="{{ url_for('auth.register_page') }}" class="login-btn">
+                Login / Signup
+            </a>
+        {% endif %}
 
     </div>
+
 </nav>
+
+<!-- Second Row (Links) -->
+<div class="nav-links">
+    <a href="{{ url_for('home.home') }}">Home</a>
+    <a href="{{ url_for('shop.shop') }}">Shop</a>
+    <a href="{{ url_for('home.about') }}">About</a>
+    <a href="{{ url_for('home.contact') }}">Contact</a>
+</div>
