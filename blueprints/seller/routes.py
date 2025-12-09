@@ -12,6 +12,18 @@ from database import db
 from models import User, Product, Category
 from forms import ProductForm
 
+from flask import render_template, request, redirect, url_for, session, flash, current_app
+from functools import wraps
+import os, uuid
+
+from werkzeug.utils import secure_filename
+
+from . import seller_bp
+from database import db
+from models import User, Product, Category, Order   # <-- add Order
+from forms import ProductForm
+
+
 
 def seller_required(view_func):
     @wraps(view_func)
@@ -182,3 +194,45 @@ def my_products():
         .all()
     )
     return render_template("seller/my_products.html", products=products)
+
+# ------------------------------------------------
+# SELLER ORDERS (sales received)
+# ------------------------------------------------
+
+@seller_bp.route("/orders")
+@seller_required
+def seller_orders():
+    """All orders where the current user is the seller."""
+    user_id = session["user_id"]
+
+    orders = (
+        Order.query
+        .filter_by(seller_id=user_id)
+        .order_by(Order.order_date.desc())
+        .all()
+    )
+
+    return render_template("seller/orders.html", orders=orders)
+
+
+@seller_bp.route("/orders/<int:order_id>/update", methods=["POST"])
+@seller_required
+def update_order_status(order_id):
+    """Update delivery status: processing -> shipped / delivered."""
+    user_id = session["user_id"]
+
+    order = Order.query.filter_by(order_id=order_id, seller_id=user_id).first_or_404()
+
+    action = request.form.get("action")
+
+    if action == "ship":
+        order.delivery_status = "shipped"
+        flash("Order marked as shipped.", "success")
+    elif action == "deliver":
+        order.delivery_status = "delivered"
+        flash("Order marked as delivered.", "success")
+    else:
+        flash("Unknown action.", "error")
+
+    db.session.commit()
+    return redirect(url_for("seller.seller_orders"))

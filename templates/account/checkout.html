@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+</head>
+<body>
+    {% include "components/navbar.html" %}
+
+    <h1>Checkout</h1>
+    <hr>
+
+    <h2>Order Summary</h2>
+
+    <table border="1" cellpadding="8" cellspacing="0">
+        <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th>Subtotal</th>
+        </tr>
+        {% for item in cart_items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>£{{ item.product.price }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>£{{ item.line_total }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <p><strong>Total:</strong> £{{ cart_total }}</p>
+
+    <hr>
+
+    <h2>Shipping Address</h2>
+
+    <form method="POST">
+        <textarea name="shipping_address" rows="4" cols="60">{{ user.shipping_address or "" }}</textarea>
+        <br><br>
+        <button type="submit">Confirm Purchase</button>
+    </form>
+
+</body>
+</html>

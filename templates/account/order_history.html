@@ -1,5 +1,38 @@
-{% extends "base.html" %}
-{% block title %}Page - Nexus Marketplace{% endblock %}
-{% block content %}
-<h1>Placeholder</h1>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Orders</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+</head>
+<body>
+    {% include "components/navbar.html" %}
+
+    <h1>My Orders</h1>
+    <hr>
+
+    {% if not orders %}
+        <p>You have not placed any orders yet.</p>
+    {% else %}
+        <table border="1" cellpadding="8" cellspacing="0">
+            <tr>
+                <th>Order #</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Payment</th>
+                <th>Status</th>
+            </tr>
+            {% for order in orders %}
+                <tr>
+                    <td>{{ order.order_id }}</td>
+                    <td>{{ order.order_date.strftime('%d %B %Y') }}</td>
+                    <td>£{{ order.total_amount }}</td>
+                    <td>{{ order.payment_status }}</td>
+                    <td>{{ order.delivery_status }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+
+</body>
+</html>

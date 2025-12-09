@@ -25,13 +25,15 @@
                 <div class="user-dropdown">
 
                     <a href="{{ url_for('account.my_account') }}">My Account</a>
-                    <a href="#">My Orders</a>
+                    <a href="{{ url_for('account.order_history') }}">My Orders</a>
+
 
                     {% if user and user.role in ["seller", "admin", "super_admin"] %}
                         <div class="dropdown-divider"></div>
                         <a href="{{ url_for('seller.dashboard') }}">Seller Dashboard</a>
                         <a href="{{ url_for('seller.add_product') }}">Add Product</a>
                         <a href="{{ url_for('seller.my_products') }}">My Products</a>
+                        <a href="{{ url_for('seller.seller_orders') }}">Orders Received</a>
                     {% endif %}
 
                     <div class="dropdown-divider"></div>

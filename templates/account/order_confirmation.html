@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Confirmation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+</head>
+<body>
+    {% include "components/navbar.html" %}
+
+    <h1>Order Confirmation</h1>
+    <hr>
+
+    {% if not orders %}
+        <p>No recent orders found.</p>
+    {% else %}
+        <p>Thank you for your purchase! The following order(s) have been created:</p>
+
+        <ul>
+            {% for order in orders %}
+                <li>
+                    <strong>Order #{{ order.order_id }}</strong><br>
+                    Seller ID: {{ order.seller_id }}<br>
+                    Total: £{{ order.total_amount }}<br>
+                    Status: {{ order.delivery_status }}
+                </li>
+                <br>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <a href="{{ url_for('account.order_history') }}">View your order history</a>
+
+</body>
+</html>

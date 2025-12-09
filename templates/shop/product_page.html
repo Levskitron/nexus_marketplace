@@ -40,6 +40,22 @@
 
             <p><strong>Date Listed:</strong> {{ product.date_added.strftime('%d %B %Y') }}</p>
 
+                        {% if product.stock_quantity > 0 and product.status == "active" %}
+                {% if session.get("user_id") and session.get("user_id") != product.seller_id %}
+                    <form method="POST" action="{{ url_for('account.add_to_cart', product_id=product.product_id) }}">
+                        <button type="submit">Add to Cart</button>
+                    </form>
+                    <p><a href="{{ url_for('account.view_cart') }}">Go to Cart</a></p>
+                {% elif not session.get("user_id") %}
+                    <p><a href="{{ url_for('auth.register_page') }}">Sign in</a> to purchase this product.</p>
+                {% else %}
+                    <p><em>You are the seller of this product.</em></p>
+                {% endif %}
+            {% else %}
+                <p><strong>Out of stock</strong></p>
+            {% endif %}
+
+
             <br>
 
             <h3>Description:</h3>
