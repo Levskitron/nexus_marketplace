@@ -22,8 +22,18 @@
                 </div>
 
                 <div class="user-dropdown">
+
                     <a href="{{ url_for('account.my_account') }}">My Account</a>
                     <a href="#">My Orders</a>
+
+                    {% if user and user.role in ["seller", "admin", "super_admin"] %}
+                        <div class="dropdown-divider"></div>
+                        <a href="{{ url_for('seller.dashboard') }}">Seller Dashboard</a>
+                        <a href="{{ url_for('seller.add_product') }}">Add Product</a>
+                        <a href="{{ url_for('seller.dashboard') }}">My Products</a>
+                    {% endif %}
+
+                    <div class="dropdown-divider"></div>
                     <a href="{{ url_for('auth.logout') }}">Logout</a>
                 </div>
             </div>
@@ -41,8 +51,44 @@
 
 <!-- Second Row (Links) -->
 <div class="nav-links">
+
     <a href="{{ url_for('home.home') }}">Home</a>
-    <a href="{{ url_for('shop.shop') }}">Shop</a>
+
+    <!-- SHOP DROPDOWN -->
+    <div class="shop-menu">
+        <span class="shop-trigger">Shop ▼</span>
+        <div class="shop-dropdown">
+
+            <!-- Games & Accessories -->
+            <div class="dropdown-section">
+                <p class="section-title">Games & Accessories</p>
+                <a href="{{ url_for('shop.games') }}">Games</a>
+                <a href="{{ url_for('shop.accessories') }}">Accessories</a>
+            </div>
+
+            <!-- PC Parts -->
+            <div class="dropdown-section">
+                <p class="section-title">PC Parts</p>
+                <a href="{{ url_for('shop.cpu') }}">CPU</a>
+                <a href="{{ url_for('shop.gpu') }}">GPU</a>
+                <a href="{{ url_for('shop.motherboard') }}">Motherboard</a>
+                <a href="{{ url_for('shop.power_supplies') }}">Power Supplies</a>
+                <a href="{{ url_for('shop.ram') }}">RAM</a>
+                <a href="{{ url_for('shop.storage') }}">Storage</a>
+            </div>
+
+            <!-- Services -->
+            <div class="dropdown-section">
+                <p class="section-title">Services</p>
+                <a href="{{ url_for('shop.consultation') }}">Consultation</a>
+                <a href="{{ url_for('shop.prebuilt') }}">Prebuilt PCs</a>
+                <a href="{{ url_for('shop.repair_upgrade') }}">Repair & Upgrades</a>
+            </div>
+
+        </div>
+    </div>
+
     <a href="{{ url_for('home.about') }}">About</a>
     <a href="{{ url_for('home.contact') }}">Contact</a>
+
 </div>
