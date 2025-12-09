@@ -28,8 +28,10 @@
 
     <div style="display:flex; gap:50px; margin-top:20px;">
 
-        <!-- LEFT: Profile Image + Username -->
+        <!-- LEFT: Profile Info -->
         <div>
+
+            <!-- Profile Image Placeholder -->
             <div style="
                 width:250px; 
                 height:250px; 
@@ -40,9 +42,16 @@
                 <span>Profile Image Placeholder</span>
             </div>
 
-            <p><strong>{{ user.username }}</strong></p>
+            <br>
 
+            <!-- USER INFO -->
+            <p><strong>User ID:</strong> {{ user.user_id }}</p>
+            <p><strong>Username:</strong> {{ user.username }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
             <p><strong>Account Role:</strong> {{ user.role }}</p>
+            <p><strong>Credits Balance:</strong> £{{ "%.2f"|format(user.credits_balance or 0) }}</p>
+
+            <br>
 
             <!-- Become a Seller (only if buyer) -->
             {% if user.role == "buyer" %}
@@ -54,7 +63,7 @@
                 </form>
             {% endif %}
 
-            <!-- Remove Seller Role (if no active products) -->
+            <!-- Remove Seller Role (if seller) -->
             {% if user.role == "seller" %}
                 <form method="POST" style="margin-top:20px;">
                     <input type="hidden" name="action" value="remove_seller_role">
