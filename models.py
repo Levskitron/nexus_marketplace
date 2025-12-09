@@ -243,6 +243,10 @@ class Review(db.Model):
     rating = db.Column(db.Integer, nullable=False)
     review_text = db.Column(db.String(500))
     date_posted = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # NEW: when a user edits an existing review
+    edited_at = db.Column(db.DateTime, nullable=True)
+
     status = db.Column(db.String(20), default="visible")  # visible/hidden/reported
 
     # Relationships
@@ -258,6 +262,7 @@ class Review(db.Model):
 
     def __repr__(self):
         return f"<Review {self.review_id} product={self.product_id} user={self.user_id}>"
+
 
 
 class Transaction(db.Model):
