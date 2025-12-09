@@ -6,11 +6,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
 </head>
 <body>
+
     {% include "components/navbar.html" %}
 
     <h1>Add Product</h1>
 
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
 
         <p>{{ form.name.label }} {{ form.name() }}</p>
@@ -19,10 +20,19 @@
         <p>{{ form.price.label }} {{ form.price() }}</p>
         <p>{{ form.stock_quantity.label }} {{ form.stock_quantity() }}</p>
         <p>{{ form.condition.label }} {{ form.condition() }}</p>
+
+        <h3>Product Image</h3>
+
+        <p>{{ form.image_upload.label }} {{ form.image_upload() }}</p>
+
+        <p><strong>OR</strong></p>
+
         <p>{{ form.image_url.label }} {{ form.image_url() }}</p>
+
         <p>{{ form.category_id.label }} {{ form.category_id() }}</p>
 
         {{ form.submit() }}
     </form>
+
 </body>
 </html>
