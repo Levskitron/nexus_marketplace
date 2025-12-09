@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Support - Nexus</title>
+
+    <!-- Navbar CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+
+    <!-- Temporary layout styling -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0 20px;
+        }
+
+        .content-wrapper {
+            max-width: 900px;
+            margin: 40px auto;
+            line-height: 1.6;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            margin-top: 40px;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 10px;
+        }
+
+        /* Contact form */
+        form {
+            margin-top: 20px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #bbb;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background: black;
+            color: white;
+            border: none;
+            border-radius: 6px;
+        }
+
+        button:hover {
+            background: #333;
+        }
+
+        .placeholder-box {
+            margin-top: 20px;
+            padding: 25px;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+
+        .placeholder-box p {
+            opacity: 0.6;
+        }
+    </style>
+</head>
+
+<body>
+
+    {% include "components/navbar.html" %}
+
+    <div class="content-wrapper">
+
+        <h1>Support</h1>
+
+        <p>
+            Welcome to the Nexus Support Center. We're here to help you with anything related 
+            to your account, purchases, selling experience, or technical issues.
+        </p>
+
+        <p>
+            Below is a placeholder section that Tristan can style, expand, or restructure 
+            however needed for the final frontend.
+        </p>
+
+        <!-- Placeholder for Tristan’s custom support content -->
+        <div class="placeholder-box">
+            <h2>Support Information Area</h2>
+            <p>
+                This is a flexible space where the frontend team can add FAQs, 
+                troubleshooting steps, category buttons, live chat links, or 
+                anything else the final design requires.
+            </p>
+        </div>
+
+        <!-- Contact form -->
+        <h2>Contact Our Support Team</h2>
+
+        <p>If you have a question, issue, or suggestion, send us a message below.</p>
+
+        <!-- This form currently does nothing. Backend can be added later. -->
+        <form method="POST" action="#">
+            <label>Name</label>
+            <input type="text" name="name" placeholder="Your name">
+
+            <label>Email</label>
+            <input type="email" name="email" placeholder="Your email address">
+
+            <label>Your Message</label>
+            <textarea name="message" rows="6" placeholder="How can we help you?"></textarea>
+
+            <button type="submit">Send Message</button>
+        </form>
+
+    </div>
+
+</body>
+</html>
