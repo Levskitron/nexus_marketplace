@@ -28,14 +28,16 @@ class ProductForm(FlaskForm):
         validators=[Optional()],
     )
 
-    image = FileField(
-        "Product Image",
+    # NEW — actual file upload
+    image_upload = FileField(
+        "Upload Image",
         validators=[
             Optional(),
             FileAllowed(['jpg', 'jpeg', 'png', 'webp'], "Images only!")
         ]
     )
 
+    # Optional: user can give URL instead of upload
     image_url = StringField("Image URL (optional)", validators=[Optional()])
 
     submit = SubmitField("Save Product")
