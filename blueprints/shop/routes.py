@@ -13,11 +13,22 @@ from sqlalchemy import func
 
 
 # -------------------------------------------------
-# MAIN SHOP PAGE
+# MAIN SHOP PAGE / SEARCH ENTRY
 # -------------------------------------------------
 @shop_bp.route("/")
 def shop():
-    return render_template("shop/shop.html")
+    """
+    If there's a ?q= search query, send to /search.
+    If not, just go back to the home page.
+    This avoids needing a shop/shop.html template.
+    """
+    query = request.args.get("q", "").strip()
+
+    if query:
+        return redirect(url_for("shop.search", q=query))
+
+    # No search term → just go home (or you could later make a real shop landing page)
+    return redirect(url_for("home.home"))
 
 
 # -------------------------------------------------
@@ -177,4 +188,27 @@ def category_page(slug):
         products=products,
         slug=slug,
         category=category,
+    )
+
+
+# -------------------------------------------------
+# SEARCH
+# -------------------------------------------------
+@shop_bp.route("/search")
+def search():
+    query = request.args.get("q", "").strip()
+
+    if not query:
+        # No query — could redirect to home or show empty list
+        return render_template("shop/search_results.html", products=[], query=query)
+
+    products = Product.query.filter(
+        Product.status == "active",
+        Product.name.ilike(f"%{query}%")
+    ).order_by(Product.date_added.desc()).all()
+
+    return render_template(
+        "shop/search_results.html",
+        products=products,
+        query=query
     )

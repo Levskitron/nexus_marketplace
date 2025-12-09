@@ -1,5 +1,53 @@
-{% extends "base.html" %}
-{% block title %}Page - Nexus Marketplace{% endblock %}
-{% block content %}
-<h1>Placeholder</h1>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About Us - Nexus</title>
+
+    <!-- Navbar CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+
+    <!-- Temporary layout styling (your CSS team will replace later) -->
+</head>
+
+<body>
+
+    {% include "components/navbar.html" %}
+
+    <div class="content-wrapper">
+
+        <h1>About Us</h1>
+
+        <p>
+            Nexus was founded to simplify the way people buy and sell computer parts and games.
+            We bring together a wide selection of new, used, and hard-to-find components — from
+            motherboards and cooling solutions to graphics cards and retro cartridges — plus a curated 
+            catalog of PC and console games.
+        </p>
+
+        <p>
+            Our marketplace is built around transparent listings, seller ratings, and secure checkout so
+            buyers can shop confidently and sellers can reach an audience that understands hardware.
+        </p>
+
+        <p>
+            At Nexus, we value community, fair pricing, and an obsession with details: clear photos,
+            honest descriptions, and reliable shipping. Whether you're building your first rig or 
+            hunting for a collector's gem, Nexus helps you connect, trade, and power up.
+        </p>
+
+        <h2>Contact Us</h2>
+
+        <p>Have any questions regarding a product or feedback you’d like to share?</p>
+        <p>Our team at Nexus is always here to help!</p>
+
+        <div class="contact-box">
+            <p><strong>Email:</strong> support@nexus-marketplace.com</p>
+            <p><strong>Phone:</strong> +1 (555) 248-9021</p>
+            <p><strong>Hours:</strong> Monday–Friday, 9:00AM – 6:00PM</p>
+        </div>
+
+    </div>
+
+</body>
+</html>

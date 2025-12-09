@@ -1,20 +1,85 @@
-{% include "components/navbar.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results - Nexus</title>
 
-<h1>Search Results for "{{ query }}"</h1>
-<hr>
+    <!-- Navbar styling -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
 
-{% if products %}
-    <div class="product-grid">
-        {% for p in products %}
-        <div class="product-card">
-            <a href="{{ url_for('shop.product_page', product_id=p.product_id) }}">
-                <img src="{{ p.image_url }}" alt="{{ p.name }}">
-                <p>{{ p.name }}</p>
-                <strong>£{{ p.price }}</strong>
-            </a>
+    <!-- TEMP basic styling (same layout as category pages) -->
+    <style>
+        .page-title {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .product-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .product-card {
+            width: 220px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #fafafa;
+            transition: 0.2s;
+            text-align: center;
+        }
+
+        .product-card:hover {
+            transform: scale(1.03);
+            border-color: #999;
+        }
+
+        .product-card img {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        .product-name {
+            font-weight: bold;
+            margin: 8px 0;
+        }
+
+        .price {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a7f1a;
+        }
+    </style>
+</head>
+<body>
+
+    {% include "components/navbar.html" %}
+
+    <h1 class="page-title">Search Results for "{{ query }}"</h1>
+    <hr>
+
+    {% if products %}
+        <div class="product-container">
+            {% for p in products %}
+                <div class="product-card">
+                    <a href="{{ url_for('shop.product_page', product_id=p.product_id) }}">
+                        <img src="{{ p.image_url }}" alt="{{ p.name }}">
+                        <p class="product-name">{{ p.name }}</p>
+                        <p class="price">£{{ p.price }}</p>
+                    </a>
+                </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
-{% else %}
-    <p>No products found matching your search.</p>
-{% endif %}
+    {% else %}
+        <p style="text-align:center; margin-top:20px;">No products found.</p>
+    {% endif %}
+
+</body>
+</html>
