@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }} - Nexus Marketplace</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+</head>
+<body>
+
+    {% include "components/navbar.html" %}
+
+    <h1>{{ product.name }}</h1>
+    <hr>
+
+    <div style="display:flex; gap:40px; margin-top:20px;">
+
+        <!-- Image -->
+        <div>
+            <img src="{{ product.image_url or '' }}"
+                 style="width:300px; height:300px; object-fit:cover; border:1px solid #ccc;">
+        </div>
+
+        <!-- Product Info -->
+        <div>
+            <h2>£{{ '%.2f'|format(product.price) }}</h2>
+
+            <p><strong>Brand:</strong> {{ product.brand or 'N/A' }}</p>
+            <p><strong>Condition:</strong> {{ product.condition or 'N/A' }}</p>
+            <p><strong>Description:</strong><br>{{ product.description }}</p>
+        </div>
+
+    </div>
+
+</body>
+</html>

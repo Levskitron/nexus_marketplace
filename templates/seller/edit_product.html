@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product - Nexus</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+</head>
+<body>
+
+    {% include "components/navbar.html" %}
+
+    <h1>Edit Product</h1>
+    <hr>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        {{ form.hidden_tag() }}
+
+        <label>Name</label><br>
+        {{ form.name(size=40) }}<br><br>
+
+        <label>Description</label><br>
+        {{ form.description(rows=5, cols=40) }}<br><br>
+
+        <label>Price (£)</label><br>
+        {{ form.price() }}<br><br>
+
+        <label>Brand</label><br>
+        {{ form.brand(size=40) }}<br><br>
+
+        <label>Condition</label><br>
+        {{ form.condition() }}<br><br>
+
+        <label>Image</label><br>
+        {{ form.image() }}<br><br>
+
+        <button type="submit">Save Changes</button>
+    </form>
+
+</body>
+</html>
