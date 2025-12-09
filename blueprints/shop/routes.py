@@ -9,6 +9,7 @@ from database import db
 from . import shop_bp
 from models import Product, Review, Order, OrderItem
 from forms import ReviewForm
+from sqlalchemy import func
 
 
 # ----------------------------
@@ -20,7 +21,7 @@ def shop():
 
 
 # ----------------------------
-# DYNAMIC PRODUCT PAGE
+# DYNAMIC PRODUCT PAGE + REVIEWS
 # ----------------------------
 @shop_bp.route("/product/<int:product_id>", methods=["GET", "POST"])
 def product_page(product_id):
@@ -31,7 +32,9 @@ def product_page(product_id):
     user_has_bought = False
     existing_review = None
 
-    # --- Check if user has bought this product ---
+    # ----------------------------
+    # CHECK IF USER HAS PURCHASED THIS PRODUCT
+    # ----------------------------
     if user_id:
         user_has_bought = (
             db.session.query(OrderItem)
@@ -44,31 +47,33 @@ def product_page(product_id):
             is not None
         )
 
-        # Check if user already reviewed this product
+        # Check if they already reviewed it
         existing_review = Review.query.filter_by(
             product_id=product_id,
             user_id=user_id
         ).first()
 
-        # Pre-fill form with existing review on GET
+        # Pre-fill form with existing review
         if request.method == "GET" and existing_review:
             form.rating.data = existing_review.rating
             form.review_text.data = existing_review.review_text
 
-        # Handle review submit / update
+        # Handle form submit (new review or update)
         if request.method == "POST" and form.validate_on_submit():
+
             if not user_has_bought:
-                flash("Only buyers of this product can leave a review.", "error")
+                flash("Only verified buyers can leave a review.", "error")
                 return redirect(url_for("shop.product_page", product_id=product_id))
 
             if existing_review:
-                # Update existing review
+                # Update review
                 existing_review.rating = form.rating.data
                 existing_review.review_text = form.review_text.data
                 existing_review.edited_at = datetime.utcnow()
                 flash("Your review has been updated.", "success")
+
             else:
-                # Create new review
+                # Create review
                 new_review = Review(
                     product_id=product_id,
                     user_id=user_id,
@@ -81,18 +86,30 @@ def product_page(product_id):
             db.session.commit()
             return redirect(url_for("shop.product_page", product_id=product_id))
 
-    # --- Aggregate review stats ---
+    # ----------------------------
+    # REVIEW STATS
+    # ----------------------------
     average_rating = (
-        db.session.query(db.func.avg(Review.rating))
+        db.session.query(func.avg(Review.rating))
         .filter(Review.product_id == product_id)
         .scalar()
     )
+
     review_count = Review.query.filter_by(product_id=product_id).count()
+
+    # Sorted review list
+    reviews = (
+        Review.query
+        .filter_by(product_id=product_id)
+        .order_by(Review.date_posted.desc())
+        .all()
+    )
 
     return render_template(
         "shop/product_page.html",
         product=product,
         form=form,
+        reviews=reviews,
         user_has_bought=user_has_bought,
         existing_review=existing_review,
         average_rating=average_rating,
@@ -101,13 +118,13 @@ def product_page(product_id):
 
 
 # ----------------------------
-# DELETE REVIEW (for current user)
+# DELETE REVIEW
 # ----------------------------
 @shop_bp.route("/product/<int:product_id>/review/delete", methods=["POST"])
 def delete_review(product_id):
     user_id = session.get("user_id")
     if not user_id:
-        flash("You must be logged in to delete a review.", "error")
+        flash("You must be logged in.", "error")
         return redirect(url_for("auth.register_page"))
 
     review = Review.query.filter_by(
@@ -117,7 +134,7 @@ def delete_review(product_id):
 
     db.session.delete(review)
     db.session.commit()
-    flash("Your review has been deleted.", "success")
+    flash("Review deleted.", "success")
 
     return redirect(url_for("shop.product_page", product_id=product_id))
 
