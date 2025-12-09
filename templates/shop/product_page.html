@@ -30,7 +30,7 @@
 
             <p><strong>Condition:</strong> {{ product.condition }}</p>
 
-            <p><strong>Category:</strong> 
+            <p><strong>Category:</strong>
                 {{ product.category.category_name if product.category else "Uncategorised" }}
             </p>
 
@@ -61,7 +61,7 @@
             <hr>
         {% endif %}
 
-        <!-- REVIEW FORM (ONLY IF LOGGED IN + PURCHASED) -->
+        <!-- REVIEW FORM (LOGGED-IN USERS ONLY) -->
         {% if session.get("user_id") %}
 
             {% if user_has_bought %}
@@ -84,7 +84,8 @@
                 </form>
 
                 {% if existing_review %}
-                    <form method="POST" action="{{ url_for('shop.delete_review', product_id=product.product_id) }}">
+                    <form method="POST"
+                          action="{{ url_for('shop.delete_review', product_id=product.product_id) }}">
                         <button type="submit">Delete Review</button>
                     </form>
                 {% endif %}
@@ -101,9 +102,8 @@
             <hr>
         {% endif %}
 
-
         <!-- LIST OF REVIEWS -->
-        {% for r in product.reviews.order_by(models.Review.date_posted.desc()).all() %}
+        {% for r in reviews %}
             <div class="review-box">
                 <p><strong>{{ r.user.username }}</strong></p>
 
