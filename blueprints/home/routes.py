@@ -62,3 +62,7 @@ def our_story():
 @home_bp.route("/contact")
 def contact():
     return render_template("home/contact.html")
+
+@home_bp.route("/support")
+def support():
+    return render_template("account/support.html")
