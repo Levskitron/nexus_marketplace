@@ -113,3 +113,15 @@ def delete_product(product_id):
     db.session.commit()
     flash("Product removed.", "success")
     return redirect(url_for("seller.dashboard"))
+
+@seller_bp.route("/my-products")
+@seller_required
+def my_products():
+    user_id = session["user_id"]
+    products = (
+        Product.query
+        .filter_by(seller_id=user_id)
+        .order_by(Product.date_added.desc())
+        .all()
+    )
+    return render_template("seller/my_products.html", products=products)
