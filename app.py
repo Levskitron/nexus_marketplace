@@ -21,6 +21,7 @@ app.register_blueprint(home_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(shop_bp)
 app.register_blueprint(account_bp)
+app.register_blueprint(seller_bp)
 
 # Create tables (including users) once at startup
 with app.app_context():
