@@ -13,7 +13,7 @@ from sqlalchemy import func
 
 
 # ----------------------------
-# MAIN SHOP PAGE (optional)
+# MAIN SHOP PAGE
 # ----------------------------
 @shop_bp.route("/")
 def shop():
@@ -21,7 +21,7 @@ def shop():
 
 
 # ----------------------------
-# DYNAMIC PRODUCT PAGE + REVIEWS
+# PRODUCT PAGE + REVIEWS
 # ----------------------------
 @shop_bp.route("/product/<int:product_id>", methods=["GET", "POST"])
 def product_page(product_id):
@@ -33,7 +33,7 @@ def product_page(product_id):
     existing_review = None
 
     # ----------------------------
-    # CHECK IF USER HAS PURCHASED THIS PRODUCT
+    # CHECK IF USER PURCHASED PRODUCT
     # ----------------------------
     if user_id:
         user_has_bought = (
@@ -47,33 +47,31 @@ def product_page(product_id):
             is not None
         )
 
-        # Check if they already reviewed it
+        # Review exists?
         existing_review = Review.query.filter_by(
             product_id=product_id,
             user_id=user_id
         ).first()
 
-        # Pre-fill form with existing review
+        # Pre-fill form when editing
         if request.method == "GET" and existing_review:
             form.rating.data = existing_review.rating
             form.review_text.data = existing_review.review_text
 
-        # Handle form submit (new review or update)
+        # Handle review submit
         if request.method == "POST" and form.validate_on_submit():
-
             if not user_has_bought:
                 flash("Only verified buyers can leave a review.", "error")
                 return redirect(url_for("shop.product_page", product_id=product_id))
 
             if existing_review:
-                # Update review
+                # Update existing review
                 existing_review.rating = form.rating.data
                 existing_review.review_text = form.review_text.data
                 existing_review.edited_at = datetime.utcnow()
                 flash("Your review has been updated.", "success")
-
             else:
-                # Create review
+                # Create new review
                 new_review = Review(
                     product_id=product_id,
                     user_id=user_id,
@@ -93,11 +91,10 @@ def product_page(product_id):
         db.session.query(func.avg(Review.rating))
         .filter(Review.product_id == product_id)
         .scalar()
-    )
+    ) or 0
 
     review_count = Review.query.filter_by(product_id=product_id).count()
 
-    # Sorted review list
     reviews = (
         Review.query
         .filter_by(product_id=product_id)
@@ -139,65 +136,41 @@ def delete_review(product_id):
     return redirect(url_for("shop.product_page", product_id=product_id))
 
 
-# ----------------------------
-# PC PARTS
-# ----------------------------
-@shop_bp.route("/pc-parts/cpu")
-def cpu():
-    return render_template("shop/pc_parts/cpu.html")
+# ============================================================
+# CATEGORY SYSTEM (REPLACES CPU/GPU/RAM/... ROUTES)
+# ============================================================
 
+CATEGORY_MAP = {
+    "cpu": 1,
+    "gpu": 2,
+    "motherboard": 3,
+    "ram": 4,
+    "storage": 5,
+    "power-supplies": 6,
+    "games": 7,
+    "accessories": 8,
+    "prebuilt": 9,
+    "repair-upgrade": 10,
+    "consultation": 11,
+}
 
-@shop_bp.route("/pc-parts/gpu")
-def gpu():
-    return render_template("shop/pc_parts/gpu.html")
+@shop_bp.route("/category/<slug>")
+def category_page(slug):
+    """Dynamic category listing with pagination."""
+    page = request.args.get("page", 1, type=int)
 
+    if slug not in CATEGORY_MAP:
+        return render_template("shop/category_not_found.html"), 404
 
-@shop_bp.route("/pc-parts/motherboard")
-def motherboard():
-    return render_template("shop/pc_parts/motherboard.html")
+    category_id = CATEGORY_MAP[slug]
 
+    products = Product.query.filter_by(
+        category_id=category_id,
+        status="active"
+    ).order_by(Product.date_added.desc()).paginate(page=page, per_page=12)
 
-@shop_bp.route("/pc-parts/ram")
-def ram():
-    return render_template("shop/pc_parts/ram.html")
-
-
-@shop_bp.route("/pc-parts/storage")
-def storage():
-    return render_template("shop/pc_parts/storage.html")
-
-
-@shop_bp.route("/pc-parts/power-supplies")
-def power_supplies():
-    return render_template("shop/pc_parts/power_supplies.html")
-
-
-# ----------------------------
-# GAMES & ACCESSORIES
-# ----------------------------
-@shop_bp.route("/games-accessories/games")
-def games():
-    return render_template("shop/games_accessories/games.html")
-
-
-@shop_bp.route("/games-accessories/accessories")
-def accessories():
-    return render_template("shop/games_accessories/accessories.html")
-
-
-# ----------------------------
-# SERVICES
-# ----------------------------
-@shop_bp.route("/services/prebuilt")
-def prebuilt():
-    return render_template("shop/services/prebuilt.html")
-
-
-@shop_bp.route("/services/repair-upgrade")
-def repair_upgrade():
-    return render_template("shop/services/repair_upgrade.html")
-
-
-@shop_bp.route("/services/consultation")
-def consultation():
-    return render_template("shop/services/consultation.html")
+    return render_template(
+        "shop/category_page.html",
+        products=products,
+        slug=slug
+    )
