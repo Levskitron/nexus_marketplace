@@ -1,4 +1,10 @@
-from flask import render_template, request, redirect, url_for, session, flash
+import os
+import uuid
+from flask import (
+    render_template, request, redirect,
+    url_for, session, flash, current_app
+)
+from werkzeug.utils import secure_filename
 from functools import wraps
 
 from . import seller_bp
@@ -20,7 +26,6 @@ def seller_required(view_func):
             flash("You do not have permission to access that page.", "error")
             return redirect(url_for("home.home"))
 
-        # Attach user if you ever want it
         return view_func(*args, **kwargs)
 
     return wrapped
@@ -44,34 +49,40 @@ def dashboard():
 def add_product():
     form = ProductForm()
 
+    # Populate dropdown
     categories = Category.query.order_by(Category.category_name).all()
     form.category_id.choices = [(c.category_id, c.category_name) for c in categories]
 
     if form.validate_on_submit():
         user_id = session["user_id"]
 
-        # ----------------------------
-        # HANDLE IMAGE UPLOAD
-        # ----------------------------
-        image_file = form.image.data
-        image_url = None
+        # -----------------------------------------------------
+        # HANDLE IMAGE UPLOAD OR IMAGE URL
+        # -----------------------------------------------------
+        image_path = None
 
-        if image_file:
-            filename = secure_filename(image_file.filename)
+        upload = form.image_upload.data
+        url = form.image_url.data
+
+        # Prefer uploaded file if provided
+        if upload:
+            filename = secure_filename(upload.filename)
             unique_name = f"{uuid.uuid4().hex}_{filename}"
-            save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], unique_name)
-            image_file.save(save_path)
 
-            # This is what will display on website
-            image_url = f"/static/images/products/{unique_name}"
+            upload_folder = os.path.join(current_app.root_path, "static/images/products")
+            os.makedirs(upload_folder, exist_ok=True)
 
-        # If user manually entered a URL, use that instead
-        if form.image_url.data:
-            image_url = form.image_url.data
+            save_path = os.path.join(upload_folder, unique_name)
+            upload.save(save_path)
 
-        # ----------------------------
-        # CREATE THE PRODUCT
-        # ----------------------------
+            image_path = f"/static/images/products/{unique_name}"
+
+        elif url:
+            image_path = url  # user provided a remote image
+
+        # -----------------------------------------------------
+        # CREATE PRODUCT
+        # -----------------------------------------------------
         product = Product(
             seller_id=user_id,
             category_id=form.category_id.data or None,
@@ -81,7 +92,7 @@ def add_product():
             price=form.price.data,
             stock_quantity=form.stock_quantity.data,
             condition=form.condition.data or None,
-            image_url=image_url,
+            image_url=image_path,
             status="active",
         )
 
@@ -106,20 +117,39 @@ def edit_product(product_id):
     form.category_id.choices = [(c.category_id, c.category_name) for c in categories]
 
     if form.validate_on_submit():
+
+        # Handle image updates
+        upload = form.image_upload.data
+        url = form.image_url.data
+
+        if upload:
+            filename = secure_filename(upload.filename)
+            unique_name = f"{uuid.uuid4().hex}_{filename}"
+
+            upload_folder = os.path.join(current_app.root_path, "static/images/products")
+            os.makedirs(upload_folder, exist_ok=True)
+
+            save_path = os.path.join(upload_folder, unique_name)
+            upload.save(save_path)
+
+            product.image_url = f"/static/images/products/{unique_name}"
+
+        elif url:
+            product.image_url = url
+
+        # Update other fields
         product.name = form.name.data
         product.description = form.description.data
         product.brand = form.brand.data
         product.price = form.price.data
         product.stock_quantity = form.stock_quantity.data
         product.condition = form.condition.data or None
-        product.image_url = form.image_url.data or None
         product.category_id = form.category_id.data or None
 
         db.session.commit()
         flash("Product updated.", "success")
         return redirect(url_for("seller.dashboard"))
 
-    # preset category in form
     form.category_id.data = product.category_id
     return render_template("seller/edit_product.html", form=form, product=product)
 
@@ -130,11 +160,12 @@ def delete_product(product_id):
     user_id = session["user_id"]
     product = Product.query.filter_by(product_id=product_id, seller_id=user_id).first_or_404()
 
-    # soft delete: mark as removed
     product.status = "removed"
     db.session.commit()
+
     flash("Product removed.", "success")
     return redirect(url_for("seller.dashboard"))
+
 
 @seller_bp.route("/my-products")
 @seller_required
