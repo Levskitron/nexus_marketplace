@@ -24,6 +24,7 @@ def inject_user():
 # SQLite Database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///nexus.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config["UPLOAD_FOLDER"] = "static/images/products"
 
 # Initialise db with app
 db.init_app(app)
