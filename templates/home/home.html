@@ -2,55 +2,65 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexus - Home</title>
-
-    <!-- Navbar stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
 </head>
 <body>
 
-    <!-- NAVBAR -->
-    {% include "components/navbar.html" %}
-    <!-- END NAVBAR -->
+{% include "components/navbar.html" %}
 
-    <h1>Welcome to Nexus Marketplace</h1>
-    <p>This is a temporary homepage for demonstrating the functioning frontend and backend implementation on Nexus Marketplace.</p>
+<h1>Welcome {% if session.get("username") %}{{ session.get("username") }}{% else %}User{% endif %},</h1>
 
-    <hr>
+<br>
 
-    {% if session.get("user_id") %}
-        
-        <h2>Your Account</h2>
+<!-- Search bar -->
+<form action="{{ url_for('shop.shop') }}" method="GET">
+    <input type="text" name="q" placeholder="Search here..." style="width: 400px; padding: 10px;">
+    <button type="submit">Search</button>
+</form>
 
-        <table border="1" cellpadding="8" cellspacing="0">
-            <tr>
-                <th align="left">User ID</th>
-                <td>{{ session.get("user_id") }}</td>
-            </tr>
-            <tr>
-                <th align="left">Username</th>
-                <td>{{ session.get("username") }}</td>
-            </tr>
-            <tr>
-                <th align="left">Email</th>
-                <td>{{ session.get("email") }}</td>
-            </tr>
-        </table>
+<br><br>
 
-        <br>
+<!-- Recommended Products -->
+<h2>You might be interested in these parts...</h2>
 
-        <a href="{{ url_for('auth.logout') }}">
-            <button>Logout</button>
-        </a>
+<div class="product-row">
+    {% for p in recommended %}
+        <div class="product-box">
+            <a href="{{ url_for('shop.product_page', product_id=p.product_id) }}">
+                <img src="{{ p.image_url }}" alt="{{ p.name }}" style="width:200px; height:200px; object-fit:contain;">
+                <p><strong>{{ p.name }}</strong></p>
+                <p>£{{ p.price }}</p>
+            </a>
+        </div>
+    {% endfor %}
 
-    {% else %}
-        <p><em>No user logged in.</em></p>
-
-        <a href="{{ url_for('auth.register_page') }}">
-            <button>Go to Login / Register</button>
-        </a>
+    {% if recommended|length == 0 %}
+        <p>No products available.</p>
     {% endif %}
+</div>
+
+<br><br>
+
+<!-- Trending Products -->
+<h2>Top Trending Parts</h2>
+
+<div class="product-row">
+    {% for p in trending %}
+        <div class="product-box">
+            <a href="{{ url_for('shop.product_page', product_id=p.product_id) }}">
+                <img src="{{ p.image_url }}" alt="{{ p.name }}" style="width:200px; height:200px; object-fit:contain;">
+                <p><strong>{{ p.name }}</strong></p>
+                <p>£{{ p.price }}</p>
+            </a>
+        </div>
+    {% endfor %}
+
+    {% if trending|length == 0 %}
+        <p>No trending products yet.</p>
+    {% endif %}
+</div>
 
 </body>
 </html>
