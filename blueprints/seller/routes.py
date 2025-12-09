@@ -113,31 +113,32 @@ def edit_product(product_id):
 
     form = ProductForm(obj=product)
 
+    # Load categories
     categories = Category.query.order_by(Category.category_name).all()
     form.category_id.choices = [(c.category_id, c.category_name) for c in categories]
 
     if form.validate_on_submit():
 
-        # Handle image updates
-        upload = form.image_upload.data
-        url = form.image_url.data
+        # ----------------------------
+        # HANDLE OPTIONAL IMAGE UPLOAD
+        # ----------------------------
+        upload = form.image.data   # ← FIXED (no more image_upload)
+        image_url = form.image_url.data.strip() if form.image_url.data else None
 
+        # If the user uploads a file
         if upload:
             filename = secure_filename(upload.filename)
             unique_name = f"{uuid.uuid4().hex}_{filename}"
-
-            upload_folder = os.path.join(current_app.root_path, "static/images/products")
-            os.makedirs(upload_folder, exist_ok=True)
-
-            save_path = os.path.join(upload_folder, unique_name)
+            save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], unique_name)
             upload.save(save_path)
 
             product.image_url = f"/static/images/products/{unique_name}"
 
-        elif url:
-            product.image_url = url
+        # If user typed a URL, override the upload
+        elif image_url:
+            product.image_url = image_url
 
-        # Update other fields
+        # Update basic fields
         product.name = form.name.data
         product.description = form.description.data
         product.brand = form.brand.data
@@ -150,8 +151,11 @@ def edit_product(product_id):
         flash("Product updated.", "success")
         return redirect(url_for("seller.dashboard"))
 
+    # Pre-fill the category
     form.category_id.data = product.category_id
+
     return render_template("seller/edit_product.html", form=form, product=product)
+
 
 
 @seller_bp.route("/delete-product/<int:product_id>", methods=["POST"])
