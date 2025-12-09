@@ -105,23 +105,42 @@ def dashboard():
 def add_product():
     form = ProductForm()
 
-    # Populate category dropdown
+    # Populate dropdown
     categories = Category.query.order_by(Category.category_name).all()
     form.category_id.choices = [(c.category_id, c.category_name) for c in categories]
 
     if form.validate_on_submit():
         user_id = session["user_id"]
 
-        # Handle image upload or URL
-        upload = form.image.data
-        image_url_text = form.image_url.data.strip() if form.image_url.data else None
+        # -----------------------------------------------------
+        # IMAGE HANDLING (THIS IS SECTION #2)
+        # -----------------------------------------------------
+        upload = form.image_upload.data
+        url = form.image_url.data.strip() if form.image_url.data else None
 
         image_path = None
-        if upload:
-            image_path = _save_product_image(upload_file=upload)
-        elif image_url_text:
-            image_path = image_url_text
 
+        # Prefer uploaded image
+        if upload:
+            filename = secure_filename(upload.filename)
+            unique_name = f"{uuid.uuid4().hex}_{filename}"
+
+            upload_folder = os.path.join(current_app.root_path, "static/images/products")
+            os.makedirs(upload_folder, exist_ok=True)
+
+            save_path = os.path.join(upload_folder, unique_name)
+            upload.save(save_path)
+
+            image_path = f"/static/images/products/{unique_name}"
+
+        # Otherwise use manual URL
+        elif url:
+            image_path = url
+
+
+        # -----------------------------------------------------
+        # CREATE PRODUCT
+        # -----------------------------------------------------
         product = Product(
             seller_id=user_id,
             category_id=form.category_id.data or None,
