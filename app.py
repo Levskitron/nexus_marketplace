@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, session
 from database import db
 from blueprints.home import home_bp
 from blueprints.auth import auth_bp
@@ -9,6 +9,7 @@ from blueprints.seller import seller_bp
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 
+# Make user available in ALL templates
 @app.context_processor
 def inject_user():
     from models import User  # local import to avoid circular import
