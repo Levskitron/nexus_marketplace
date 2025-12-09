@@ -2,35 +2,67 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Seller Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Dashboard - Nexus</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
 </head>
 <body>
+
     {% include "components/navbar.html" %}
 
-    <h1>My Products</h1>
+    <h1>Seller Dashboard</h1>
+    <hr>
 
-    <a href="{{ url_for('seller.add_product') }}">Add New Product</a>
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul style="color: red;">
+                {% for category, message in messages %}
+                    <li><strong>{{ message }}</strong></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
 
-    <table border="1" cellpadding="8">
-        <tr>
-            <th>ID</th><th>Name</th><th>Price</th><th>Status</th><th>Actions</th>
-        </tr>
-        {% for p in products %}
-        <tr>
-            <td>{{ p.product_id }}</td>
-            <td>{{ p.name }}</td>
-            <td>£{{ "%.2f"|format(p.price) }}</td>
-            <td>{{ p.status }}</td>
-            <td>
-                <a href="{{ url_for('shop.product_page', product_id=p.product_id) }}">View</a> |
-                <a href="{{ url_for('seller.edit_product', product_id=p.product_id) }}">Edit</a> |
-                <form action="{{ url_for('seller.delete_product', product_id=p.product_id) }}" method="post" style="display:inline">
-                    <button type="submit">Remove</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+    <h2>Welcome, {{ user.username }}!</h2>
+
+    <!-- Stats Overview -->
+    <div style="display:flex; gap:40px; margin:20px 0;">
+
+        <div style="border:1px solid #ccc; padding:15px; width:180px; text-align:center;">
+            <h3>{{ total_products }}</h3>
+            <p>Total Products</p>
+        </div>
+
+        <div style="border:1px solid #ccc; padding:15px; width:180px; text-align:center;">
+            <h3>{{ active_products }}</h3>
+            <p>Active Listings</p>
+        </div>
+
+        <div style="border:1px solid #ccc; padding:15px; width:180px; text-align:center;">
+            <h3>{{ sold_products }}</h3>
+            <p>Sold Items</p>
+        </div>
+
+    </div>
+
+    <hr>
+
+    <!-- Quick Actions -->
+    <h2>Quick Actions</h2>
+
+    <div style="display:flex; gap:20px; margin-top:10px;">
+        <a href="{{ url_for('seller.add_product') }}"
+           style="padding:10px 20px; border:1px solid #000; text-decoration:none; color:black;">
+           ➕ Add New Product
+        </a>
+
+        <a href="{{ url_for('seller.my_products') }}"
+           style="padding:10px 20px; border:1px solid #000; text-decoration:none; color:black;">
+           📦 View My Products
+        </a>
+    </div>
+
 </body>
 </html>
