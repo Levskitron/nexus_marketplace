@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Seller Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+</head>
+<body>
+    {% include "components/navbar.html" %}
+
+    <h1>My Products</h1>
+
+    <a href="{{ url_for('seller.add_product') }}">Add New Product</a>
+
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>ID</th><th>Name</th><th>Price</th><th>Status</th><th>Actions</th>
+        </tr>
+        {% for p in products %}
+        <tr>
+            <td>{{ p.product_id }}</td>
+            <td>{{ p.name }}</td>
+            <td>£{{ "%.2f"|format(p.price) }}</td>
+            <td>{{ p.status }}</td>
+            <td>
+                <a href="{{ url_for('shop.product_page', product_id=p.product_id) }}">View</a> |
+                <a href="{{ url_for('seller.edit_product', product_id=p.product_id) }}">Edit</a> |
+                <form action="{{ url_for('seller.delete_product', product_id=p.product_id) }}" method="post" style="display:inline">
+                    <button type="submit">Remove</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
