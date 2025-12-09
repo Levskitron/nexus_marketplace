@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Account - Nexus</title>
-        <!-- Navbar stylesheet -->
+
+    <!-- Navbar stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
 </head>
 <body>
@@ -12,13 +13,12 @@
     {% include "components/navbar.html" %}
 
     <h1>My Account</h1>
-
     <hr>
 
-    <!-- Flash message feedback -->
+    <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-            <ul>
+            <ul style="color: red;">
                 {% for category, message in messages %}
                     <li><strong>{{ message }}</strong></li>
                 {% endfor %}
@@ -26,20 +26,46 @@
         {% endif %}
     {% endwith %}
 
-
-    <!-- LEFT SIDE: Profile picture + username -->
     <div style="display:flex; gap:50px; margin-top:20px;">
 
-        <!-- Profile Box -->
+        <!-- LEFT: Profile Image + Username -->
         <div>
-            <div style="width:250px; height:250px; border:2px solid black; display:flex; justify-content:center; align-items:center;">
+            <div style="
+                width:250px; 
+                height:250px; 
+                border:2px solid black; 
+                display:flex; 
+                justify-content:center; 
+                align-items:center;">
                 <span>Profile Image Placeholder</span>
             </div>
+
             <p><strong>{{ user.username }}</strong></p>
+
+            <p><strong>Account Role:</strong> {{ user.role }}</p>
+
+            <!-- Become a Seller (only if buyer) -->
+            {% if user.role == "buyer" %}
+                <form method="POST" style="margin-top:20px;">
+                    <input type="hidden" name="action" value="become_seller">
+                    <button type="submit" style="padding:10px 20px;">
+                        Become a Seller
+                    </button>
+                </form>
+            {% endif %}
+
+            <!-- Remove Seller Role (if no active products) -->
+            {% if user.role == "seller" %}
+                <form method="POST" style="margin-top:20px;">
+                    <input type="hidden" name="action" value="remove_seller_role">
+                    <button type="submit" style="padding:10px 20px;">
+                        Remove Seller Role
+                    </button>
+                </form>
+            {% endif %}
         </div>
 
-
-        <!-- RIGHT SIDE: Forms for updates -->
+        <!-- RIGHT: Update Forms -->
         <div>
 
             <!-- Change Username -->
