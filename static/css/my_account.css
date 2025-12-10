@@ -1,0 +1,163 @@
+/* Global look & feel (same as Aidan's) */
+body {
+    margin: 0;
+    background: #f4f1fa;
+    font-family: Arial, sans-serif;
+    color: #2a2344;
+}
+
+/* Center the heading a bit like his mockup */
+body > h1 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* === MAIN ACCOUNT LAYOUT ===================================== */
+/* This is your big wrapper div with inline flex styles */
+body > div:last-of-type {
+    display: grid !important;            /* override inline display:flex */
+    grid-template-columns: 1fr 1fr;
+    gap: 40px !important;               /* override inline gap */
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+/* LEFT COLUMN: profile + user info */
+body > div:last-of-type > div:first-of-type {
+    text-align: left;
+}
+
+/* Profile placeholder box */
+body > div:last-of-type > div:first-of-type > div {
+    width: 250px;
+    height: 250px;
+    border: 3px solid #3d2b77;
+    margin-bottom: 20px;
+    background: #e8e2f7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: #3d2b77;
+}
+
+/* User info text under the box */
+body > div:last-of-type > div:first-of-type p {
+    margin: 4px 0;
+}
+
+/* Seller buttons on the left */
+body > div:last-of-type > div:first-of-type form button {
+    padding: 10px 20px;
+    background: #5c3fbc;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+body > div:last-of-type > div:first-of-type form button:hover {
+    background: #472f93;
+}
+
+/* === RIGHT COLUMN: forms ===================================== */
+body > div:last-of-type > div:last-of-type {
+    max-width: 450px;
+}
+
+/* Each form block */
+body > div:last-of-type > div:last-of-type form {
+    margin-bottom: 20px;
+}
+
+/* Labels */
+body > div:last-of-type > div:last-of-type form label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+/* Text / email / password inputs */
+body > div:last-of-type > div:last-of-type form input[type="text"],
+body > div:last-of-type > div:last-of-type form input[type="email"],
+body > div:last-of-type > div:last-of-type form input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #c7b8ec;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+body > div:last-of-type > div:last-of-type form input[type="text"]:focus,
+body > div:last-of-type > div:last-of-type form input[type="email"]:focus,
+body > div:last-of-type > div:last-of-type form input[type="password"]:focus {
+    border-color: #5c3fbc;
+}
+
+/* Standard small action buttons on the right column */
+body > div:last-of-type > div:last-of-type form button {
+    padding: 8px 16px;
+    background: #5c3fbc;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+body > div:last-of-type > div:last-of-type form button:hover {
+    background: #472f93;
+}
+
+/* === SETTINGS BOX (last form's inner div) ==================== */
+body > div:last-of-type > div:last-of-type form:last-of-type > div {
+    width: 100%;
+    padding: 20px;
+    border: 2px solid #c7b8ec;
+    border-radius: 12px;
+    background: #faf9ff;
+    box-sizing: border-box;
+}
+
+body > div:last-of-type > div:last-of-type form:last-of-type > div p {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+/* Checkbox labels inside settings */
+body > div:last-of-type > div:last-of-type form:last-of-type > div input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+/* "Save Settings" button at bottom of settings form */
+body > div:last-of-type > div:last-of-type form:last-of-type > button {
+    margin-top: 10px;
+    padding: 12px 20px;
+    background: #5c3fbc;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+body > div:last-of-type > div:last-of-type form:last-of-type > button:hover {
+    background: #472f93;
+}
+
+/* Center the entire account layout on the page */
+body > div:last-of-type {
+    max-width: 1100px;          /* limits width so it doesn’t stretch full screen */
+    margin: 0 auto !important;  /* center horizontally */
+    display: grid !important;   /* override inline flex */
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    padding: 40px;
+}
