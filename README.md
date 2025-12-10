@@ -1,171 +1,76 @@
-# Nexus Marketplace  
-*A PC Parts & Gaming Marketplace — HND Final Project*
+# ⚙️ Backend Branch — Nexus Marketplace
 
-The **Nexus Marketplace** is the final project for the **HND Professional Practice in Software Development** module.  
-It is a full-stack web application designed for users to:
+This branch contains all backend development work for the Nexus Marketplace project.  
+It serves as the primary workspace for implementing:
 
-- Buy and sell **PC parts**
-- Browse and purchase **games and accessories**
-- Request **build services**, including:
-  - Custom prebuilts
-  - PC repairs
-  - Upgrades
-  - Hardware consultation
-
-This project is built collaboratively by a 5-member development team, combining backend engineering, frontend design, and professional workflow practices.
+- Application logic  
+- Route handling  
+- Database models & schema  
+- Form processing  
+- Server-side validation  
+- Business logic integrations  
+- Blueprint structure and modularization  
+- Any backend utilities, helpers, or seed scripts  
 
 ---
 
-## 👥 Team Members
+## 📌 Purpose of This Branch
 
-### **Tristan Duffy — Team Leader & Front-End Developer**
-- N/A  
+The backend branch is **Levi’s dedicated development space** for building and refining the server-side functionality of Nexus.  
+It exists separately from front-end or styling work to:
 
-### **Levi Mair — Full Stack Developer**
-- Backend architecture  
-- Database design & integration  
-- Initial project setup & GitHub repository management  
-- Blueprint structure and HTML base template implementation  
+- Keep backend logic isolated and stable  
+- Prevent accidental conflicts with front-end development  
+- Allow safe iteration on models, database interactions, sessions, and routing  
+- Provide a clean environment for testing & expanding application features  
 
-### **Aidan Gibb — Front-End Developer**
-- N/A 
-
-### **Imdad Chaklader — Front-End Developer**
-- N/A 
-
-### **Nathan Morgan — Front-End Developer**
-- N/A 
+Front-end developers generally **do not** need to work inside this branch unless pairing with backend development.
 
 ---
 
-## 🛠️ Tech Stack
+## 🧱 What You'll Find Here
 
-### **Backend**
-- **Python 3**
-- **Flask**
-- **Flask-SQLAlchemy** 
-- **Flask-WTF / WTForms**
-- **Werkzeug**
+Typical components maintained in this branch include:
 
-### **Database**
-- SQLite
+### 🗂️ Core backend structure
+- `app.py`
+- `config.py`
+- `database.py`
+- `forms.py`
+- `models.py`
+- `seed_categories.py`
 
-### **Frontend**
-- HTML5  
-- CSS3
-- Jinja2  
-- JavaScript
+### 🧩 Blueprint modules  
+Located in `/blueprints/`, containing logic for:
+- Authentication  
+- Account & user dashboards  
+- Home & static routes  
+- Seller tools & product management  
+- Marketplace browsing & product pages  
 
-### **Other Tools**
-- Git & GitHub
-- Visual Studio Code
-
----
-
-## 📁 Project Structure
-```
-nexus_marketplace/
-├── app.py
-├── config.py
-├── database.py
-├── forms.py
-├── models.py
-├── seed_categories.py
-│
-├── templates/
-│   ├── account/
-│   │   ├── cart.html
-│   │   ├── checkout.html
-│   │   ├── my_account.html
-│   │   ├── order_confirmation.html
-│   │   ├── order_history.html
-│   │   └── support.html
-│   │
-│   ├── auth/
-│   │   └── register.html
-│   │
-│   ├── components/
-│   │   └── navbar.html
-│   │
-│   ├── home/
-│   │   ├── about.html
-│   │   ├── contact.html
-│   │   ├── home.html
-│   │   ├── our_story.html
-│   │   └── policies.html
-│   │
-│   ├── seller/
-│   │   ├── add_product.html
-│   │   ├── dashboard.html
-│   │   ├── edit_product.html
-│   │   ├── my_products.html
-│   │   └── orders.html
-│   │
-│   └── shop/
-│       ├── category_page.html
-│       ├── product_page.html
-│       └── search_results.html
-│
-├── static/
-│   ├── css/
-│   │   └── 
-│   │
-│   ├── images/
-│   │   ├── arrow.svg
-│   │   ├── plus.svg
-│   │   ├── test.png
-│   │   ├── products/
-│   │   └── profile/
-│   │
-│   └── js/
-│       └── 
-│
-└── blueprints/
-    ├── account/
-    │   ├── __init__.py
-    │   └── routes.py
-    │
-    ├── auth/
-    │   ├── __init__.py
-    │   └── routes.py
-    │
-    ├── home/
-    │   ├── __init__.py
-    │   └── routes.py
-    │
-    ├── seller/
-    │   ├── __init__.py
-    │   └── routes.py
-    │
-    └── shop/
-        ├── __init__.py
-        └── routes.py
-```
-
---- 
-
-## 🚀 How to Run the Project Locally
-
-1. Install dependencies:
-   ```pip install -r requirements.txt```
-
-2. Run the Flask app:
-   ```python app.py```
-
-3. Open your browser and visit:
-   ```http://127.0.0.1:5000/```
+### 🏗️ Template wiring  
+Backend rendering logic for all HTML templates, without front-end CSS or visuals.
 
 ---
 
-## 📜 License
+## 👀 For Anyone Browsing This Branch
 
-This project is licensed under the **PolyForm Noncommercial License 1.0.0**.
+If you're a member of the front-end team looking through this branch:
 
-This means:
+- You **don’t need to edit** anything here.
+- All HTML templates can be viewed, but should not be modified for styling.
+- CSS and JavaScript work should be done in the `static/` directories on your own branch.
+- This area is focused solely on backend logic, database management, routing, and application structure.
 
-- You may **use**, **modify**, and **share** the project freely  
-- You may **not** use the project for any **commercial purposes**  
-- This includes selling, offering paid services, or using it within a commercial product  
+If you're just curious about how things work behind the scenes, feel free to explore — but avoid pushing changes here unless you're intentionally contributing to backend logic.
 
-For full details, see the license text:  
-https://polyformproject.org/licenses/noncommercial/1.0.0/
+---
+
+## 📌 Summary
+
+This branch is the **backend engine room** of the Nexus Marketplace project.  
+It powers the logic, data handling, user flow, and internal systems that support the front-end experience.
+
+If you’re not doing backend work, think of this branch as **structural infrastructure** — important to understand, but not something you need to touch during front-end development.
+
+This was written by ChatGPT. I don't care what you think.
