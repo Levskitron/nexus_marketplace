@@ -18,11 +18,31 @@ body {
     overflow: hidden;
 }
 
+/* --- NEW LOGO STYLING --- */
+.logo-area {
+    text-align: center;
+    padding: 20px 0 10px 0; /* Top padding, no left/right, small bottom padding */
+}
+
+.logo-text {
+    font-size: 2.5em; /* Large text size */
+    font-weight: 800; /* Extra bold */
+    color: rgb(137, 67, 146); /* Your Nexus brand color */
+    letter-spacing: 2px; /* Slightly spaced out letters for a modern look */
+    display: inline-block; /* Allows for transformations/effects */
+    /* Optional: Add a subtle shadow for depth */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.05); 
+}
+/* --- END NEW LOGO STYLING --- */
+
+
 /* --- Tab Styling --- */
 .login-tabs {
     display: flex;
     position: relative; /* Required for the indicator */
 }
+
+/* ... (rest of the CSS remains the same) ... */
 
 .tab {
     flex: 1;
