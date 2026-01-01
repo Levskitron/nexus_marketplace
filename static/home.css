@@ -1,0 +1,109 @@
+/* General Page Styling */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff; /* Predominantly white */
+    color: #333;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+h1, h2 {
+    color: #0056b3; /* Secondary color: Blue */
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-weight: 300;
+    border-bottom: 2px solid #f0f2f5;
+    padding-bottom: 10px;
+}
+
+/* Search Bar Styling */
+form {
+    margin-bottom: 40px;
+    display: flex;
+    gap: 10px;
+}
+
+input[type="text"] {
+    border: 2px solid #e0e0e0;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+    outline: none;
+}
+
+input[type="text"]:focus {
+    border-color: #0056b3; /* Blue focus highlight */
+}
+
+button[type="submit"] {
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #003d82; /* Darker blue on hover */
+}
+
+/* Product Row (Flexbox Container) */
+.product-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    margin-bottom: 50px;
+}
+
+/* Individual Product Card */
+.product-box {
+    background-color: #ffffff;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    padding: 15px;
+    width: 230px;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.product-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    border-color: #0056b3;
+}
+
+/* Product Link Styling */
+.product-box a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.product-box img {
+    border-radius: 4px;
+    margin-bottom: 15px;
+    background-color: #fff;
+}
+
+.product-box p strong {
+    display: block;
+    font-size: 1.1em;
+    color: #333;
+    margin: 10px 0 5px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-box p:last-child {
+    color: #0056b3; /* Price in blue */
+    font-weight: bold;
+    font-size: 1.2em;
+    margin: 0;
+}
