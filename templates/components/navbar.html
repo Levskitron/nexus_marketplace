@@ -94,3 +94,39 @@
     <a href="{{ url_for('home.support') }}">Support</a>
 
 </div>
+
+{# Global flash popup overlay, available on all pages that include the navbar #}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div id="flash-overlay">
+            <div class="flash-popup">
+                <ul>
+                    {% for category, message in messages %}
+                        <li class="flash-{{ category|default('info') }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                <button id="flash-close" type="button">OK</button>
+            </div>
+        </div>
+
+        <script>
+            (function () {
+                const overlay = document.getElementById("flash-overlay");
+                const closeBtn = document.getElementById("flash-close");
+                if (!overlay) return;
+
+                function hide() {
+                    overlay.style.opacity = "0";
+                    overlay.style.pointerEvents = "none";
+                }
+
+                if (closeBtn) {
+                    closeBtn.addEventListener("click", hide);
+                }
+
+                // Auto-hide after 4 seconds
+                setTimeout(hide, 4000);
+            })();
+        </script>
+    {% endif %}
+{% endwith %}

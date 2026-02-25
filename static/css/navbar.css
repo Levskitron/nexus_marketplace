@@ -170,3 +170,63 @@
     background-color: #ddd;
     margin: 5px 0;
 }
+
+/* ------------------------- */
+/* Global flash popup overlay */
+/* ------------------------- */
+
+#flash-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 9999;
+}
+
+.flash-popup {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 20px 24px;
+    min-width: 300px;
+    max-width: 480px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    text-align: center;
+}
+
+.flash-popup ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 16px 0;
+}
+
+.flash-popup li {
+    margin: 4px 0;
+    font-weight: 600;
+}
+
+.flash-error {
+    color: #b00020;
+}
+
+.flash-success {
+    color: #0b7a0b;
+}
+
+.flash-info {
+    color: #004085;
+}
+
+#flash-close {
+    padding: 6px 16px;
+    border-radius: 4px;
+    border: 1px solid #444;
+    background: #222;
+    color: #fff;
+    cursor: pointer;
+}
+
+#flash-close:hover {
+    background: #000;
+}
