@@ -1,3 +1,9 @@
+/* --- Global: remove default margin so dark nav/hero go edge-to-edge --- */
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
 /* --- Navbar: match home theme (dark + teal) --- */
 .navbar,
 .nav-links {

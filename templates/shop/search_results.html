@@ -62,7 +62,7 @@
 
     {% include "components/navbar.html" %}
 
-    <h1 class="page-title">Search Results for "{{ query }}"</h1>
+    <h1 class="page-title">{% if query %}Search Results for "{{ query }}"{% else %}Browse all products{% endif %}</h1>
     <hr>
 
     {% if products %}

@@ -199,13 +199,13 @@ def search():
     query = request.args.get("q", "").strip()
 
     if not query:
-        # No query — could redirect to home or show empty list
-        return render_template("shop/search_results.html", products=[], query=query)
-
-    products = Product.query.filter(
-        Product.status == "active",
-        Product.name.ilike(f"%{query}%")
-    ).order_by(Product.date_added.desc()).all()
+        # No query = "Browse all" — show all active products
+        products = Product.query.filter_by(status="active").order_by(Product.date_added.desc()).all()
+    else:
+        products = Product.query.filter(
+            Product.status == "active",
+            Product.name.ilike(f"%{query}%")
+        ).order_by(Product.date_added.desc()).all()
 
     return render_template(
         "shop/search_results.html",
