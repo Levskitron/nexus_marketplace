@@ -1,48 +1,76 @@
-/* --- Navbar Layout --- */
+/* --- Navbar: match home theme (dark + teal) --- */
+.navbar,
+.nav-links {
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* --- Top bar --- */
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 25px;
-    background-color: #ffffff;
-    border-bottom: 2px solid #ddd;
+    padding: 12px 28px;
+    background: #0b0f14;
+    border-bottom: 1px solid rgba(0, 201, 167, 0.2);
 
     position: relative;
-    z-index: 2;
+    z-index: 100;
 }
 
-/* Left (Nexus Text) */
+/* Left: Brand */
 .nav-left .brand {
-    font-size: 32px;
-    font-weight: bold;
-    color: black;
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: #e6edf3;
     text-decoration: none;
+    letter-spacing: -0.02em;
+    transition: color 0.2s;
 }
 
-/* Middle (Logo) */
+.nav-left .brand:hover {
+    color: #00c9a7;
+}
+
+/* Middle: Logo */
 .nav-center .logo-box {
-    width: 60px;
-    height: 60px;
-    border: 2px solid black;
+    width: 48px;
+    height: 48px;
+    border: 2px solid rgba(0, 201, 167, 0.4);
+    border-radius: 10px;
     object-fit: contain;
-    padding: 5px;
+    padding: 6px;
+    transition: border-color 0.2s;
 }
 
-/* Right (User Actions) */
+.nav-center:hover .logo-box {
+    border-color: #00c9a7;
+}
+
+/* Right: User */
 .nav-right {
     display: flex;
     align-items: center;
-    font-size: 18px;
+    font-size: 0.95rem;
 }
 
-/* Login button (not logged in) */
+/* Login / Signup button */
 .login-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-weight: 600;
     text-decoration: none;
-    font-weight: bold;
-    color: black;
+    color: #0b0f14;
+    background: #00c9a7;
+    border-radius: 8px;
+    transition: background 0.2s, transform 0.15s;
 }
 
-/* --- User Dropdown --- */
+.login-btn:hover {
+    background: #00ddb8;
+    transform: translateY(-1px);
+}
+
+/* --- User dropdown --- */
 .user-menu {
     position: relative;
     cursor: pointer;
@@ -50,123 +78,147 @@
 }
 
 .user-trigger {
-    font-size: 18px;
+    font-size: 0.95rem;
     font-weight: 600;
+    color: #e6edf3;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.user-trigger:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #00c9a7;
 }
 
 .user-dropdown {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 6px);
     right: 0;
-    background: white;
-    border: 1px solid #ccc;
-    width: 180px;
+    background: #161b22;
+    border: 1px solid rgba(0, 201, 167, 0.25);
+    border-radius: 10px;
+    min-width: 200px;
+    padding: 8px 0;
     display: none;
     flex-direction: column;
-    z-index: 10;
-}
-
-.user-dropdown a {
-    padding: 10px;
-    text-decoration: none;
-    color: black;
-    display: block;
-}
-
-.user-dropdown a:hover {
-    background-color: #f3f3f3;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    z-index: 1000;
 }
 
 .user-menu:hover .user-dropdown {
     display: flex;
 }
 
-/* --- Second Row Links --- */
+.user-dropdown a {
+    padding: 10px 16px;
+    text-decoration: none;
+    color: #e6edf3;
+    font-size: 0.9rem;
+    display: block;
+    transition: background 0.15s, color 0.15s;
+}
+
+.user-dropdown a:hover {
+    background: rgba(0, 201, 167, 0.12);
+    color: #00c9a7;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+    margin: 6px 12px;
+}
+
+/* --- Second row: nav links --- */
 .nav-links {
     width: 100%;
-    background: white;
-    border-bottom: 2px solid #ddd;
-    padding: 10px;
+    background: #0b0f14;
+    border-bottom: 1px solid rgba(0, 201, 167, 0.15);
+    padding: 10px 20px;
 
     display: flex;
     justify-content: center;
-    align-items: center; /* FIXED */
-    gap: 50px;
+    align-items: center;
+    gap: 40px;
 
     position: relative;
-    z-index: 1;
+    z-index: 99;
 }
 
 .nav-links a,
 .shop-trigger {
     text-decoration: none;
-    font-size: 18px;
-    color: black;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #8b949e;
+    transition: color 0.2s;
 }
 
+.nav-links a:hover,
+.shop-menu:hover .shop-trigger {
+    color: #00c9a7;
+}
 
-/* ------------------------- */
-/* SHOP DROPDOWN (FIXED) */
-/* ------------------------- */
-
+/* --- Shop dropdown --- */
 .shop-menu {
     position: relative;
-    display: inline-flex;      /* FIX: behave like nav link */
+    display: inline-flex;
     align-items: center;
     cursor: pointer;
 }
 
 .shop-trigger {
-    font-size: 18px;
-    padding: 5px 0;            /* Align visually with links */
-    color: black;
+    padding: 6px 0;
 }
 
 .shop-dropdown {
     position: absolute;
-    top: 100%;
-    left: 0;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
 
-    background: white;
-    border: 1px solid #ccc;
-    padding: 15px;
+    background: #161b22;
+    border: 1px solid rgba(0, 201, 167, 0.25);
+    border-radius: 10px;
+    padding: 16px 20px;
+    display: none;
+    flex-direction: row;
+    gap: 32px;
 
-    display: none;             /* Hidden until hover */
-    flex-direction: row;       /* FIXED */
-    gap: 30px;
-
-    min-width: 350px;          /* Prevent collapsing */
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    z-index: 20;
-}
-
-.dropdown-section {
-    display: flex;
-    flex-direction: column;
-}
-
-.section-title {
-    font-weight: bold;
-    margin-bottom: 8px;
-}
-
-.shop-dropdown a {
-    text-decoration: none;
-    color: black;
-    padding: 3px 0;
-}
-
-.shop-dropdown a:hover {
-    text-decoration: underline;
+    min-width: 360px;
+    justify-content: space-between;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    z-index: 1000;
 }
 
 .shop-menu:hover .shop-dropdown {
     display: flex;
 }
 
-/* Divider line inside user dropdown */
-.dropdown-divider {
-    height: 1px;
-    background-color: #ddd;
-    margin: 5px 0;
+.dropdown-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.shop-dropdown .section-title {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #00c9a7;
+    margin-bottom: 8px;
+}
+
+.shop-dropdown a {
+    text-decoration: none;
+    color: #e6edf3;
+    font-size: 0.9rem;
+    padding: 4px 0;
+    transition: color 0.15s;
+}
+
+.shop-dropdown a:hover {
+    color: #00c9a7;
 }

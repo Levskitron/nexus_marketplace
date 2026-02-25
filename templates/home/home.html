@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Nexus - Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus – PC Parts & Gaming Marketplace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
 </head>
@@ -10,57 +14,103 @@
 
 {% include "components/navbar.html" %}
 
-<h1>Welcome {% if session.get("username") %}{{ session.get("username") }}{% else %}User{% endif %},</h1>
+<main class="home-page">
 
-<br>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <p class="hero-label">Welcome to Nexus</p>
+            <h1 class="hero-title">
+                {% if session.get("username") %}
+                    <span class="hero-title-greeting">Hey {{ session.get("username") }},</span>
+                {% endif %}
+                <span class="hero-title-main">Build. Upgrade. Game.</span>
+            </h1>
+            <p class="hero-sub">Parts, peripherals, and expert services — all in one place.</p>
 
-<!-- Search bar -->
-<form action="{{ url_for('shop.shop') }}" method="GET">
-    <input type="text" name="q" placeholder="Search here..." style="width: 400px; padding: 10px;">
-    <button type="submit">Search</button>
-</form>
+            <form class="hero-search" action="{{ url_for('shop.shop') }}" method="GET" role="search">
+                <input type="text" name="q" placeholder="Search parts, games, accessories…" class="hero-search-input" autocomplete="off">
+                <button type="submit" class="hero-search-btn">Search</button>
+            </form>
 
-<br><br>
-
-<!-- Recommended Products -->
-<h2>You might be interested in these parts...</h2>
-
-<div class="product-row">
-    {% for p in recommended %}
-        <div class="product-box">
-            <a href="{{ url_for('shop.product_page', product_id=p.product_id) }}">
-                <img src="{{ p.image_url }}" alt="{{ p.name }}" style="width:200px; height:200px; object-fit:contain;">
-                <p><strong>{{ p.name }}</strong></p>
-                <p>£{{ p.price }}</p>
-            </a>
+            <div class="hero-ctas">
+                <a href="{{ url_for('shop.category_page', slug='gpu') }}" class="hero-cta">GPUs</a>
+                <a href="{{ url_for('shop.category_page', slug='cpu') }}" class="hero-cta">CPUs</a>
+                <a href="{{ url_for('shop.shop') }}" class="hero-cta hero-cta-outline">Browse all</a>
+            </div>
         </div>
-    {% endfor %}
+    </section>
 
-    {% if recommended|length == 0 %}
-        <p>No products available.</p>
-    {% endif %}
-</div>
+    <!-- Recommended -->
+    <section class="section section-recommended">
+        <div class="section-inner">
+            <h2 class="section-title">
+                <span class="section-title-icon">◆</span>
+                Picked for you
+            </h2>
+            <p class="section-desc">You might be interested in these parts…</p>
 
-<br><br>
+            <div class="product-grid">
+                {% for p in recommended %}
+                <a href="{{ url_for('shop.product_page', product_id=p.product_id) }}" class="product-card">
+                    <div class="product-card-image">
+                        <img src="{{ p.image_url }}" alt="{{ p.name }}">
+                    </div>
+                    <div class="product-card-body">
+                        <h3 class="product-card-name">{{ p.name }}</h3>
+                        <p class="product-card-price">£{{ p.price }}</p>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
 
-<!-- Trending Products -->
-<h2>Top Trending Parts</h2>
-
-<div class="product-row">
-    {% for p in trending %}
-        <div class="product-box">
-            <a href="{{ url_for('shop.product_page', product_id=p.product_id) }}">
-                <img src="{{ p.image_url }}" alt="{{ p.name }}" style="width:200px; height:200px; object-fit:contain;">
-                <p><strong>{{ p.name }}</strong></p>
-                <p>£{{ p.price }}</p>
-            </a>
+            {% if recommended|length == 0 %}
+            <p class="section-empty">No products available right now. Check back soon.</p>
+            {% endif %}
         </div>
-    {% endfor %}
+    </section>
 
-    {% if trending|length == 0 %}
-        <p>No trending products yet.</p>
-    {% endif %}
-</div>
+    <!-- Trending -->
+    <section class="section section-trending">
+        <div class="section-inner">
+            <h2 class="section-title">
+                <span class="section-title-icon">▲</span>
+                Top trending
+            </h2>
+            <p class="section-desc">Most popular with buyers</p>
+
+            <div class="product-grid">
+                {% for p in trending %}
+                <a href="{{ url_for('shop.product_page', product_id=p.product_id) }}" class="product-card">
+                    <div class="product-card-image">
+                        <img src="{{ p.image_url }}" alt="{{ p.name }}">
+                    </div>
+                    <div class="product-card-body">
+                        <h3 class="product-card-name">{{ p.name }}</h3>
+                        <p class="product-card-price">£{{ p.price }}</p>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+
+            {% if trending|length == 0 %}
+            <p class="section-empty">No trending products yet. Be the first to buy!</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Footer strip -->
+    <section class="home-footer-strip">
+        <div class="section-inner">
+            <a href="{{ url_for('home.about') }}">About</a>
+            <a href="{{ url_for('home.contact') }}">Contact</a>
+            <a href="{{ url_for('home.support') }}">Support</a>
+            <a href="{{ url_for('home.policies') }}">Policies</a>
+        </div>
+    </section>
+
+</main>
 
 </body>
 </html>
