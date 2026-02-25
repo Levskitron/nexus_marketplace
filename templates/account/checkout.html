@@ -2,107 +2,104 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Checkout</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout – Nexus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/checkout.css') }}">
 </head>
-<body>
+<body class="checkout-page">
 
     {% include "components/navbar.html" %}
 
-    <h1>Checkout</h1>
-    <hr>
+    <main class="checkout-main">
 
-    <!-- ----------------------------- -->
-    <!-- ORDER SUMMARY -->
-    <!-- ----------------------------- -->
-    <h2>Order Summary</h2>
+        <header class="checkout-header">
+            <h1>Checkout</h1>
+        </header>
 
-    <table border="1" cellpadding="8" cellspacing="0">
-        <tr>
-            <th>Product</th>
-            <th>Price</th>
-            <th>Qty</th>
-            <th>Subtotal</th>
-        </tr>
+        <section class="checkout-summary">
+            <h2>Order summary</h2>
+            <table class="checkout-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>£{{ item.product.price }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>£{{ item.line_total }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <p class="checkout-total checkout-total-row">Total: <span class="amount">£{{ cart_total }}</span></p>
+            <p class="checkout-balance">Your credit balance: <strong>£{{ "%.2f"|format(user.credits_balance or 0) }}</strong> — payment will be taken from this balance. <a href="{{ url_for('account.my_account') }}">Add credits</a></p>
+        </section>
 
-        {% for item in cart_items %}
-        <tr>
-            <td>{{ item.product.name }}</td>
-            <td>£{{ item.product.price }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>£{{ item.line_total }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+        <section class="checkout-form-card">
+            <form method="POST">
+                {{ form.hidden_tag() }}
 
-    <p><strong>Total:</strong> £{{ cart_total }}</p>
-    <hr>
+                <h2>Shipping information</h2>
+                <div class="form-group">
+                    {{ form.full_name.label }}
+                    {{ form.full_name() }}
+                </div>
+                <div class="form-group">
+                    {{ form.address.label }}
+                    {{ form.address() }}
+                </div>
+                <div class="form-group">
+                    {{ form.city.label }}
+                    {{ form.city() }}
+                </div>
+                <div class="form-group">
+                    {{ form.postcode.label }}
+                    {{ form.postcode() }}
+                </div>
+                <div class="form-group">
+                    {{ form.country.label }}
+                    {{ form.country() }}
+                </div>
 
+                <hr class="form-divider">
 
-    <!-- ----------------------------- -->
-    <!-- CHECKOUT FORM -->
-    <!-- ----------------------------- -->
-    <form method="POST">
-        {{ form.hidden_tag() }}
+                <h2>Payment details</h2>
+                <p style="font-size:0.9rem; color:#57606a; margin:0 0 16px;">Payment is taken from your account credits. Card details are for record only.</p>
+                <div class="form-group">
+                    {{ form.card_number.label }}
+                    {{ form.card_number() }}
+                </div>
+                <div class="form-group">
+                    {{ form.card_expiry.label }}
+                    {{ form.card_expiry() }}
+                </div>
+                <div class="form-group">
+                    {{ form.card_cvv.label }}
+                    {{ form.card_cvv() }}
+                </div>
+                <div class="form-group">
+                    {{ form.card_name.label }}
+                    {{ form.card_name() }}
+                </div>
 
-        <!-- SHIPPING INFO -->
-        <h2>Shipping Information</h2>
+                <hr class="form-divider">
 
-        <p>
-            {{ form.full_name.label }}<br>
-            {{ form.full_name() }}
-        </p>
+                {{ form.submit(class_='btn-submit') }}
+            </form>
+        </section>
 
-        <p>
-            {{ form.address.label }}<br>
-            {{ form.address() }}
-        </p>
-
-        <p>
-            {{ form.city.label }}<br>
-            {{ form.city() }}
-        </p>
-
-        <p>
-            {{ form.postcode.label }}<br>
-            {{ form.postcode() }}
-        </p>
-
-        <p>
-            {{ form.country.label }}<br>
-            {{ form.country() }}
-        </p>
-
-        <hr>
-
-        <!-- PAYMENT INFO -->
-        <h2>Payment Details</h2>
-
-        <p>
-            {{ form.card_number.label }}<br>
-            {{ form.card_number() }}
-        </p>
-
-        <p>
-            {{ form.card_expiry.label }}<br>
-            {{ form.card_expiry() }}
-        </p>
-
-        <p>
-            {{ form.card_cvv.label }}<br>
-            {{ form.card_cvv() }}
-        </p>
-
-        <p>
-            {{ form.card_name.label }}<br>
-            {{ form.card_name() }}
-        </p>
-
-        <hr>
-
-        <p>{{ form.submit() }}</p>
-    </form>
+    </main>
 
 </body>
 </html>
-

@@ -90,7 +90,17 @@
     </div>
 
     <a href="{{ url_for('home.about') }}">About</a>
-    <a href="{{ url_for('home.contact') }}">Contact</a>
     <a href="{{ url_for('home.support') }}">Support</a>
 
 </div>
+
+<!-- Global flash messages (center of page, same styling on every page) -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="flash-widget" role="alert" aria-live="polite">
+    {% for category, message in messages %}
+    <div class="flash-message flash-{{ category }}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}

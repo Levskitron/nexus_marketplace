@@ -215,6 +215,40 @@ def checkout():
     # POST — Process checkout
     if form.validate_on_submit():
 
+        # Compute cart total and check credits before creating any orders
+        cart_total_amount = Decimal("0.00")
+        for pid_str, qty in cart.items():
+            qty = int(qty)
+            if qty <= 0:
+                continue
+            product = product_map.get(int(pid_str))
+            if product:
+                cart_total_amount += product.price * qty
+
+        balance = (user.credits_balance or Decimal("0.00"))
+        if balance < cart_total_amount:
+            flash(
+                f"You don't have enough credits. Your balance: £{balance:.2f}. Required: £{cart_total_amount:.2f}. Add credits in My Account.",
+                "error",
+            )
+            items = []
+            total = Decimal("0.00")
+            for pid_str, qty in cart.items():
+                product = product_map.get(int(pid_str))
+                if not product:
+                    continue
+                qty = int(qty)
+                line_total = product.price * qty
+                total += line_total
+                items.append({"product": product, "quantity": qty, "line_total": line_total})
+            return render_template(
+                "account/checkout.html",
+                cart_items=items,
+                cart_total=total,
+                user=user,
+                form=form,
+            )
+
         shipping_address = f"""
 {form.full_name.data}
 {form.address.data}
@@ -274,6 +308,7 @@ def checkout():
 
             created_order_ids.append(order.order_id)
 
+        user.credits_balance -= cart_total_amount
         db.session.commit()
 
         session.pop("cart", None)

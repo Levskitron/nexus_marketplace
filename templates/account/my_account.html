@@ -21,16 +21,6 @@
             <p class="account-subtitle">Manage your profile and settings</p>
         </header>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <ul class="account-flash">
-                    {% for category, message in messages %}
-                        <li class="account-flash-item account-flash-{{ category }}">{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
-
         <div class="account-grid">
 
             <!-- Left: Profile card -->

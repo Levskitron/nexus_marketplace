@@ -2,52 +2,72 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Your Cart</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart – Nexus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cart.css') }}">
 </head>
-<body>
+<body class="cart-page">
+
     {% include "components/navbar.html" %}
 
-    <h1>Your Cart</h1>
-    <hr>
+    <main class="cart-main">
 
-    {% if not cart_items %}
-        <p>Your cart is empty.</p>
-    {% else %}
-        <table border="1" cellpadding="8" cellspacing="0">
-            <tr>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Qty</th>
-                <th>Subtotal</th>
-                <th></th>
-            </tr>
-            {% for item in cart_items %}
-                <tr>
-                    <td>{{ item.product.name }}</td>
-                    <td>£{{ item.product.price }}</td>
-                    <td>{{ item.quantity }}</td>
-                    <td>£{{ item.line_total }}</td>
-                    <td>
-                        <form method="POST" action="{{ url_for('account.remove_from_cart', product_id=item.product.product_id) }}">
-                            <button type="submit">Remove</button>
+        <header class="cart-header">
+            <h1>Your cart</h1>
+        </header>
+
+        {% if not cart_items %}
+            <div class="cart-empty">
+                <p>Your cart is empty.</p>
+                <a href="{{ url_for('shop.search') }}">Browse products</a>
+            </div>
+        {% else %}
+            <div class="cart-content">
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Qty</th>
+                            <th>Subtotal</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart_items %}
+                        <tr>
+                            <td class="cart-product-name">
+                                <a href="{{ url_for('shop.product_page', product_id=item.product.product_id) }}">{{ item.product.name }}</a>
+                            </td>
+                            <td class="cart-price">£{{ item.product.price }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td class="cart-price">£{{ item.line_total }}</td>
+                            <td class="cart-remove">
+                                <form method="POST" action="{{ url_for('account.remove_from_cart', product_id=item.product.product_id) }}">
+                                    <button type="submit">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="cart-footer">
+                    <p class="cart-total">Total: <span>£{{ cart_total }}</span></p>
+                    <div class="cart-actions">
+                        <form method="POST" action="{{ url_for('account.clear_cart') }}">
+                            <button type="submit" class="btn-outline">Clear cart</button>
                         </form>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
+                        <a href="{{ url_for('account.checkout') }}" class="btn-primary">Proceed to checkout</a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
 
-        <p><strong>Total:</strong> £{{ cart_total }}</p>
+    </main>
 
-        <form method="POST" action="{{ url_for('account.clear_cart') }}">
-            <button type="submit">Clear Cart</button>
-        </form>
-
-        <br>
-
-        <a href="{{ url_for('account.checkout') }}">
-            <button>Proceed to Checkout</button>
-        </a>
-    {% endif %}
 </body>
 </html>

@@ -2,178 +2,124 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ product.name }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }} – Nexus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/product_page.css') }}">
 </head>
-<body>
+<body class="product-page">
 
     {% include "components/navbar.html" %}
 
-    <h1>{{ product.name }}</h1>
-    <hr>
+    <main class="product-main">
 
-    <div class="product-container">
+        <header class="product-header">
+            <h1>{{ product.name }}</h1>
+        </header>
 
-        <!-- PRODUCT IMAGE -->
-        <div>
-            <img class="product-image" 
-                 src="{{ product.image_url }}" 
-                 alt="{{ product.name }}">
-        </div>
+        <div class="product-layout">
 
-        <!-- PRODUCT DETAILS -->
-        <div class="product-details">
-
-            <p class="price">£{{ product.price }}</p>
-
-            <p><strong>Brand:</strong> {{ product.brand }}</p>
-
-            <p><strong>Condition:</strong> {{ product.condition }}</p>
-
-            <p><strong>Category:</strong>
-                {{ product.category.category_name if product.category else "Uncategorised" }}
-            </p>
-
-            <p><strong>Stock:</strong> {{ product.stock_quantity }} available</p>
-
-            <p><strong>Seller:</strong> {{ product.seller.username }}</p>
-
-            <p><strong>Date Listed:</strong> {{ product.date_added.strftime('%d %B %Y') }}</p>
-
-                        {% if product.stock_quantity > 0 and product.status == "active" %}
-                {% if session.get("user_id") and session.get("user_id") != product.seller_id %}
-                    <form method="POST" action="{{ url_for('account.add_to_cart', product_id=product.product_id) }}">
-                        <button type="submit">Add to Cart</button>
-                    </form>
-                    <p><a href="{{ url_for('account.view_cart') }}">Go to Cart</a></p>
-                {% elif not session.get("user_id") %}
-                    <p><a href="{{ url_for('auth.register_page') }}">Sign in</a> to purchase this product.</p>
-                {% else %}
-                    <p><em>You are the seller of this product.</em></p>
-                {% endif %}
-            {% else %}
-                <p><strong>Out of stock</strong></p>
-            {% endif %}
-
-
-            <br>
-
-            <h3>Description:</h3>
-            <p>{{ product.description }}</p>
-
-        </div>
-    </div>
-
-    <!-- REVIEWS SECTION -->
-    <div class="reviews-section">
-        <h2>Customer Reviews</h2>
-
-        <!-- AVERAGE RATING -->
-        {% if review_count == 0 %}
-            <p>No reviews yet.</p>
-        {% else %}
-            <p><strong>Average Rating:</strong> {{ "%.1f"|format(average_rating) }} / 5</p>
-            <p>Based on {{ review_count }} review(s)</p>
-            <hr>
-        {% endif %}
-
-        <!-- REVIEW FORM (LOGGED-IN USERS ONLY) -->
-        {% if session.get("user_id") %}
-
-            {% if user_has_bought %}
-                <h3>{{ existing_review and "Edit Your Review" or "Write a Review" }}</h3>
-
-                <form method="POST">
-                    {{ form.hidden_tag() }}
-
-                    <p>
-                        {{ form.rating.label }}<br>
-                        {{ form.rating() }}
-                    </p>
-
-                    <p>
-                        {{ form.review_text.label }}<br>
-                        {{ form.review_text(rows=4, cols=60) }}
-                    </p>
-
-                    <p>{{ form.submit() }}</p>
-                </form>
-
-                {% if existing_review %}
-                    <form method="POST"
-                          action="{{ url_for('shop.delete_review', product_id=product.product_id) }}">
-                        <button type="submit">Delete Review</button>
-                    </form>
-                {% endif %}
-
-                <hr>
-
-            {% else %}
-                <p><em>You must purchase this product before leaving a review.</em></p>
-                <hr>
-            {% endif %}
-
-        {% else %}
-            <p><a href="{{ url_for('auth.register_page') }}">Sign in</a> to leave a review.</p>
-            <hr>
-        {% endif %}
-
-        <!-- LIST OF REVIEWS -->
-        {% for r in reviews %}
-            <div class="review-box">
-                <p><strong>{{ r.user.username }}</strong></p>
-
-                <p>
-                    Rating: {{ r.rating }} / 5<br>
-                    Posted: {{ r.date_posted.strftime('%d %B %Y') }}
-                    {% if r.edited_at %}
-                        <br><em>Edited: {{ r.edited_at.strftime('%d %B %Y') }}</em>
-                    {% endif %}
-                </p>
-
-                {% if r.review_text %}
-                    <p>{{ r.review_text }}</p>
-                {% else %}
-                    <p><em>No comment provided.</em></p>
-                {% endif %}
-
-                <hr>
+            <div class="product-image-wrap">
+                <img src="{{ product.image_url }}" alt="{{ product.name }}">
             </div>
-        {% endfor %}
 
-    </div>
+            <div class="product-details">
+
+                <p class="product-price">£{{ product.price }}</p>
+
+                <p class="product-meta"><strong>Brand:</strong> {{ product.brand }}</p>
+                <p class="product-meta"><strong>Condition:</strong> {{ product.condition }}</p>
+                <p class="product-meta"><strong>Category:</strong> {{ product.category.category_name if product.category else "Uncategorised" }}</p>
+                <p class="product-meta"><strong>Stock:</strong> {{ product.stock_quantity }} available</p>
+                <p class="product-meta"><strong>Seller:</strong> {{ product.seller.username }}</p>
+                <p class="product-meta"><strong>Listed:</strong> {{ product.date_added.strftime('%d %B %Y') }}</p>
+
+                <div class="product-actions">
+                    {% if product.stock_quantity > 0 and product.status == "active" %}
+                        {% if session.get("user_id") and session.get("user_id") != product.seller_id %}
+                            <form method="POST" action="{{ url_for('account.add_to_cart', product_id=product.product_id) }}" style="margin:0;">
+                                <button type="submit" class="btn-primary">Add to cart</button>
+                            </form>
+                            <a href="{{ url_for('account.view_cart') }}" class="btn-secondary">Go to cart</a>
+                        {% elif not session.get("user_id") %}
+                            <p class="product-note"><a href="{{ url_for('auth.register_page') }}">Sign in</a> to purchase this product.</p>
+                        {% else %}
+                            <p class="product-note">You are the seller of this product.</p>
+                        {% endif %}
+                    {% else %}
+                        <p class="product-note"><strong>Out of stock</strong></p>
+                    {% endif %}
+                </div>
+
+                <div class="product-description">
+                    <h3>Description</h3>
+                    <p>{{ product.description or 'No description provided.' }}</p>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Reviews -->
+        <section class="reviews-section">
+            <h2>Customer reviews</h2>
+
+            {% if review_count == 0 %}
+                <p>No reviews yet.</p>
+            {% else %}
+                <p class="reviews-summary"><strong>Average rating:</strong> {{ "%.1f"|format(average_rating) }} / 5 · {{ review_count }} review{{ 's' if review_count != 1 else '' }}</p>
+            {% endif %}
+
+            {% if session.get("user_id") %}
+                {% if user_has_bought %}
+                    <div class="review-form-card">
+                        <h3>{{ "Edit your review" if existing_review else "Write a review" }}</h3>
+                        <form method="POST" class="review-form">
+                            {{ form.hidden_tag() }}
+                            <div class="form-group">
+                                {{ form.rating.label }}<br>
+                                {{ form.rating() }}
+                            </div>
+                            <div class="form-group">
+                                {{ form.review_text.label }}<br>
+                                {{ form.review_text(rows=4, class_='review-textarea') }}
+                            </div>
+                            {{ form.submit(class_='btn-submit') }}
+                        </form>
+                        {% if existing_review %}
+                            <form method="POST" action="{{ url_for('shop.delete_review', product_id=product.product_id) }}" style="margin-top:12px;">
+                                <button type="submit" class="btn-delete">Delete review</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <p><em>You must purchase this product before leaving a review.</em></p>
+                {% endif %}
+            {% else %}
+                <p><a href="{{ url_for('auth.register_page') }}">Sign in</a> to leave a review.</p>
+            {% endif %}
+
+            <hr class="review-divider">
+
+            <div class="review-list">
+                {% for r in reviews %}
+                <div class="review-box">
+                    <p class="review-author">{{ r.user.username }}</p>
+                    <p class="review-meta">
+                        {{ r.rating }} / 5 · {{ r.date_posted.strftime('%d %B %Y') }}
+                        {% if r.edited_at %} · Edited {{ r.edited_at.strftime('%d %B %Y') }}{% endif %}
+                    </p>
+                    <p class="review-text">{% if r.review_text %}{{ r.review_text }}{% else %}<em>No comment provided.</em>{% endif %}</p>
+                </div>
+                {% endfor %}
+            </div>
+
+        </section>
+
+    </main>
 
 </body>
 </html>
-
-<style>
-    .product-container {
-        display: flex;
-        gap: 40px;
-        padding: 30px;
-    }
-    .product-image {
-        width: 350px;
-        border: 1px solid #ccc;
-        padding: 10px;
-    }
-    .product-details {
-        max-width: 700px;
-    }
-    .price {
-        font-size: 28px;
-        font-weight: bold;
-        margin: 10px 0;
-    }
-    .reviews-section {
-        margin-top: 50px;
-    }
-    .review-box {
-        border-bottom: 1px solid #ddd;
-        padding: 10px 0;
-    }
-    .rating {
-        color: gold;
-        font-size: 18px;
-    }
-</style>

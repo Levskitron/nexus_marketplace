@@ -2,52 +2,57 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>About Us - Nexus</title>
-
-    <!-- Navbar CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us – Nexus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
-
 </head>
-
-<body>
+<body class="about-page">
 
     {% include "components/navbar.html" %}
 
-    <div class="content-wrapper">
+    <main class="about-main">
 
-        <h1>About Us</h1>
+        <header class="about-header">
+            <h1 class="about-title">About Us</h1>
+        </header>
 
-        <p>
-            Nexus was founded to simplify the way people buy and sell computer parts and games.
-            We bring together a wide selection of new, used, and hard-to-find components — from
-            motherboards and cooling solutions to graphics cards and retro cartridges — plus a curated 
-            catalog of PC and console games.
-        </p>
+        <div class="about-content">
 
-        <p>
-            Our marketplace is built around transparent listings, seller ratings, and secure checkout so
-            buyers can shop confidently and sellers can reach an audience that understands hardware.
-        </p>
+            <p>
+                Nexus was founded to simplify the way people buy and sell computer parts and games.
+                We bring together a wide selection of new, used, and hard-to-find components — from
+                motherboards and cooling solutions to graphics cards and retro cartridges — plus a curated
+                catalog of PC and console games.
+            </p>
 
-        <p>
-            At Nexus, we value community, fair pricing, and an obsession with details: clear photos,
-            honest descriptions, and reliable shipping. Whether you're building your first rig or 
-            hunting for a collector's gem, Nexus helps you connect, trade, and power up.
-        </p>
+            <p>
+                Our marketplace is built around transparent listings, seller ratings, and secure checkout so
+                buyers can shop confidently and sellers can reach an audience that understands hardware.
+            </p>
 
-        <h2>Contact Us</h2>
+            <p>
+                At Nexus, we value community, fair pricing, and an obsession with details: clear photos,
+                honest descriptions, and reliable shipping. Whether you're building your first rig or
+                hunting for a collector's gem, Nexus helps you connect, trade, and power up.
+            </p>
 
-        <p>Have any questions regarding a product or feedback you’d like to share?</p>
-        <p>Our team at Nexus is always here to help!</p>
+            <h2>Get in touch</h2>
 
-        <div class="contact-box">
-            <p><strong>Email:</strong> support@nexus-marketplace.com</p>
-            <p><strong>Phone:</strong> +1 (555) 248-9021</p>
-            <p><strong>Hours:</strong> Monday–Friday, 9:00AM – 6:00PM</p>
+            <p>Have any questions regarding a product or feedback you’d like to share? Our team at Nexus is always here to help.</p>
+
+            <div class="about-contact-box">
+                <p><strong>Email:</strong> support@nexus-marketplace.com</p>
+                <p><strong>Phone:</strong> +1 (555) 248-9021</p>
+                <p><strong>Hours:</strong> Monday–Friday, 9:00AM – 6:00PM</p>
+            </div>
+
         </div>
 
-    </div>
+    </main>
 
 </body>
 </html>

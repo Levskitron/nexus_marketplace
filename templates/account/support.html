@@ -2,63 +2,62 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Support - Nexus</title>
-
-    <!-- Navbar CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support – Nexus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
-
-    <!-- Temporary layout styling -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/support.css') }}">
 </head>
-
-<body>
+<body class="support-page">
 
     {% include "components/navbar.html" %}
 
-    <div class="content-wrapper">
+    <main class="support-main">
 
-        <h1>Support</h1>
+        <header class="support-header">
+            <h1 class="support-title">Support</h1>
+            <p class="support-subtitle">We're here to help with your account, orders, and more.</p>
+        </header>
 
-        <p>
-            Welcome to the Nexus Support Center. We're here to help you with anything related 
-            to your account, purchases, selling experience, or technical issues.
-        </p>
+        <div class="support-content">
 
-        <p>
-            Tristan this is your area, you can remove this "p" tag and delete the "Support Information Area" below and just put whatever you want in here. 
-            Just dont delete the Contact Form, it doesnt have any working backend yet so its not critical but ultimately it just makes it easier if its the same when i come back to it.
-            But please do the frontend still for the form so it looks nice, just dont touch the HTML of it essentially.
-        </p>
-
-        <!-- Placeholder for Tristan’s custom support content -->
-        <div class="placeholder-box">
-            <h2>Support Information Area</h2>
             <p>
-                This is a flexible space where the frontend team can add FAQs, 
-                troubleshooting steps, category buttons, live chat links, or 
-                anything else the final design requires.
+                Welcome to the Nexus Support Center. We're here to help you with anything related
+                to your account, purchases, selling experience, or technical issues.
             </p>
+
+            <div class="support-info-box">
+                <h2>Support information</h2>
+                <p>
+                    This area can be used for FAQs, troubleshooting steps, category links, live chat, or
+                    any other support content you need.
+                </p>
+            </div>
+
         </div>
 
-        <!-- Contact form -->
-        <h2>Contact Our Support Team</h2>
+        <section class="support-form-card">
+            <h2>Contact our support team</h2>
+            <p>If you have a question, issue, or suggestion, send us a message below.</p>
 
-        <p>If you have a question, issue, or suggestion, send us a message below.</p>
+            <!-- Form HTML kept as-is; backend can be added later -->
+            <form method="POST" action="#" class="support-form">
+                <label for="support-name">Name</label>
+                <input type="text" id="support-name" name="name" placeholder="Your name">
 
-        <!-- This form currently does nothing. Backend can be added later. -->
-        <form method="POST" action="#">
-            <label>Name</label>
-            <input type="text" name="name" placeholder="Your name">
+                <label for="support-email">Email</label>
+                <input type="email" id="support-email" name="email" placeholder="Your email address">
 
-            <label>Email</label>
-            <input type="email" name="email" placeholder="Your email address">
+                <label for="support-message">Your message</label>
+                <textarea id="support-message" name="message" rows="6" placeholder="How can we help you?"></textarea>
 
-            <label>Your Message</label>
-            <textarea name="message" rows="6" placeholder="How can we help you?"></textarea>
+                <button type="submit">Send message</button>
+            </form>
+        </section>
 
-            <button type="submit">Send Message</button>
-        </form>
-
-    </div>
+    </main>
 
 </body>
 </html>
