@@ -23,10 +23,6 @@
 
         <nav class="admin-nav">
             <a href="{{ url_for('admin.dashboard') }}" class="admin-nav-btn--secondary">← Dashboard</a>
-            <a href="{{ url_for('admin.products') }}" class="admin-nav-btn--secondary">Manage products</a>
-            {% if user.role == 'super_admin' %}
-            <a href="{{ url_for('admin.add_admin_user') }}" class="admin-nav-btn--primary">Add admin user</a>
-            {% endif %}
         </nav>
 
         <section class="admin-card" style="padding:0; overflow:hidden;">
