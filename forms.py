@@ -84,7 +84,7 @@ from wtforms import (
     StringField, TextAreaField, DecimalField,
     IntegerField, SelectField, SubmitField
 )
-from wtforms.validators import DataRequired, NumberRange, Optional, Length
+from wtforms.validators import DataRequired, NumberRange, Optional, Length, Email
 from flask_wtf.file import FileField, FileAllowed
 
 
@@ -142,3 +142,99 @@ class CheckoutForm(FlaskForm):
     card_name = StringField("Name on Card", validators=[DataRequired()])
 
     submit = SubmitField("Complete Purchase")
+
+
+class ConsultationForm(FlaskForm):
+    """Form for hardware/PC consultation requests."""
+    name = StringField("Full Name", validators=[DataRequired(), Length(max=100)])
+    email = StringField("Email", validators=[DataRequired(), Email(), Length(max=120)])
+    phone = StringField("Phone (optional)", validators=[Optional(), Length(max=30)])
+    consultation_type = SelectField(
+        "What do you need help with?",
+        choices=[
+            ("build_advice", "New build advice"),
+            ("parts_recommendation", "Parts recommendation / compatibility"),
+            ("troubleshooting", "Troubleshooting existing PC"),
+            ("other", "Other"),
+        ],
+        validators=[DataRequired()],
+    )
+    current_setup = TextAreaField(
+        "Current setup (optional)",
+        validators=[Optional(), Length(max=500)],
+        render_kw={"rows": 3, "placeholder": "e.g. CPU, GPU, RAM, what you use it for"},
+    )
+    goals_budget = TextAreaField(
+        "Goals / budget (optional)",
+        validators=[Optional(), Length(max=500)],
+        render_kw={"rows": 3, "placeholder": "What you want to achieve and rough budget"},
+    )
+    contact_method = SelectField(
+        "Preferred contact method",
+        choices=[
+            ("email", "Email"),
+            ("phone", "Phone"),
+            ("either", "Either"),
+        ],
+        validators=[DataRequired()],
+    )
+    message = TextAreaField(
+        "Additional details",
+        validators=[DataRequired(), Length(max=1000)],
+        render_kw={"rows": 4, "placeholder": "Tell us more about what you need..."},
+    )
+    submit = SubmitField("Request Consultation")
+
+
+class RepairUpgradeForm(FlaskForm):
+    """Form for repair and upgrade service requests."""
+    name = StringField("Full Name", validators=[DataRequired(), Length(max=100)])
+    email = StringField("Email", validators=[DataRequired(), Email(), Length(max=120)])
+    phone = StringField("Phone (optional)", validators=[Optional(), Length(max=30)])
+    service_type = SelectField(
+        "Service needed",
+        choices=[
+            ("repair", "Repair"),
+            ("upgrade", "Upgrade"),
+            ("both", "Repair & upgrade"),
+        ],
+        validators=[DataRequired()],
+    )
+    device_type = SelectField(
+        "Device type",
+        choices=[
+            ("desktop", "Desktop PC"),
+            ("laptop", "Laptop"),
+            ("other", "Other"),
+        ],
+        validators=[DataRequired()],
+    )
+    description = TextAreaField(
+        "Issue description or upgrade goals",
+        validators=[DataRequired(), Length(max=1000)],
+        render_kw={"rows": 4, "placeholder": "Describe the problem or what you want upgraded..."},
+    )
+    urgency = SelectField(
+        "When do you need it?",
+        choices=[
+            ("asap", "As soon as possible"),
+            ("week", "Within a week"),
+            ("flexible", "Flexible / no rush"),
+        ],
+        validators=[DataRequired()],
+    )
+    contact_method = SelectField(
+        "Preferred contact method",
+        choices=[
+            ("email", "Email"),
+            ("phone", "Phone"),
+            ("either", "Either"),
+        ],
+        validators=[DataRequired()],
+    )
+    notes = TextAreaField(
+        "Additional notes (optional)",
+        validators=[Optional(), Length(max=500)],
+        render_kw={"rows": 2},
+    )
+    submit = SubmitField("Submit Request")

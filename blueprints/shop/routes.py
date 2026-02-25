@@ -7,8 +7,8 @@ from flask import (
 
 from database import db
 from . import shop_bp
-from models import Product, Review, Order, OrderItem, Category
-from forms import ReviewForm
+from models import Product, Review, Order, OrderItem, Category, ConsultationRequest, RepairUpgradeRequest
+from forms import ReviewForm, ConsultationForm, RepairUpgradeForm
 from sqlalchemy import func
 
 
@@ -163,26 +163,76 @@ SLUG_TO_CATEGORY_NAME = {
 }
 
 
-@shop_bp.route("/category/<slug>")
+@shop_bp.route("/category/<slug>", methods=["GET", "POST"])
 def category_page(slug):
-    """Dynamic category listing, 100% accurate to DB contents."""
-    page = request.args.get("page", 1, type=int)
-
+    """Dynamic category listing, or form page for consultation / repair-upgrade."""
     category_name = SLUG_TO_CATEGORY_NAME.get(slug)
     if not category_name:
         return render_template("shop/category_not_found.html", slug=slug), 404
 
-    # Get actual category row from DB
     category = Category.query.filter_by(category_name=category_name).first_or_404()
 
-    # Query all active products in this category
+    # Consultation: show form instead of product grid
+    if slug == "consultation":
+        form = ConsultationForm()
+        if request.method == "POST" and form.validate_on_submit():
+            req = ConsultationRequest(
+                user_id=session.get("user_id"),
+                name=form.name.data.strip(),
+                email=form.email.data.strip().lower(),
+                phone=(form.phone.data or "").strip() or None,
+                consultation_type=form.consultation_type.data,
+                current_setup=(form.current_setup.data or "").strip() or None,
+                goals_budget=(form.goals_budget.data or "").strip() or None,
+                contact_method=form.contact_method.data,
+                message=(form.message.data or "").strip(),
+            )
+            db.session.add(req)
+            db.session.commit()
+            flash("Your consultation request has been submitted. We'll be in touch soon.", "success")
+            return redirect(url_for("shop.category_page", slug=slug))
+        return render_template(
+            "shop/consultation_form.html",
+            slug=slug,
+            category=category,
+            form=form,
+        )
+
+    # Repair & Upgrade: show form instead of product grid
+    if slug == "repair-upgrade":
+        form = RepairUpgradeForm()
+        if request.method == "POST" and form.validate_on_submit():
+            req = RepairUpgradeRequest(
+                user_id=session.get("user_id"),
+                name=form.name.data.strip(),
+                email=form.email.data.strip().lower(),
+                phone=(form.phone.data or "").strip() or None,
+                service_type=form.service_type.data,
+                device_type=form.device_type.data,
+                description=(form.description.data or "").strip(),
+                urgency=form.urgency.data,
+                contact_method=form.contact_method.data,
+                notes=(form.notes.data or "").strip() or None,
+            )
+            db.session.add(req)
+            db.session.commit()
+            flash("Your repair/upgrade request has been submitted. We'll be in touch soon.", "success")
+            return redirect(url_for("shop.category_page", slug=slug))
+        return render_template(
+            "shop/repair_upgrade_form.html",
+            slug=slug,
+            category=category,
+            form=form,
+        )
+
+    # Standard category: product listing
+    page = request.args.get("page", 1, type=int)
     products = (
         Product.query
         .filter_by(category_id=category.category_id, status="active")
         .order_by(Product.date_added.desc())
         .paginate(page=page, per_page=12)
     )
-
     return render_template(
         "shop/category_page.html",
         products=products,

@@ -1,0 +1,145 @@
+/* Service form pages – Consultation & Repair/Upgrade (Nexus style) */
+.service-form-page {
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f6f8fa;
+    min-height: 100vh;
+    color: #1a1f26;
+}
+
+.service-form-main {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 32px 24px 48px;
+}
+
+.service-form-header {
+    background: #0b0f14;
+    color: #e6edf3;
+    padding: 28px 32px;
+    border-radius: 12px;
+    margin-bottom: 28px;
+}
+
+.service-form-header h1 {
+    margin: 0 0 8px;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.service-form-header p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #8b949e;
+}
+
+.service-form-card {
+    background: #fff;
+    border: 1px solid #e1e8ed;
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+}
+
+.service-form .form-group {
+    margin-bottom: 20px;
+}
+
+.service-form label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #1a1f26;
+    margin-bottom: 6px;
+}
+
+.service-form input[type="text"],
+.service-form input[type="email"],
+.service-form input[type="tel"],
+.service-form select,
+.service-form textarea {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 1rem;
+    font-family: inherit;
+    border: 1px solid #e1e8ed;
+    border-radius: 8px;
+    background: #fff;
+    color: #1a1f26;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.service-form input:focus,
+.service-form select:focus,
+.service-form textarea:focus {
+    outline: none;
+    border-color: #00c9a7;
+    box-shadow: 0 0 0 3px rgba(0, 201, 167, 0.15);
+}
+
+.service-form textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.service-form .btn-submit {
+    background: #00c9a7;
+    color: #0b0f14;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.service-form .btn-submit:hover {
+    background: #00b394;
+    transform: translateY(-1px);
+}
+
+.service-form .form-hint {
+    font-size: 0.85rem;
+    color: #57606a;
+    margin-top: 4px;
+}
+
+.service-form .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 560px) {
+    .service-form .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.service-form .flash-messages {
+    margin-bottom: 20px;
+}
+
+.service-form .flash-messages .alert-success {
+    background: rgba(0, 201, 167, 0.15);
+    color: #0b0f14;
+    border: 1px solid #00c9a7;
+    padding: 12px 16px;
+    border-radius: 8px;
+}
+
+.service-form .flash-messages .alert-error {
+    background: rgba(207, 34, 46, 0.1);
+    color: #cf222e;
+    border: 1px solid #cf222e;
+    padding: 12px 16px;
+    border-radius: 8px;
+}
+
+.service-form .error-list {
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0;
+    font-size: 0.85rem;
+    color: #cf222e;
+}

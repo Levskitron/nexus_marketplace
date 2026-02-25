@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ category.category_name }} – Nexus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/service_forms.css') }}">
+</head>
+<body class="service-form-page">
+
+    {% include "components/navbar.html" %}
+
+    <main class="service-form-main">
+
+        <header class="service-form-header">
+            <h1>{{ category.category_name }}</h1>
+            <p>Get expert advice on builds, parts, and troubleshooting. Tell us what you need and we’ll get back to you.</p>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="service-form-card">
+            <form method="POST" class="service-form" action="{{ url_for('shop.category_page', slug=slug) }}">
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    {{ form.name.label }}
+                    {{ form.name(class_='') }}
+                    {% if form.name.errors %}
+                        <ul class="error-list">{% for e in form.name.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form.email.label }}
+                        {{ form.email() }}
+                        {% if form.email.errors %}
+                            <ul class="error-list">{% for e in form.email.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.phone.label }}
+                        {{ form.phone() }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form.consultation_type.label }}
+                    {{ form.consultation_type() }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.current_setup.label }}
+                    {{ form.current_setup(placeholder='e.g. CPU, GPU, RAM, what you use it for') }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.goals_budget.label }}
+                    {{ form.goals_budget(placeholder='What you want to achieve and rough budget') }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.contact_method.label }}
+                    {{ form.contact_method() }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.message.label }}
+                    {{ form.message(placeholder='Tell us more about what you need...') }}
+                    {% if form.message.errors %}
+                        <ul class="error-list">{% for e in form.message.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                    {% endif %}
+                </div>
+
+                {{ form.submit(class_='btn-submit') }}
+            </form>
+        </div>
+
+    </main>
+
+    {% include "components/footer.html" %}
+
+</body>
+</html>

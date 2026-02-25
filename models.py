@@ -358,3 +358,48 @@ class AdminLog(db.Model):
 
     def __repr__(self):
         return f"<AdminLog {self.log_id} admin={self.admin_id}>"
+
+
+class ConsultationRequest(db.Model):
+    """Stored consultation form submissions."""
+    __tablename__ = "consultation_requests"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=True)  # optional if not logged in
+
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    phone = db.Column(db.String(30))
+    consultation_type = db.Column(db.String(50))  # build_advice, parts_recommendation, troubleshooting, other
+    current_setup = db.Column(db.String(500))
+    goals_budget = db.Column(db.String(500))
+    contact_method = db.Column(db.String(30))  # email, phone, either
+    message = db.Column(db.String(1000))
+    status = db.Column(db.String(20), default="new")  # new, contacted, completed
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<ConsultationRequest {self.id} {self.email}>"
+
+
+class RepairUpgradeRequest(db.Model):
+    """Stored repair/upgrade form submissions."""
+    __tablename__ = "repair_upgrade_requests"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=True)
+
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    phone = db.Column(db.String(30))
+    service_type = db.Column(db.String(30))  # repair, upgrade, both
+    device_type = db.Column(db.String(30))  # desktop, laptop, other
+    description = db.Column(db.String(1000), nullable=False)
+    urgency = db.Column(db.String(50))
+    contact_method = db.Column(db.String(30))
+    notes = db.Column(db.String(500))
+    status = db.Column(db.String(20), default="new")
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<RepairUpgradeRequest {self.id} {self.email}>"
