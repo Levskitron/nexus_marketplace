@@ -3,74 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Products - Nexus</title>
-
+    <title>My products – Nexus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/seller.css') }}">
 </head>
-<body>
+<body class="seller-page">
 
     {% include "components/navbar.html" %}
 
-    <h1>My Products</h1>
-    <hr>
+    <main class="seller-main">
 
-    <a href="{{ url_for('seller.add_product') }}"
-       style="padding:10px 20px; border:1px solid #000; text-decoration:none; color:black;">
-       ➕ Add New Product
-    </a>
+        <header class="seller-header">
+            <h1>My products</h1>
+            <p class="seller-subtitle">Manage your listings</p>
+        </header>
 
-    <br><br>
+        <nav class="seller-nav">
+            <a href="{{ url_for('seller.dashboard') }}">← Dashboard</a>
+            <a href="{{ url_for('seller.add_product') }}">➕ Add product</a>
+            <a href="{{ url_for('seller.seller_orders') }}">Orders received</a>
+        </nav>
 
-    {% if products|length == 0 %}
-        <p>You have no products listed. Start by adding one!</p>
-    {% else %}
+        <div class="seller-actions" style="margin-bottom:24px;">
+            <a href="{{ url_for('seller.add_product') }}" class="btn-primary">➕ Add new product</a>
+        </div>
 
-        <table border="1" cellpadding="10" cellspacing="0">
-            <tr>
-                <th>ID</th>
-                <th>Preview</th>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
+        {% if not products %}
+        <div class="seller-empty">
+            <p>You haven’t listed any products yet.</p>
+            <a href="{{ url_for('seller.add_product') }}">Add your first product</a>
+        </div>
+        {% else %}
+        <section class="seller-card" style="padding:0; overflow:hidden;">
+            <table class="seller-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in products %}
+                    <tr>
+                        <td style="display:flex; align-items:center; gap:12px;">
+                            <img src="{{ p.image_url }}" alt="" class="product-thumb" width="48" height="48">
+                            <a href="{{ url_for('shop.product_page', product_id=p.product_id) }}">{{ p.name }}</a>
+                        </td>
+                        <td class="amount">£{{ "%.2f"|format(p.price) }}</td>
+                        <td>{{ p.stock_quantity }}</td>
+                        <td><span class="status-badge status-{{ p.status }}">{{ p.status }}</span></td>
+                        <td>
+                            <div class="row-actions">
+                                <a href="{{ url_for('shop.product_page', product_id=p.product_id) }}">View</a>
+                                <a href="{{ url_for('seller.edit_product', product_id=p.product_id) }}">Edit</a>
+                                <form action="{{ url_for('seller.delete_product', product_id=p.product_id) }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn-remove" onclick="return confirm('Remove this product? It will no longer appear in the shop.');">Remove</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+        {% endif %}
 
-            {% for p in products %}
-            <tr>
-                <td>{{ p.product_id }}</td>
-
-                <td>
-                    <img src="{{ p.image_url }}" alt="Product Image"
-                         style="width:80px; height:80px; object-fit:cover; border:1px solid #ccc;">
-                </td>
-
-                <td>{{ p.name }}</td>
-                <td>£{{ "%.2f"|format(p.price) }}</td>
-                <td>{{ p.status }}</td>
-
-                <td>
-
-                    <a href="{{ url_for('shop.product_page', product_id=p.product_id) }}"
-                       style="margin-right:10px;">View</a>
-
-                    <a href="{{ url_for('seller.edit_product', product_id=p.product_id) }}"
-                       style="margin-right:10px;">Edit</a>
-
-                    <form action="{{ url_for('seller.delete_product', product_id=p.product_id) }}"
-                          method="POST" style="display:inline;">
-                        <button type="submit"
-                                onclick="return confirm('Are you sure you want to remove this product?');">
-                                Remove
-                        </button>
-                    </form>
-
-                </td>
-            </tr>
-            {% endfor %}
-
-        </table>
-
-    {% endif %}
+    </main>
 
 </body>
 </html>

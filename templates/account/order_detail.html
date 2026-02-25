@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order #{{ order.order_id }} – Nexus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/order_detail.css') }}">
+</head>
+<body class="order-detail-page">
+
+    {% include "components/navbar.html" %}
+
+    <main class="order-detail-main">
+
+        <header class="order-detail-header">
+            <h1>Order #{{ order.order_id }}</h1>
+            <a href="{{ url_for('account.order_history') }}" class="order-detail-back">← Back to orders</a>
+        </header>
+
+        <section class="order-detail-meta">
+            <dl>
+                <dt>Date</dt>
+                <dd>{{ order.order_date.strftime('%d %B %Y') }}</dd>
+                <dt>Seller</dt>
+                <dd>{{ order.seller.username if order.seller else order.seller_id }}</dd>
+                <dt>Payment</dt>
+                <dd>{{ order.payment_status }}</dd>
+                <dt>Status</dt>
+                <dd>
+                    <span class="status-badge status-{{ order.delivery_status }}">{{ order.delivery_status }}</span>
+                </dd>
+                {% if order.shipping_address %}
+                <dt>Shipping address</dt>
+                <dd style="white-space: pre-line;">{{ order.shipping_address }}</dd>
+                {% endif %}
+            </dl>
+        </section>
+
+        <section class="order-detail-items">
+            <h2>Items</h2>
+            <table class="order-detail-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Qty</th>
+                        <th>Unit price</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items %}
+                    <tr>
+                        <td class="item-name">
+                            <a href="{{ url_for('shop.product_page', product_id=item.product_id) }}">{{ item.product.name if item.product else 'Product #' ~ item.product_id }}</a>
+                        </td>
+                        <td>{{ item.quantity }}</td>
+                        <td class="item-amount">£{{ item.unit_price }}</td>
+                        <td class="item-amount">£{{ item.subtotal }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <p class="order-detail-total">Total: <span class="amount">£{{ order.total_amount }}</span></p>
+        </section>
+
+        {% if order.delivery_status == 'processing' %}
+        <div class="order-detail-actions">
+            <form method="POST" action="{{ url_for('account.order_cancel', order_id=order.order_id) }}" onsubmit="return confirm('Cancel this order? Your credits will be refunded.');">
+                <button type="submit" class="btn-cancel">Cancel order</button>
+            </form>
+            <p class="order-detail-note">Cancelling will refund £{{ order.total_amount }} to your account and restore stock.</p>
+        </div>
+        {% endif %}
+
+    </main>
+
+</body>
+</html>

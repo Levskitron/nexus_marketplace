@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage users – Nexus Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body class="admin-page">
+
+    {% include "components/navbar.html" %}
+
+    <main class="admin-main">
+
+        <header class="admin-header">
+            <h1>Manage users</h1>
+            <p class="admin-subtitle">Change roles and account status</p>
+        </header>
+
+        <nav class="admin-nav">
+            <a href="{{ url_for('admin.dashboard') }}">← Dashboard</a>
+            <a href="{{ url_for('admin.products') }}">Manage products</a>
+            {% if user.role == 'super_admin' %}
+            <a href="{{ url_for('admin.add_admin_user') }}">Add admin user</a>
+            {% endif %}
+        </nav>
+
+        <section class="admin-card" style="padding:0; overflow:hidden;">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users_list %}
+                    <tr>
+                        <td>{{ u.user_id }}</td>
+                        <td>{{ u.username }}</td>
+                        <td>{{ u.email }}</td>
+                        <td><span class="role-badge role-{{ u.role }}">{{ u.role }}</span></td>
+                        <td><span class="status-badge status-{{ u.account_status or 'active' }}">{{ u.account_status or 'active' }}</span></td>
+                        <td>
+                            <div class="admin-user-actions">
+                                <a href="{{ url_for('admin.edit_user', user_id=u.user_id) }}" class="btn-edit">Edit</a>
+                                <form method="POST" action="{{ url_for('admin.update_user', user_id=u.user_id) }}" style="display:inline;">
+                                    <select name="role">
+                                        <option value="">— Role —</option>
+                                        <option value="buyer" {% if u.role == 'buyer' %}selected{% endif %}>buyer</option>
+                                        <option value="seller" {% if u.role == 'seller' %}selected{% endif %}>seller</option>
+                                        {% if user.role == 'super_admin' %}
+                                        <option value="admin" {% if u.role == 'admin' %}selected{% endif %}>admin</option>
+                                        <option value="super_admin" {% if u.role == 'super_admin' %}selected{% endif %}>super_admin</option>
+                                        {% endif %}
+                                    </select>
+                                    <select name="account_status">
+                                        <option value="">— Status —</option>
+                                        <option value="active" {% if (u.account_status or 'active') == 'active' %}selected{% endif %}>active</option>
+                                        <option value="suspended" {% if u.account_status == 'suspended' %}selected{% endif %}>suspended</option>
+                                        <option value="deleted" {% if u.account_status == 'deleted' %}selected{% endif %}>deleted</option>
+                                    </select>
+                                    <button type="submit" class="btn-update">Update</button>
+                                </form>
+                                {% if u.user_id in can_delete_ids %}
+                                <form method="POST" action="{{ url_for('admin.delete_user', user_id=u.user_id) }}" style="display:inline;" onsubmit="return confirm('Delete this user? Their account will be marked as deleted.');">
+                                    <button type="submit" class="btn-delete">Delete</button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        {% if user.role == 'super_admin' %}
+        <p style="font-size:0.9rem; color:#57606a;">Only super admins can promote users to admin or super_admin. Set the first super_admin via the database or Flask shell.</p>
+        {% endif %}
+
+    </main>
+
+</body>
+</html>

@@ -91,7 +91,15 @@
 
 .orders-table .orders-id {
     font-weight: 600;
+}
+
+.orders-table .orders-id a {
     color: #1a1f26;
+    text-decoration: none;
+}
+
+.orders-table .orders-id a:hover {
+    color: #00c9a7;
 }
 
 .orders-table .orders-amount {

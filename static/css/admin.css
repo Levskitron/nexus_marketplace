@@ -1,0 +1,268 @@
+/* Admin panel – Nexus style */
+.admin-page {
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f6f8fa;
+    min-height: 100vh;
+    color: #1a1f26;
+}
+
+.admin-main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 32px 24px 48px;
+}
+
+.admin-header {
+    background: #0b0f14;
+    color: #e6edf3;
+    padding: 28px 32px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+}
+
+.admin-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.admin-header .admin-subtitle {
+    margin: 6px 0 0;
+    font-size: 0.95rem;
+    color: #8b949e;
+}
+
+.admin-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.admin-nav a {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #57606a;
+    text-decoration: none;
+}
+
+.admin-nav a:hover {
+    color: #00c9a7;
+}
+
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.admin-stat {
+    background: #fff;
+    border: 1px solid #e1e8ed;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.admin-stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #00c9a7;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.admin-stat-label {
+    font-size: 0.85rem;
+    color: #57606a;
+    margin-top: 4px;
+}
+
+.admin-card {
+    background: #fff;
+    border: 1px solid #e1e8ed;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.admin-card h2 {
+    margin: 0 0 16px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a1f26;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #57606a;
+    background: #f6f8fa;
+    border-bottom: 1px solid #e1e8ed;
+}
+
+.admin-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #e1e8ed;
+    font-size: 0.95rem;
+    color: #1a1f26;
+}
+
+.admin-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.admin-table .role-badge,
+.admin-table .status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.admin-table .role-super_admin { background: rgba(220, 53, 69, 0.15); color: #b02a37; }
+.admin-table .role-admin { background: rgba(0, 201, 167, 0.2); color: #0d7a6c; }
+.admin-table .role-seller { background: rgba(0, 201, 167, 0.1); color: #0d7a6c; }
+.admin-table .role-buyer { background: #f6f8fa; color: #57606a; }
+.admin-table .status-active { background: rgba(0, 201, 167, 0.15); color: #0d7a6c; }
+.admin-table .status-suspended { background: rgba(220, 53, 69, 0.1); color: #b02a37; }
+.admin-table .status-deleted { background: #f6f8fa; color: #8b949e; }
+.admin-table .status-removed { background: #f6f8fa; color: #8b949e; }
+
+.admin-table select {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    border: 1px solid #e1e8ed;
+    border-radius: 6px;
+    background: #fff;
+}
+
+.admin-table .btn-update {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    background: #00c9a7;
+    color: #0b0f14;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.admin-table .btn-update:hover {
+    background: #00ddb8;
+}
+
+.admin-user-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-user-actions form {
+    margin: 0;
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.admin-table .btn-edit {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 6px;
+    background: #f6f8fa;
+    color: #57606a;
+    text-decoration: none;
+    border: 1px solid #e1e8ed;
+    display: inline-block;
+}
+
+.admin-table .btn-edit:hover {
+    background: rgba(0, 201, 167, 0.15);
+    color: #00c9a7;
+    border-color: #00c9a7;
+}
+
+.admin-table .btn-delete,
+.btn-delete {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 6px;
+    background: transparent;
+    color: #b02a37;
+    border: 1px solid rgba(220, 53, 69, 0.4);
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.admin-table .btn-delete:hover,
+.btn-delete:hover {
+    background: rgba(220, 53, 69, 0.1);
+}
+
+.admin-form .form-group {
+    margin-bottom: 16px;
+}
+
+.admin-form label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #57606a;
+    margin-bottom: 6px;
+}
+
+.admin-form input[type="text"],
+.admin-form input[type="email"],
+.admin-form input[type="password"],
+.admin-form select {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px 14px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    border: 1px solid #e1e8ed;
+    border-radius: 8px;
+    background: #fff;
+    color: #1a1f26;
+    box-sizing: border-box;
+}
+
+.admin-form input:focus {
+    outline: none;
+    border-color: #00c9a7;
+}
+
+.admin-log-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.admin-log-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid #e1e8ed;
+    font-size: 0.9rem;
+    color: #57606a;
+}
+
+.admin-log-list li:last-child {
+    border-bottom: none;
+}
+
+.admin-log-list .log-time {
+    color: #8b949e;
+    font-size: 0.85rem;
+}

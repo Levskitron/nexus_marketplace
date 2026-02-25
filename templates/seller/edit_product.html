@@ -3,41 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Product - Nexus</title>
-
+    <title>Edit {{ product.name }} – Nexus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/seller.css') }}">
 </head>
-<body>
+<body class="seller-page">
 
     {% include "components/navbar.html" %}
 
-    <h1>Edit Product</h1>
-    <hr>
+    <main class="seller-main">
 
-    <form method="POST" enctype="multipart/form-data">
+        <header class="seller-header">
+            <h1>Edit product</h1>
+            <p class="seller-subtitle">{{ product.name }}</p>
+        </header>
 
-        {{ form.hidden_tag() }}
+        <nav class="seller-nav">
+            <a href="{{ url_for('seller.dashboard') }}">← Dashboard</a>
+            <a href="{{ url_for('seller.my_products') }}">My products</a>
+            <a href="{{ url_for('shop.product_page', product_id=product.product_id) }}">View listing</a>
+        </nav>
 
-        <label>Name</label><br>
-        {{ form.name(size=40) }}<br><br>
+        <section class="seller-card">
+            <form method="POST" enctype="multipart/form-data" class="seller-form">
+                {{ form.hidden_tag() }}
 
-        <label>Description</label><br>
-        {{ form.description(rows=5, cols=40) }}<br><br>
+                <div class="form-group">
+                    {{ form.name.label }}
+                    {{ form.name() }}
+                </div>
 
-        <label>Price (£)</label><br>
-        {{ form.price() }}<br><br>
+                <div class="form-group">
+                    {{ form.description.label }}
+                    {{ form.description() }}
+                </div>
 
-        <label>Brand</label><br>
-        {{ form.brand(size=40) }}<br><br>
+                <div class="form-group">
+                    {{ form.brand.label }}
+                    {{ form.brand() }}
+                </div>
 
-        <label>Condition</label><br>
-        {{ form.condition() }}<br><br>
+                <div class="form-group">
+                    {{ form.price.label }}
+                    {{ form.price() }}
+                </div>
 
-        <label>Image</label><br>
-        {{ form.image() }}<br><br>
+                <div class="form-group">
+                    {{ form.stock_quantity.label }}
+                    {{ form.stock_quantity() }}
+                </div>
 
-        <button type="submit">Save Changes</button>
-    </form>
+                <div class="form-group">
+                    {{ form.category_id.label }}
+                    {{ form.category_id() }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.condition.label }}
+                    {{ form.condition() }}
+                </div>
+
+                <hr class="form-divider">
+
+                <h3 style="margin:0 0 12px; font-size:1rem;">Product image</h3>
+                {% if product.image_url %}
+                <p class="form-hint" style="margin-bottom:12px;">Current: <img src="{{ product.image_url }}" alt="" style="max-width:80px; max-height:80px; vertical-align:middle;"> Leave blank to keep.</p>
+                {% endif %}
+
+                <div class="form-group">
+                    {{ form.image.label }}
+                    {{ form.image() }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.image_url.label }}
+                    {{ form.image_url() }}
+                </div>
+
+                {{ form.submit(class_='btn-submit') }}
+            </form>
+        </section>
+
+    </main>
 
 </body>
 </html>

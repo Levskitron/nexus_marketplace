@@ -2,43 +2,92 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Add Product</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add product – Nexus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/seller.css') }}">
 </head>
-<body>
+<body class="seller-page">
 
     {% include "components/navbar.html" %}
 
-    <h1>Add Product</h1>
+    <main class="seller-main">
 
-    <form method="post" enctype="multipart/form-data">
-        {{ form.hidden_tag() }}
+        <header class="seller-header">
+            <h1>Add product</h1>
+            <p class="seller-subtitle">Create a new listing</p>
+        </header>
 
-        <p>{{ form.name.label }} {{ form.name() }}</p>
-        <p>{{ form.description.label }} {{ form.description() }}</p>
-        <p>{{ form.brand.label }} {{ form.brand() }}</p>
-        <p>{{ form.price.label }} {{ form.price() }}</p>
-        <p>{{ form.stock_quantity.label }} {{ form.stock_quantity() }}</p>
-        <p>{{ form.condition.label }} {{ form.condition() }}</p>
+        <nav class="seller-nav">
+            <a href="{{ url_for('seller.dashboard') }}">← Dashboard</a>
+            <a href="{{ url_for('seller.my_products') }}">My products</a>
+        </nav>
 
-        <h3>Product Image (required)</h3>
+        <section class="seller-card">
+            <form method="post" enctype="multipart/form-data" class="seller-form">
+                {{ form.hidden_tag() }}
 
-        <p>
-            {{ form.image.label }}<br>
-            {{ form.image() }}
-        </p>
+                <div class="form-group">
+                    {{ form.name.label }}
+                    {{ form.name(placeholder="e.g. RTX 4070 12GB") }}
+                </div>
 
-        <p><strong>OR</strong></p>
+                <div class="form-group">
+                    {{ form.description.label }}
+                    {{ form.description(placeholder="Describe your product...") }}
+                    <p class="form-hint">Optional. Helps buyers understand condition and details.</p>
+                </div>
 
-        <p>
-            {{ form.image_url.label }}<br>
-            {{ form.image_url() }}
-        </p>
+                <div class="form-group">
+                    {{ form.brand.label }}
+                    {{ form.brand(placeholder="e.g. NVIDIA, Corsair") }}
+                </div>
 
-        <p>{{ form.category_id.label }} {{ form.category_id() }}</p>
+                <div class="form-group">
+                    {{ form.price.label }}
+                    {{ form.price(placeholder="0.00") }}
+                </div>
 
-        {{ form.submit() }}
-    </form>
+                <div class="form-group">
+                    {{ form.stock_quantity.label }}
+                    {{ form.stock_quantity(min=0, placeholder="1") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.category_id.label }}
+                    {{ form.category_id() }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.condition.label }}
+                    {{ form.condition() }}
+                </div>
+
+                <hr class="form-divider">
+
+                <h3 style="margin:0 0 12px; font-size:1rem;">Product image</h3>
+                <p class="form-hint" style="margin-bottom:12px;">Upload an image or provide a URL. At least one is required.</p>
+
+                <div class="form-group">
+                    {{ form.image.label }}
+                    {{ form.image() }}
+                </div>
+
+                <p class="form-hint" style="margin:-8px 0 12px;">Accepted: JPG, PNG, WebP</p>
+
+                <div class="form-group">
+                    {{ form.image_url.label }}
+                    {{ form.image_url(placeholder="https://...") }}
+                </div>
+
+                {{ form.submit(class_='btn-submit') }}
+            </form>
+        </section>
+
+    </main>
 
 </body>
 </html>

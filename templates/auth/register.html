@@ -3,57 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In Form</title>
+    <title>Sign in / Register – Nexus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
 </head>
 <body>
 
-    <div class="login-wrapper">
-        <div class="login-tabs">
-    <div class="tab active" id="tab-signin">
-        <img src="{{ url_for('static', filename='images/Arrow.svg') }}" class="icon-img"> Sign In
-    </div>
-    <div class="tab" id="tab-register">
-        <img src="{{ url_for('static', filename='images/Plus.svg') }}" class="icon-img"> Register
-    </div>
-    <div class="tab-indicator"></div>
-</div>
+    <div class="auth-page">
+        <div class="login-wrapper">
+            <div class="login-tabs">
+                <div class="tab active" id="tab-signin">
+                    <img src="{{ url_for('static', filename='images/Arrow.svg') }}" class="icon-img" alt=""> Sign In
+                </div>
+                <div class="tab" id="tab-register">
+                    <img src="{{ url_for('static', filename='images/Plus.svg') }}" class="icon-img" alt=""> Register
+                </div>
+                <div class="tab-indicator"></div>
+            </div>
 
-        <div class="form-container" id="form-container-signin">
-            <h2>Sign in with your <span class="brand">Nexus</span> Account</h2>
-            
-            <form id="login-form">
-                <div class="input-group">
-                    <input type="text" id="username" placeholder="Username" required>
-                </div>
-                <div class="input-group">
-                    <input type="password" id="password" placeholder="Password" required>
-                </div>
-                <button type="submit" class="signin-btn">Sign In</button>
-            </form>
+            <div class="form-container" id="form-container-signin">
+                <h2>Sign in with your <span class="brand">Nexus</span> account</h2>
+                <form id="login-form">
+                    <div class="input-group">
+                        <input type="text" id="username" placeholder="Username" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="signin-btn">Sign In</button>
+                </form>
+                <a href="#" class="reset-link">Reset your password</a>
+            </div>
 
-            <a href="#" class="reset-link">Reset your password</a>
-        </div>
-
-        <div class="form-container" id="form-container-register">
-            <h2>Create your <span class="brand">Nexus</span> Account</h2>
-            
-            <form id="register-form">
-                <div class="input-group">
-                    <input type="text" id="reg-username" placeholder="Username" required>
-                </div>
-                <div class="input-group">
-                    <input type="email" id="reg-email" placeholder="Email" required>
-                </div>
-                <div class="input-group">
-                    <input type="password" id="reg-password" placeholder="Password" required>
-                </div>
-                
-                <div class="input-group" id="confirm-password-group">
-                    <input type="password" id="reg-confirm-password" placeholder="Confirm Password" required>
-                </div>
-                <button type="submit" class="signin-btn">Register</button>
-            </form>
+            <div class="form-container" id="form-container-register">
+                <h2>Create your <span class="brand">Nexus</span> account</h2>
+                <form id="register-form">
+                    <div class="input-group">
+                        <input type="text" id="reg-username" placeholder="Username" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" id="reg-email" placeholder="Email" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="reg-password" placeholder="Password" required>
+                    </div>
+                    <div class="input-group" id="confirm-password-group">
+                        <input type="password" id="reg-confirm-password" placeholder="Confirm Password" required>
+                    </div>
+                    <button type="submit" class="signin-btn">Register</button>
+                </form>
+            </div>
         </div>
     </div>
 

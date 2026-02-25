@@ -2,7 +2,7 @@ from decimal import Decimal
 
 from flask import (
     render_template, request, redirect,
-    url_for, session, flash
+    url_for, session, flash, abort
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -100,6 +100,22 @@ def my_account():
                 flash(f"Added £{amount:.2f} to your account. New balance: £{user.credits_balance:.2f}", "success")
             else:
                 flash("Please enter a valid amount (e.g. 10.00).", "error")
+
+        elif action == "become_seller":
+            if user.role == "buyer":
+                user.role = "seller"
+                db.session.commit()
+                flash("You are now a seller. You can add products from the Seller Dashboard.", "success")
+            else:
+                flash("Your account already has seller access.", "error")
+
+        elif action == "remove_seller_role":
+            if user.role == "seller":
+                user.role = "buyer"
+                db.session.commit()
+                flash("Seller role removed. Your listings are unchanged but you can no longer add new products.", "success")
+            else:
+                flash("You do not have the seller role.", "error")
 
         return redirect(url_for("account.my_account"))
 
@@ -379,3 +395,60 @@ def order_history():
     )
 
     return render_template("account/order_history.html", orders=orders)
+
+
+@account_bp.route("/order/<int:order_id>")
+def order_detail(order_id):
+
+    if not require_login():
+        return redirect(url_for("auth.register_page"))
+
+    order = Order.query.get_or_404(order_id)
+    if order.buyer_id != session["user_id"]:
+        abort(404)
+
+    return render_template("account/order_detail.html", order=order)
+
+
+@account_bp.route("/order/<int:order_id>/cancel", methods=["POST"])
+def order_cancel(order_id):
+
+    if not require_login():
+        return redirect(url_for("auth.register_page"))
+
+    order = Order.query.get_or_404(order_id)
+    if order.buyer_id != session["user_id"]:
+        abort(404)
+
+    if order.delivery_status != "processing":
+        flash("This order can no longer be cancelled.", "error")
+        return redirect(url_for("account.order_detail", order_id=order_id))
+
+    user = User.query.get(session["user_id"])
+
+    # Restore product stock for each item
+    for item in order.items:
+        product = Product.query.get(item.product_id)
+        if product:
+            product.stock_quantity += item.quantity
+            if product.status == "sold_out":
+                product.status = "active"
+
+    # Refund credits
+    user.credits_balance = (user.credits_balance or Decimal("0.00")) + order.total_amount
+
+    # Record refund transaction
+    tx = Transaction(
+        user_id=user.user_id,
+        related_order_id=order.order_id,
+        transaction_type="refund",
+        amount=order.total_amount,
+    )
+    db.session.add(tx)
+
+    order.delivery_status = "cancelled"
+    order.payment_status = "refunded"
+    db.session.commit()
+
+    flash("Order cancelled. Your credits have been refunded.", "success")
+    return redirect(url_for("account.order_detail", order_id=order_id))

@@ -2,50 +2,82 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Seller Orders</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders received – Nexus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/seller.css') }}">
 </head>
-<body>
+<body class="seller-page">
+
     {% include "components/navbar.html" %}
 
-    <h1>Orders Received</h1>
-    <hr>
+    <main class="seller-main">
 
-    {% if not orders %}
-        <p>You have not received any orders yet.</p>
-    {% else %}
-        <table border="1" cellpadding="8" cellspacing="0">
-            <tr>
-                <th>Order #</th>
-                <th>Buyer ID</th>
-                <th>Date</th>
-                <th>Total</th>
-                <th>Payment</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-            {% for order in orders %}
-                <tr>
-                    <td>{{ order.order_id }}</td>
-                    <td>{{ order.buyer_id }}</td>
-                    <td>{{ order.order_date.strftime('%d %B %Y') }}</td>
-                    <td>£{{ order.total_amount }}</td>
-                    <td>{{ order.payment_status }}</td>
-                    <td>{{ order.delivery_status }}</td>
-                    <td>
-                        <form method="POST" action="{{ url_for('seller.update_order_status', order_id=order.order_id) }}">
-                            <select name="action">
-                                <option value="">--Select--</option>
-                                <option value="ship">Mark as Shipped</option>
-                                <option value="deliver">Mark as Delivered</option>
-                            </select>
-                            <button type="submit">Update</button>
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
-    {% endif %}
+        <header class="seller-header">
+            <h1>Orders received</h1>
+            <p class="seller-subtitle">Orders for your products</p>
+        </header>
+
+        <nav class="seller-nav">
+            <a href="{{ url_for('seller.dashboard') }}">← Dashboard</a>
+            <a href="{{ url_for('seller.my_products') }}">My products</a>
+            <a href="{{ url_for('seller.add_product') }}">Add product</a>
+        </nav>
+
+        {% if not orders %}
+        <div class="seller-empty">
+            <p>You haven’t received any orders yet.</p>
+            <p><a href="{{ url_for('seller.my_products') }}">View your products</a> or <a href="{{ url_for('seller.add_product') }}">add a listing</a>.</p>
+        </div>
+        {% else %}
+        <section class="seller-card" style="padding:0; overflow:hidden;">
+            <table class="seller-table">
+                <thead>
+                    <tr>
+                        <th>Order #</th>
+                        <th>Buyer</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Payment</th>
+                        <th>Status</th>
+                        <th>Update</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>{{ order.order_id }}</td>
+                        <td>{{ order.buyer.username if order.buyer else 'Buyer #' ~ order.buyer_id }}</td>
+                        <td>{{ order.order_date.strftime('%d %B %Y') }}</td>
+                        <td class="amount">£{{ order.total_amount }}</td>
+                        <td>{{ order.payment_status }}</td>
+                        <td><span class="status-badge status-{{ order.delivery_status }}">{{ order.delivery_status }}</span></td>
+                        <td>
+                            {% if order.delivery_status == 'processing' %}
+                            <form method="POST" action="{{ url_for('seller.update_order_status', order_id=order.order_id) }}" class="seller-order-update" style="margin:0;">
+                                <input type="hidden" name="action" value="ship">
+                                <button type="submit">Mark shipped</button>
+                            </form>
+                            {% elif order.delivery_status == 'shipped' %}
+                            <form method="POST" action="{{ url_for('seller.update_order_status', order_id=order.order_id) }}" class="seller-order-update" style="margin:0;">
+                                <input type="hidden" name="action" value="deliver">
+                                <button type="submit">Mark delivered</button>
+                            </form>
+                            {% else %}
+                            <span style="color:#8b949e; font-size:0.9rem;">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+        {% endif %}
+
+    </main>
 
 </body>
 </html>

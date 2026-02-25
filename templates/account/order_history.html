@@ -40,7 +40,7 @@
                     <tbody>
                         {% for order in orders %}
                         <tr>
-                            <td class="orders-id">{{ order.order_id }}</td>
+                            <td class="orders-id"><a href="{{ url_for('account.order_detail', order_id=order.order_id) }}">{{ order.order_id }}</a></td>
                             <td class="orders-date">{{ order.order_date.strftime('%d %B %Y') }}</td>
                             <td class="orders-amount">£{{ order.total_amount }}</td>
                             <td class="orders-status">{{ order.payment_status }}</td>

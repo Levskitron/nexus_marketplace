@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin dashboard – Nexus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body class="admin-page">
+
+    {% include "components/navbar.html" %}
+
+    <main class="admin-main">
+
+        <header class="admin-header">
+            <h1>Admin dashboard</h1>
+            <p class="admin-subtitle">Site overview and recent activity</p>
+        </header>
+
+        <nav class="admin-nav">
+            <a href="{{ url_for('admin.users') }}">Manage users</a>
+            <a href="{{ url_for('admin.products') }}">Manage products</a>
+            {% if user.role == 'super_admin' %}
+            <a href="{{ url_for('admin.add_admin_user') }}">Add admin user</a>
+            {% endif %}
+        </nav>
+
+        <div class="admin-stats">
+            <div class="admin-stat">
+                <div class="admin-stat-value">{{ total_users }}</div>
+                <div class="admin-stat-label">Users</div>
+            </div>
+            <div class="admin-stat">
+                <div class="admin-stat-value">{{ total_products }}</div>
+                <div class="admin-stat-label">Products</div>
+            </div>
+            <div class="admin-stat">
+                <div class="admin-stat-value">{{ total_orders }}</div>
+                <div class="admin-stat-label">Orders</div>
+            </div>
+        </div>
+
+        <section class="admin-card">
+            <h2>Recent admin activity</h2>
+            {% if recent_logs %}
+            <ul class="admin-log-list">
+                {% for log in recent_logs %}
+                <li>
+                    {{ log.action }}
+                    <span class="log-time">— {{ log.timestamp.strftime('%d %b %Y %H:%M') }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p style="color:#57606a; margin:0;">No admin actions yet.</p>
+            {% endif %}
+        </section>
+
+    </main>
+
+</body>
+</html>

@@ -94,7 +94,18 @@ def dashboard():
         .order_by(Product.date_added.desc())
         .all()
     )
-    return render_template("seller/dashboard.html", products=products)
+    total_products = len(products)
+    active_products = sum(1 for p in products if p.status == "active")
+    sold_products = sum(1 for p in products if p.status == "sold_out")
+    recent_products = products[:5]
+    return render_template(
+        "seller/dashboard.html",
+        products=products,
+        total_products=total_products,
+        active_products=active_products,
+        sold_products=sold_products,
+        recent_products=recent_products,
+    )
 
 
 # ---------------------------------------

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add admin user – Nexus Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body class="admin-page">
+
+    {% include "components/navbar.html" %}
+
+    <main class="admin-main">
+
+        <header class="admin-header">
+            <h1>Add admin user</h1>
+            <p class="admin-subtitle">Create a new admin or super admin account (super admins only)</p>
+        </header>
+
+        <nav class="admin-nav">
+            <a href="{{ url_for('admin.users') }}">← Back to users</a>
+        </nav>
+
+        <section class="admin-card">
+            <form method="POST" class="admin-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required placeholder="e.g. newadmin">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required placeholder="e.g. admin@nexus.local">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Minimum 1 character">
+                </div>
+                <div class="form-group">
+                    <label for="role">Role</label>
+                    <select id="role" name="role" required>
+                        <option value="admin">admin</option>
+                        <option value="super_admin">super_admin</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-update">Create user</button>
+            </form>
+        </section>
+
+    </main>
+
+</body>
+</html>

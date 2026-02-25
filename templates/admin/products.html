@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage products – Nexus Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body class="admin-page">
+
+    {% include "components/navbar.html" %}
+
+    <main class="admin-main">
+
+        <header class="admin-header">
+            <h1>Manage products</h1>
+            <p class="admin-subtitle">View and remove any product</p>
+        </header>
+
+        <nav class="admin-nav">
+            <a href="{{ url_for('admin.dashboard') }}">← Dashboard</a>
+            <a href="{{ url_for('admin.users') }}">Users</a>
+        </nav>
+
+        {% if not products_list %}
+        <section class="admin-card">
+            <p style="margin:0; color:#57606a;">No products in the system.</p>
+        </section>
+        {% else %}
+        <section class="admin-card" style="padding:0; overflow:hidden;">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Product</th>
+                        <th>Seller</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in products_list %}
+                    <tr>
+                        <td>{{ p.product_id }}</td>
+                        <td>
+                            <a href="{{ url_for('shop.product_page', product_id=p.product_id) }}">{{ p.name }}</a>
+                        </td>
+                        <td>{{ p.seller.username if p.seller else p.seller_id }}</td>
+                        <td class="amount">£{{ p.price }}</td>
+                        <td><span class="status-badge status-{{ p.status }}">{{ p.status }}</span></td>
+                        <td>
+                            {% if p.status != 'removed' %}
+                            <form method="POST" action="{{ url_for('admin.delete_product', product_id=p.product_id) }}" style="display:inline;" onsubmit="return confirm('Remove this product from the shop?');">
+                                <button type="submit" class="btn-delete">Remove</button>
+                            </form>
+                            {% else %}
+                            <span style="color:#8b949e; font-size:0.9rem;">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+        {% endif %}
+
+    </main>
+
+</body>
+</html>

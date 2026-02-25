@@ -1,189 +1,173 @@
-/* General page styling */
+/* Login / Register – Nexus style (dark + teal) */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    display: grid;
-    place-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+.auth-page {
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f6f8fa;
     min-height: 100vh;
     margin: 0;
-}
-
-/* Main container for the whole component */
-.login-wrapper {
-    width: 380px;
-    max-width: 100%;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-}
-
-/* --- Tab Styling --- */
-.login-tabs {
     display: flex;
-    position: relative; /* Required for the indicator */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    box-sizing: border-box;
 }
 
-.tab {
+.auth-page .login-wrapper {
+    width: 100%;
+    max-width: 400px;
+    background: #fff;
+    border: 1px solid #e1e8ed;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* Tabs – dark bar */
+.auth-page .login-tabs {
+    display: flex;
+    position: relative;
+    background: #0b0f14;
+}
+
+.auth-page .tab {
     flex: 1;
-    padding: 18px;
+    padding: 16px;
     text-align: center;
-    font-size: 16px;
-    font-weight: bold;
+    font-size: 0.95rem;
+    font-weight: 600;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    
-    /* Inactive Tab Style */
-    color: #aaa;
-    background-color: #f0f0f0;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    color: #8b949e;
+    background: transparent;
+    transition: color 0.2s, background 0.2s;
 }
 
-/* Active tab style */
-.tab.active {
-    background-color: #f8f8f8;
-    color: #555;
+.auth-page .tab:hover {
+    color: #e6edf3;
 }
 
-/* --- NEW CSS FOR IMAGE ICONS --- */
-.icon-img {
-    /* Container for the icon */
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background-color: #c7c7c7; /* The gray circle color */
+.auth-page .tab.active {
+    color: #00c9a7;
+}
+
+.auth-page .icon-img {
+    width: 20px;
+    height: 20px;
     margin-right: 8px;
-    
-    /* Centering the image inside its container */
-    padding: 4px; /* Adjust padding to size down the image and center it */
-    box-sizing: border-box; /* Include padding in the width/height calculation */
-    
-    /* Ensure the image fills the padding area */
-    display: block; 
+    opacity: 0.9;
 }
 
-/* --- Add this to style.css to lighten the PLUS image --- */
-
-
-
-/* Style for inactive tabs when hovered */
-.tab:not(.active):hover {
-    background-color: #eaeaea; /* A bit lighter than the default #f0f0f0 */
-    color: #888; /* A bit darker than the default #aaa */
+.auth-page .tab.active .icon-img {
+    opacity: 1;
 }
 
-/* --- Tab Animation Indicator --- */
-.tab-indicator {
+.auth-page .tab-indicator {
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 50%; /* Covers one tab */
+    width: 50%;
     height: 3px;
-    background-color: rgba(175, 104, 185, 0.753); /* Green brand color */
-    
-    /* The Animation! */
-    transition: transform 0.3s ease-in-out;
-    transform: translateX(0); /* Default position (under Sign In) */
+    background: #00c9a7;
+    transition: transform 0.3s ease;
+    transform: translateX(0);
 }
 
-/* --- JS-Controlled Animation --- */
-/* When .show-register is added, move the slider */
-.login-wrapper.show-register .tab-indicator {
-    transform: translateX(100%); /* Moves it 100% of its own width to the right */
+.auth-page .login-wrapper.show-register .tab-indicator {
+    transform: translateX(100%);
 }
 
-
-/* --- Form Styling --- */
-.form-container {
-    padding: 30px;
+/* Form container */
+.auth-page .form-container {
+    padding: 28px 24px;
 }
 
-/* By default, hide the register form */
-#form-container-register {
+.auth-page #form-container-register {
     display: none;
 }
 
-/* Heading text */
-h2 {
+.auth-page h2 {
     text-align: center;
-    font-size: 1.1em;
-    font-weight: 500;
-    color: #333;
-    margin-top: 0;
-    margin-bottom: 25px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a1f26;
+    margin: 0 0 24px;
 }
 
-/* The Nexus Colour*/
-.brand {
-    color: rgb(137, 67, 146);
-    font-weight: bold;
+.auth-page .brand {
+    color: #00c9a7;
+    font-weight: 700;
 }
 
-/* Input fields */
-.input-group {
-    margin-bottom: 15px;
+.auth-page .input-group {
+    margin-bottom: 16px;
 }
 
-input[type="text"],
-input[type="password"],
-input[type="email"] {
+.auth-page input[type="text"],
+.auth-page input[type="password"],
+.auth-page input[type="email"] {
     width: 100%;
-    padding: 14px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 12px 14px;
+    border: 1px solid #e1e8ed;
+    border-radius: 8px;
     box-sizing: border-box;
-    font-size: 1em;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: #1a1f26;
+    background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-input[type="text"]:focus,
-input[type="password"]:focus,
-input[type="email"]:focus {
-    outline: none; /* Always remove the default browser outline */
-    border-color: #ddd; /* Keep the original border color or make it slightly darker if preferred */
-    
-    /* Use a more prominent, smoother box-shadow for the glow */
-    box-shadow: 0 0 0 3px rgba(137, 67, 146, 0.5); /* Green glow, 3px spread, 50% opacity */
-    
-    /* Add a slight transition for the box-shadow for a smooth effect */
-    transition: box-shadow 0.2s ease-in-out; 
+.auth-page input::placeholder {
+    color: #8b949e;
 }
 
-input::placeholder {
-    color: #bbb;
+.auth-page input:focus {
+    outline: none;
+    border-color: #00c9a7;
+    box-shadow: 0 0 0 3px rgba(0, 201, 167, 0.15);
 }
 
-/* Green "Sign In" button */
-.signin-btn {
+.auth-page .signin-btn {
     width: 100%;
-    padding: 14px;
-    background-color: rgb(137, 67, 146);
+    padding: 12px;
+    background: #00c9a7;
     border: none;
-    border-radius: 4px;
-    color: white;
-    font-size: 1.1em;
-    font-weight: bold;
+    border-radius: 8px;
+    color: #0b0f14;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
-    margin-top: 10px;
-    transition: background-color 0.3s ease;
+    margin-top: 8px;
+    transition: background 0.2s, transform 0.15s;
 }
 
-.signin-btn:hover {
-    background-color: rgb(176, 104, 185);
+.auth-page .signin-btn:hover {
+    background: #00ddb8;
+    transform: translateY(-1px);
 }
 
-/* "Reset your password" link */
-.reset-link {
+.auth-page .reset-link {
     display: block;
     text-align: center;
-    margin-top: 20px;
-    color: #777;
-    text-decoration: underline;
-    font-size: 0.9em;
+    margin-top: 16px;
+    color: #57606a;
+    text-decoration: none;
+    font-size: 0.9rem;
 }
 
-/* Hide the confirm password field by default */
-#confirm-password-group {
+.auth-page .reset-link:hover {
+    color: #00c9a7;
+}
+
+.auth-page #confirm-password-group {
     display: none;
 }
+

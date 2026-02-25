@@ -2,84 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Search Results - Nexus</title>
-
-    <!-- Navbar styling -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if query %}Search: {{ query }}{% else %}Browse all{% endif %} – Nexus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
-
-    <!-- TEMP basic styling (same layout as category pages) -->
-    <style>
-        .page-title {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .product-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 30px;
-        }
-
-        .product-card {
-            width: 220px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            background: #fafafa;
-            transition: 0.2s;
-            text-align: center;
-        }
-
-        .product-card:hover {
-            transform: scale(1.03);
-            border-color: #999;
-        }
-
-        .product-card img {
-            width: 200px;
-            height: 200px;
-            object-fit: contain;
-            margin-bottom: 10px;
-        }
-
-        .product-name {
-            font-weight: bold;
-            margin: 8px 0;
-        }
-
-        .price {
-            font-size: 18px;
-            font-weight: bold;
-            color: #1a7f1a;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/category_page.css') }}">
 </head>
-<body>
+<body class="category-page">
 
     {% include "components/navbar.html" %}
 
-    <h1 class="page-title">{% if query %}Search Results for "{{ query }}"{% else %}Browse all products{% endif %}</h1>
-    <hr>
+    <main class="category-main">
 
-    {% if products %}
-        <div class="product-container">
-            {% for p in products %}
-                <div class="product-card">
-                    <a href="{{ url_for('shop.product_page', product_id=p.product_id) }}">
-                        <img src="{{ p.image_url }}" alt="{{ p.name }}">
-                        <p class="product-name">{{ p.name }}</p>
-                        <p class="price">£{{ p.price }}</p>
-                    </a>
-                </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <p style="text-align:center; margin-top:20px;">No products found.</p>
-    {% endif %}
+        <header class="category-header">
+            <h1>{% if query %}Search: "{{ query }}"{% else %}Browse all products{% endif %}</h1>
+        </header>
+
+        {% if not products %}
+            <div class="category-empty">
+                <p>No products found.</p>
+                <a href="{{ url_for('shop.search') }}">Browse all</a>
+            </div>
+        {% else %}
+            <div class="category-grid">
+                {% for p in products %}
+                <a href="{{ url_for('shop.product_page', product_id=p.product_id) }}" class="category-card">
+                    <div class="category-card-image">
+                        <img src="{{ p.image_url or url_for('static', filename='images/products/default_product.png') }}" alt="{{ p.name }}">
+                    </div>
+                    <div class="category-card-body">
+                        <h2 class="category-card-name">{{ p.name }}</h2>
+                        <p class="category-card-price">£{{ p.price }}</p>
+                        <p class="category-card-meta">Seller: {{ p.seller.username }}</p>
+                        <p class="category-card-meta">{{ p.stock_quantity }} in stock</p>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+    </main>
 
 </body>
 </html>

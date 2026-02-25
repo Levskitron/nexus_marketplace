@@ -5,6 +5,7 @@ from blueprints.auth import auth_bp
 from blueprints.shop import shop_bp
 from blueprints.account import account_bp
 from blueprints.seller import seller_bp
+from blueprints.admin import admin_bp
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -35,6 +36,7 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(shop_bp)
 app.register_blueprint(account_bp)
 app.register_blueprint(seller_bp)
+app.register_blueprint(admin_bp)
 
 # Create tables (including users) once at startup
 with app.app_context():
