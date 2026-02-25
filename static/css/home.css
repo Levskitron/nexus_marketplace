@@ -1,7 +1,10 @@
 /* ---- Home page ---- */
 .home-page {
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     font-family: 'Outfit', sans-serif;
+    background: var(--section-bg);
 }
 
 /* ---- Variables ---- */
@@ -273,6 +276,7 @@
 
 /* ---- Footer strip ---- */
 .home-footer-strip {
+    margin-top: auto;
     padding: 24px;
     background: var(--hero-bg);
     color: var(--hero-muted);
