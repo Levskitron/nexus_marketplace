@@ -241,7 +241,8 @@ def checkout():
 {form.country.data}
 """.strip()
 
-        created_order_ids = []
+        line_items = []
+        cart_total = Decimal("0.00")
 
         for pid_str, qty in cart.items():
             qty = int(qty)
@@ -257,6 +258,19 @@ def checkout():
                 return redirect(url_for("account.view_cart"))
 
             line_total = product.price * qty
+            cart_total += line_total
+            line_items.append((product, qty, line_total))
+
+        current_balance = user.credits_balance or Decimal("0.00")
+        if current_balance < cart_total:
+            flash("You do not have enough credits to complete this purchase.", "error")
+            return redirect(url_for("account.view_cart"))
+
+        user.credits_balance = current_balance - cart_total
+
+        created_order_ids = []
+
+        for product, qty, line_total in line_items:
 
             order = Order(
                 buyer_id=user.user_id,
