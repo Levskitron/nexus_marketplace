@@ -151,8 +151,22 @@ def add_to_cart(product_id):
         save_cart(cart)
         flash("Product added to cart.", "success")
 
-    return redirect(url_for("shop.product_page", product_id=product_id))
+    back = request.referrer if request.referrer and request.host in request.referrer else None
+    return redirect(back or url_for("shop.product_page", product_id=product_id))
 
+
+@account_bp.route("/cart/decrease/<int:product_id>", methods=["POST"])
+def decrease_cart(product_id):
+    """Decrease quantity by 1; remove item if 0."""
+    cart = get_cart()
+    key = str(product_id)
+    if key in cart:
+        cart[key] = max(0, int(cart[key]) - 1)
+        if cart[key] == 0:
+            del cart[key]
+        save_cart(cart)
+    back = request.referrer if request.referrer and request.host in request.referrer else url_for("account.view_cart")
+    return redirect(back)
 
 
 @account_bp.route("/cart/remove/<int:product_id>", methods=["POST"])

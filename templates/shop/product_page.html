@@ -43,7 +43,6 @@
                             <form method="POST" action="{{ url_for('account.add_to_cart', product_id=product.product_id) }}" style="margin:0;">
                                 <button type="submit" class="btn-primary">Add to cart</button>
                             </form>
-                            <a href="{{ url_for('account.view_cart') }}" class="btn-secondary">Go to cart</a>
                         {% elif not session.get("user_id") %}
                             <p class="product-note"><a href="{{ url_for('auth.register_page') }}">Sign in</a> to purchase this product.</p>
                         {% else %}

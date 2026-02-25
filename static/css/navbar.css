@@ -147,6 +147,200 @@ html, body {
     margin: 6px 12px;
 }
 
+/* --- Cart in navbar --- */
+.cart-menu {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    margin-right: 8px;
+}
+
+.cart-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #e6edf3;
+    transition: background 0.2s, color 0.2s;
+}
+
+.cart-trigger:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #00c9a7;
+}
+
+.cart-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cart-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 18px;
+    text-align: center;
+    background: #00c9a7;
+    color: #0b0f14;
+    border-radius: 9px;
+}
+
+.cart-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 6px;
+    min-width: 300px;
+    max-width: 360px;
+    max-height: 70vh;
+    overflow-y: auto;
+    background: #161b22;
+    border: 1px solid rgba(0, 201, 167, 0.25);
+    border-radius: 10px;
+    padding: 12px;
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+}
+
+.cart-menu:hover .cart-dropdown,
+.cart-menu.dropdown-open .cart-dropdown {
+    display: flex;
+}
+
+.cart-dropdown-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cart-dropdown-item {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cart-dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.cart-dropdown-name {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #e6edf3;
+    text-decoration: none;
+    margin-bottom: 6px;
+    line-height: 1.3;
+}
+
+.cart-dropdown-name:hover {
+    color: #00c9a7;
+}
+
+.cart-dropdown-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.cart-dropdown-price {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #00c9a7;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.cart-dropdown-qty {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.cart-qty-form {
+    margin: 0;
+    display: inline;
+}
+
+.cart-qty-btn {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.06);
+    color: #e6edf3;
+    font-size: 1.1rem;
+    line-height: 1;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.cart-qty-btn:hover:not(:disabled) {
+    background: rgba(0, 201, 167, 0.2);
+    border-color: #00c9a7;
+    color: #00c9a7;
+}
+
+.cart-qty-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cart-dropdown-num {
+    min-width: 24px;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #8b949e;
+}
+
+.cart-dropdown-total {
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    font-size: 1rem;
+    color: #e6edf3;
+}
+
+.cart-dropdown-total strong {
+    color: #00c9a7;
+}
+
+.cart-dropdown-empty {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #8b949e;
+}
+
+.cart-dropdown-view {
+    display: block;
+    text-align: center;
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: #0b0f14;
+    background: #00c9a7;
+    border-radius: 8px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.cart-dropdown-view:hover {
+    background: #00ddb8;
+    color: #0b0f14;
+}
+
 /* --- Second row: nav links --- */
 .nav-links {
     width: 100%;

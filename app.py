@@ -10,7 +10,7 @@ from blueprints.admin import admin_bp
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 
-# Make user available in ALL templates
+# Make user and cart available in ALL templates
 @app.context_processor
 def inject_user():
     from models import User  # local import to avoid circular import
@@ -20,6 +20,33 @@ def inject_user():
         user = User.query.get(session["user_id"])
 
     return dict(user=user)
+
+
+@app.context_processor
+def inject_cart():
+    """Cart data for navbar dropdown (items, total, count)."""
+    from decimal import Decimal
+    from blueprints.account.routes import get_cart
+    from models import Product
+
+    cart = get_cart()
+    cart_count = sum(int(q) for q in cart.values())
+    if not cart:
+        return dict(cart_items=[], cart_total=Decimal("0.00"), cart_count=0)
+
+    product_ids = [int(pid) for pid in cart.keys()]
+    products = Product.query.filter(Product.product_id.in_(product_ids)).all()
+    items = []
+    total = Decimal("0.00")
+    for product in products:
+        qty = int(cart.get(str(product.product_id), 0))
+        if qty <= 0:
+            continue
+        line_total = product.price * qty
+        total += line_total
+        items.append({"product": product, "quantity": qty, "line_total": line_total})
+
+    return dict(cart_items=items, cart_total=total, cart_count=cart_count)
 
 
 # SQLite Database

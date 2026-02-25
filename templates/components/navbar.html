@@ -11,8 +11,45 @@
              alt="Logo" class="logo-box">
     </div>
 
-    <!-- Right: User Section -->
+    <!-- Right: Cart + User Section -->
     <div class="nav-right">
+
+        <!-- Cart (dropdown shows items; "View cart" goes to cart page) -->
+        <div class="cart-menu" id="cart-menu">
+            <span class="cart-trigger" id="cart-trigger" role="button" aria-expanded="false" aria-haspopup="true" aria-controls="cart-dropdown" title="Cart">
+                <span class="cart-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                </span>
+                {% if cart_count %}<span class="cart-badge">{{ cart_count }}</span>{% endif %}
+            </span>
+            <div class="cart-dropdown" id="cart-dropdown">
+                {% if cart_items %}
+                    <div class="cart-dropdown-items">
+                        {% for item in cart_items %}
+                        <div class="cart-dropdown-item">
+                            <a href="{{ url_for('shop.product_page', product_id=item.product.product_id) }}" class="cart-dropdown-name">{{ item.product.name }}</a>
+                            <div class="cart-dropdown-row">
+                                <span class="cart-dropdown-price">£{{ item.line_total }}</span>
+                                <div class="cart-dropdown-qty">
+                                    <form method="POST" action="{{ url_for('account.decrease_cart', product_id=item.product.product_id) }}" class="cart-qty-form">
+                                        <button type="submit" class="cart-qty-btn" aria-label="Decrease quantity">−</button>
+                                    </form>
+                                    <span class="cart-dropdown-num">{{ item.quantity }}</span>
+                                    <form method="POST" action="{{ url_for('account.add_to_cart', product_id=item.product.product_id) }}" class="cart-qty-form">
+                                        <button type="submit" class="cart-qty-btn" aria-label="Increase quantity" {% if item.quantity >= item.product.stock_quantity %}disabled{% endif %}>+</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="cart-dropdown-total">Total: <strong>£{{ cart_total }}</strong></div>
+                {% else %}
+                    <p class="cart-dropdown-empty">Your cart is empty.</p>
+                {% endif %}
+                <a href="{{ url_for('account.view_cart') }}" class="cart-dropdown-view">View cart</a>
+            </div>
+        </div>
 
         {% if session.get("user_id") %}
             <!-- LOGGED-IN DROPDOWN -->
@@ -137,25 +174,43 @@
     var shopMenu = document.getElementById('shop-menu');
     var shopTrigger = document.getElementById('shop-trigger');
 
+    var cartMenu = document.getElementById('cart-menu');
+    var cartTrigger = document.getElementById('cart-trigger');
+
     function closeAll() {
         if (userMenu) userMenu.classList.remove('dropdown-open');
         if (shopMenu) shopMenu.classList.remove('dropdown-open');
+        if (cartMenu) cartMenu.classList.remove('dropdown-open');
         if (userTrigger) userTrigger.setAttribute('aria-expanded', 'false');
         if (shopTrigger) shopTrigger.setAttribute('aria-expanded', 'false');
+        if (cartTrigger) cartTrigger.setAttribute('aria-expanded', 'false');
     }
 
     function openUser() {
         if (shopMenu) shopMenu.classList.remove('dropdown-open');
+        if (cartMenu) cartMenu.classList.remove('dropdown-open');
         if (shopTrigger) shopTrigger.setAttribute('aria-expanded', 'false');
+        if (cartTrigger) cartTrigger.setAttribute('aria-expanded', 'false');
         if (userMenu) userMenu.classList.toggle('dropdown-open');
         if (userTrigger) userTrigger.setAttribute('aria-expanded', userMenu && userMenu.classList.contains('dropdown-open'));
     }
 
     function openShop() {
         if (userMenu) userMenu.classList.remove('dropdown-open');
+        if (cartMenu) cartMenu.classList.remove('dropdown-open');
         if (userTrigger) userTrigger.setAttribute('aria-expanded', 'false');
+        if (cartTrigger) cartTrigger.setAttribute('aria-expanded', 'false');
         if (shopMenu) shopMenu.classList.toggle('dropdown-open');
         if (shopTrigger) shopTrigger.setAttribute('aria-expanded', shopMenu && shopMenu.classList.contains('dropdown-open'));
+    }
+
+    function openCart() {
+        if (userMenu) userMenu.classList.remove('dropdown-open');
+        if (shopMenu) shopMenu.classList.remove('dropdown-open');
+        if (userTrigger) userTrigger.setAttribute('aria-expanded', 'false');
+        if (shopTrigger) shopTrigger.setAttribute('aria-expanded', 'false');
+        if (cartMenu) cartMenu.classList.toggle('dropdown-open');
+        if (cartTrigger) cartTrigger.setAttribute('aria-expanded', cartMenu && cartMenu.classList.contains('dropdown-open'));
     }
 
     if (userTrigger) {
@@ -172,22 +227,31 @@
             openShop();
         });
     }
+    if (cartTrigger) {
+        cartTrigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            openCart();
+        });
+    }
 
     document.addEventListener('click', function(e) {
-        if (e.target.closest && !e.target.closest('.user-menu') && !e.target.closest('.shop-menu')) {
+        if (e.target.closest && !e.target.closest('.user-menu') && !e.target.closest('.shop-menu') && !e.target.closest('.cart-menu')) {
             closeAll();
         }
     });
     document.addEventListener('touchstart', function(e) {
-        if (e.target.closest && !e.target.closest('.user-menu') && !e.target.closest('.shop-menu')) {
+        if (e.target.closest && !e.target.closest('.user-menu') && !e.target.closest('.shop-menu') && !e.target.closest('.cart-menu')) {
             closeAll();
         }
     }, { passive: true });
 
-    // Prevent dropdown panel clicks from closing (link clicks will navigate)
+    // Prevent dropdown panel clicks from closing (link clicks will navigate; form submits stay)
     var userDrop = document.getElementById('user-dropdown');
     var shopDrop = document.getElementById('shop-dropdown');
+    var cartDrop = document.getElementById('cart-dropdown');
     if (userDrop) userDrop.addEventListener('click', function(e) { e.stopPropagation(); });
     if (shopDrop) shopDrop.addEventListener('click', function(e) { e.stopPropagation(); });
+    if (cartDrop) cartDrop.addEventListener('click', function(e) { e.stopPropagation(); });
 })();
 </script>
