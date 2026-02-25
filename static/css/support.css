@@ -17,7 +17,8 @@ body {
 }
 
 .content-wrapper > p {
-    max-width: 760px;
+    max-width: none;
+    width: 100%;
     line-height: 1.6;
     margin-bottom: 16px;
 }
