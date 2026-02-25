@@ -16,12 +16,12 @@
 
         {% if session.get("user_id") %}
             <!-- LOGGED-IN DROPDOWN -->
-            <div class="user-menu">
-                <div class="user-trigger">
+            <div class="user-menu" id="user-menu">
+                <div class="user-trigger" role="button" aria-expanded="false" aria-haspopup="true" aria-controls="user-dropdown" id="user-trigger">
                     {{ session.get("username") }} ▼
                 </div>
 
-                <div class="user-dropdown">
+                <div class="user-dropdown" id="user-dropdown">
 
                     <a href="{{ url_for('account.my_account') }}">My Account</a>
                     <a href="{{ url_for('account.order_history') }}">My Orders</a>
@@ -61,9 +61,9 @@
     <a href="{{ url_for('home.home') }}">Home</a>
 
     <!-- SHOP DROPDOWN -->
-    <div class="shop-menu">
-        <span class="shop-trigger">Shop ▼</span>
-        <div class="shop-dropdown">
+    <div class="shop-menu" id="shop-menu">
+        <span class="shop-trigger" role="button" aria-expanded="false" aria-haspopup="true" aria-controls="shop-dropdown" id="shop-trigger">Shop ▼</span>
+        <div class="shop-dropdown" id="shop-dropdown">
 
             <!-- Games & Accessories -->
             <div class="dropdown-section">
@@ -128,3 +128,66 @@
 </script>
 {% endif %}
 {% endwith %}
+
+<script>
+(function() {
+    // Touch/click dropdowns: open on trigger click, close on outside click or second trigger click
+    var userMenu = document.getElementById('user-menu');
+    var userTrigger = document.getElementById('user-trigger');
+    var shopMenu = document.getElementById('shop-menu');
+    var shopTrigger = document.getElementById('shop-trigger');
+
+    function closeAll() {
+        if (userMenu) userMenu.classList.remove('dropdown-open');
+        if (shopMenu) shopMenu.classList.remove('dropdown-open');
+        if (userTrigger) userTrigger.setAttribute('aria-expanded', 'false');
+        if (shopTrigger) shopTrigger.setAttribute('aria-expanded', 'false');
+    }
+
+    function openUser() {
+        if (shopMenu) shopMenu.classList.remove('dropdown-open');
+        if (shopTrigger) shopTrigger.setAttribute('aria-expanded', 'false');
+        if (userMenu) userMenu.classList.toggle('dropdown-open');
+        if (userTrigger) userTrigger.setAttribute('aria-expanded', userMenu && userMenu.classList.contains('dropdown-open'));
+    }
+
+    function openShop() {
+        if (userMenu) userMenu.classList.remove('dropdown-open');
+        if (userTrigger) userTrigger.setAttribute('aria-expanded', 'false');
+        if (shopMenu) shopMenu.classList.toggle('dropdown-open');
+        if (shopTrigger) shopTrigger.setAttribute('aria-expanded', shopMenu && shopMenu.classList.contains('dropdown-open'));
+    }
+
+    if (userTrigger) {
+        userTrigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            openUser();
+        });
+    }
+    if (shopTrigger) {
+        shopTrigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            openShop();
+        });
+    }
+
+    document.addEventListener('click', function(e) {
+        if (e.target.closest && !e.target.closest('.user-menu') && !e.target.closest('.shop-menu')) {
+            closeAll();
+        }
+    });
+    document.addEventListener('touchstart', function(e) {
+        if (e.target.closest && !e.target.closest('.user-menu') && !e.target.closest('.shop-menu')) {
+            closeAll();
+        }
+    }, { passive: true });
+
+    // Prevent dropdown panel clicks from closing (link clicks will navigate)
+    var userDrop = document.getElementById('user-dropdown');
+    var shopDrop = document.getElementById('shop-dropdown');
+    if (userDrop) userDrop.addEventListener('click', function(e) { e.stopPropagation(); });
+    if (shopDrop) shopDrop.addEventListener('click', function(e) { e.stopPropagation(); });
+})();
+</script>
