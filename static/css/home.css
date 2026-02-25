@@ -274,28 +274,7 @@
     font-family: 'JetBrains Mono', monospace;
 }
 
-/* ---- Footer strip ---- */
+/* ---- Footer strip (home: inside main with margin-top auto) ---- */
 .home-footer-strip {
     margin-top: auto;
-    padding: 24px;
-    background: var(--hero-bg);
-    color: var(--hero-muted);
-}
-
-.home-footer-strip .section-inner {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 24px;
-}
-
-.home-footer-strip a {
-    color: var(--hero-muted);
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: color 0.2s;
-}
-
-.home-footer-strip a:hover {
-    color: var(--hero-accent);
 }

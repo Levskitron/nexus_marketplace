@@ -57,6 +57,17 @@
     overflow: hidden;
 }
 
+/* Horizontal scroll on narrow viewports so table isn't cut off */
+@media (max-width: 768px) {
+    .orders-content {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .orders-table {
+        min-width: 520px;
+    }
+}
+
 .orders-table {
     width: 100%;
     border-collapse: collapse;

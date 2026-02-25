@@ -35,14 +35,14 @@
                     {% for item in cart_items %}
                     <tr>
                         <td>{{ item.product.name }}</td>
-                        <td>£{{ item.product.price }}</td>
+                        <td>£{{ "%.2f"|format(item.product.price) }}</td>
                         <td>{{ item.quantity }}</td>
-                        <td>£{{ item.line_total }}</td>
+                        <td>£{{ "%.2f"|format(item.line_total) }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            <p class="checkout-total checkout-total-row">Total: <span class="amount">£{{ cart_total }}</span></p>
+            <p class="checkout-total checkout-total-row">Total: <span class="amount">£{{ "%.2f"|format(cart_total) }}</span></p>
             <p class="checkout-balance">Your credit balance: <strong>£{{ "%.2f"|format(user.credits_balance or 0) }}</strong> — payment will be taken from this balance. <a href="{{ url_for('account.my_account') }}">Add credits</a></p>
         </section>
 
@@ -100,6 +100,8 @@
         </section>
 
     </main>
+
+    {% include "components/footer.html" %}
 
 </body>
 </html>
