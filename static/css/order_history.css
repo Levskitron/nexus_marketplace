@@ -1,0 +1,109 @@
+/* Order history (My Orders) – Nexus style */
+.orders-page {
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f6f8fa;
+    min-height: 100vh;
+    color: #1a1f26;
+}
+
+.orders-main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 24px 48px;
+}
+
+.orders-header {
+    background: #0b0f14;
+    color: #e6edf3;
+    padding: 28px 32px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+}
+
+.orders-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.orders-empty {
+    background: #fff;
+    border: 1px solid #e1e8ed;
+    border-radius: 12px;
+    padding: 48px;
+    text-align: center;
+}
+
+.orders-empty p {
+    margin: 0 0 20px;
+    font-size: 1rem;
+    color: #57606a;
+}
+
+.orders-empty a {
+    color: #00c9a7;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.orders-empty a:hover {
+    text-decoration: underline;
+}
+
+.orders-content {
+    background: #fff;
+    border: 1px solid #e1e8ed;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.orders-table th {
+    text-align: left;
+    padding: 14px 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #57606a;
+    background: #f6f8fa;
+    border-bottom: 1px solid #e1e8ed;
+}
+
+.orders-table td {
+    padding: 16px 20px;
+    border-bottom: 1px solid #e1e8ed;
+    font-size: 0.95rem;
+    color: #1a1f26;
+}
+
+.orders-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.orders-table tbody tr:hover {
+    background: #fafbfc;
+}
+
+.orders-table .orders-id {
+    font-weight: 600;
+    color: #1a1f26;
+}
+
+.orders-table .orders-amount {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    color: #00c9a7;
+}
+
+.orders-table .orders-status {
+    text-transform: capitalize;
+}
+
+.orders-table .orders-date {
+    color: #57606a;
+}

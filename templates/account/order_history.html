@@ -2,37 +2,57 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My Orders</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My orders – Nexus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/order_history.css') }}">
 </head>
-<body>
+<body class="orders-page">
+
     {% include "components/navbar.html" %}
 
-    <h1>My Orders</h1>
-    <hr>
+    <main class="orders-main">
 
-    {% if not orders %}
-        <p>You have not placed any orders yet.</p>
-    {% else %}
-        <table border="1" cellpadding="8" cellspacing="0">
-            <tr>
-                <th>Order #</th>
-                <th>Date</th>
-                <th>Total</th>
-                <th>Payment</th>
-                <th>Status</th>
-            </tr>
-            {% for order in orders %}
-                <tr>
-                    <td>{{ order.order_id }}</td>
-                    <td>{{ order.order_date.strftime('%d %B %Y') }}</td>
-                    <td>£{{ order.total_amount }}</td>
-                    <td>{{ order.payment_status }}</td>
-                    <td>{{ order.delivery_status }}</td>
-                </tr>
-            {% endfor %}
-        </table>
-    {% endif %}
+        <header class="orders-header">
+            <h1>My orders</h1>
+        </header>
+
+        {% if not orders %}
+            <div class="orders-empty">
+                <p>You haven't placed any orders yet.</p>
+                <a href="{{ url_for('shop.search') }}">Browse products</a>
+            </div>
+        {% else %}
+            <div class="orders-content">
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Order #</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                            <th>Payment</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td class="orders-id">{{ order.order_id }}</td>
+                            <td class="orders-date">{{ order.order_date.strftime('%d %B %Y') }}</td>
+                            <td class="orders-amount">£{{ order.total_amount }}</td>
+                            <td class="orders-status">{{ order.payment_status }}</td>
+                            <td class="orders-status">{{ order.delivery_status }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+    </main>
 
 </body>
 </html>

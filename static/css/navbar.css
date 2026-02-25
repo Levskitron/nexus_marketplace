@@ -229,7 +229,7 @@ html, body {
     color: #00c9a7;
 }
 
-/* --- Global flash widget (center of page) --- */
+/* --- Global flash widget (center of page, auto-dismiss) --- */
 .flash-widget {
     position: fixed;
     top: 140px;
@@ -242,16 +242,50 @@ html, body {
     max-width: 90%;
     width: 420px;
     pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.flash-widget--dismissed {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
 }
 
 .flash-message {
-    padding: 14px 20px;
+    position: relative;
+    padding: 14px 44px 14px 20px;
     border-radius: 10px;
     font-size: 0.95rem;
     font-weight: 500;
-    text-align: center;
+    text-align: left;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     pointer-events: auto;
+}
+
+.flash-text {
+    display: block;
+}
+
+.flash-dismiss {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    color: inherit;
+    font-size: 1.25rem;
+    line-height: 1;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.flash-dismiss:hover {
+    background: rgba(255, 255, 255, 0.35);
 }
 
 .flash-success {

@@ -2,34 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Order Confirmation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order confirmation – Nexus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/order_confirmation.css') }}">
 </head>
-<body>
+<body class="confirmation-page">
+
     {% include "components/navbar.html" %}
 
-    <h1>Order Confirmation</h1>
-    <hr>
+    <main class="confirmation-main">
 
-    {% if not orders %}
-        <p>No recent orders found.</p>
-    {% else %}
-        <p>Thank you for your purchase! The following order(s) have been created:</p>
+        <header class="confirmation-header">
+            <h1>Order confirmation</h1>
+            <p class="confirmation-thanks">Thank you for your purchase</p>
+        </header>
 
-        <ul>
-            {% for order in orders %}
-                <li>
-                    <strong>Order #{{ order.order_id }}</strong><br>
-                    Seller ID: {{ order.seller_id }}<br>
-                    Total: £{{ order.total_amount }}<br>
-                    Status: {{ order.delivery_status }}
-                </li>
-                <br>
-            {% endfor %}
-        </ul>
-    {% endif %}
+        <div class="confirmation-content">
 
-    <a href="{{ url_for('account.order_history') }}">View your order history</a>
+            {% if not orders %}
+                <p>No recent orders found.</p>
+            {% else %}
+                <p>The following order(s) have been placed:</p>
+                <ul class="confirmation-list">
+                    {% for order in orders %}
+                    <li class="confirmation-order">
+                        <p class="confirmation-order-title">Order #{{ order.order_id }}</p>
+                        <p class="confirmation-order-meta">
+                            Seller: {{ order.seller.username if order.seller else order.seller_id }}<br>
+                            Total: <span class="amount">£{{ order.total_amount }}</span><br>
+                            Status: {{ order.delivery_status }}
+                        </p>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+        </div>
+
+        <div class="confirmation-actions">
+            <a href="{{ url_for('account.order_history') }}">View order history</a>
+        </div>
+
+    </main>
 
 </body>
 </html>
