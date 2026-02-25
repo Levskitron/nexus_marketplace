@@ -20,7 +20,7 @@ with app.app_context():
         ("Services", None),
         ("Consultation", "Services"),
         ("Prebuilt", "Services"),
-        ("Repair / Upgrade", "Services"),
+        ("Repair & Upgrade", "Services"),
     ]
 
     def get_category(name):

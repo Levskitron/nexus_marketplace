@@ -38,10 +38,44 @@ app.register_blueprint(account_bp)
 app.register_blueprint(seller_bp)
 app.register_blueprint(admin_bp)
 
-# Create tables (including users) once at startup
+# Create tables and ensure categories exist (so /shop/category/... works on fresh deploy e.g. Render)
+def ensure_categories():
+    from models import Category
+    categories = [
+        ("PC Parts", None),
+        ("CPU", "PC Parts"),
+        ("GPU", "PC Parts"),
+        ("Motherboard", "PC Parts"),
+        ("RAM", "PC Parts"),
+        ("Storage", "PC Parts"),
+        ("Power Supplies", "PC Parts"),
+        ("Games & Accessories", None),
+        ("Games", "Games & Accessories"),
+        ("Accessories", "Games & Accessories"),
+        ("Services", None),
+        ("Consultation", "Services"),
+        ("Prebuilt", "Services"),
+        ("Repair & Upgrade", "Services"),
+    ]
+
+    def get_category(name):
+        return Category.query.filter_by(category_name=name).first()
+
+    for name, parent_name in categories:
+        parent = get_category(parent_name) if parent_name else None
+        if get_category(name):
+            continue
+        new_cat = Category(
+            category_name=name,
+            parent_category_id=parent.category_id if parent else None,
+        )
+        db.session.add(new_cat)
+    db.session.commit()
+
 with app.app_context():
     from models import User  # make sure the model is imported
     db.create_all()
+    ensure_categories()
 
 if __name__ == "__main__":
     app.run(debug=True)
