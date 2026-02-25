@@ -36,17 +36,39 @@
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
-    margin-bottom: 24px;
+    margin-bottom: 28px;
 }
 
 .admin-nav a {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #57606a;
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: 600;
     text-decoration: none;
+    border-radius: 8px;
+    transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s;
 }
 
-.admin-nav a:hover {
+.admin-nav a.admin-nav-btn--primary {
+    background: #00c9a7;
+    color: #0b0f14;
+    border: none;
+}
+
+.admin-nav a.admin-nav-btn--primary:hover {
+    background: #00ddb8;
+    transform: translateY(-1px);
+}
+
+.admin-nav a.admin-nav-btn--secondary {
+    background: #fff;
+    color: #57606a;
+    border: 2px solid #e1e8ed;
+}
+
+.admin-nav a.admin-nav-btn--secondary:hover {
+    border-color: #00c9a7;
     color: #00c9a7;
 }
 
@@ -116,6 +138,11 @@
     color: #1a1f26;
 }
 
+.admin-table td.admin-cell-actions {
+    min-width: 260px;
+    vertical-align: top;
+}
+
 .admin-table tbody tr:last-child td {
     border-bottom: none;
 }
@@ -138,78 +165,115 @@
 .admin-table .status-deleted { background: #f6f8fa; color: #8b949e; }
 .admin-table .status-removed { background: #f6f8fa; color: #8b949e; }
 
-.admin-table select {
-    padding: 6px 10px;
-    font-size: 0.85rem;
-    border: 1px solid #e1e8ed;
-    border-radius: 6px;
-    background: #fff;
-}
-
-.admin-table .btn-update {
-    padding: 6px 12px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    border: none;
-    border-radius: 6px;
-    background: #00c9a7;
-    color: #0b0f14;
-    cursor: pointer;
-    font-family: inherit;
-}
-
-.admin-table .btn-update:hover {
-    background: #00ddb8;
-}
-
 .admin-user-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.admin-user-actions__row {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+}
+
+.admin-user-actions__links {
+    display: flex;
+    gap: 10px;
+}
+
+.admin-user-actions__form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 0 0;
+    border-top: 1px solid #e1e8ed;
+}
+
+.admin-user-actions__form .admin-form-label {
+    width: 100%;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #8b949e;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
 }
 
 .admin-user-actions form {
     margin: 0;
-    display: inline-flex;
-    gap: 6px;
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
+    gap: 10px;
 }
 
 .admin-table .btn-edit {
-    padding: 6px 12px;
-    font-size: 0.85rem;
+    padding: 10px 18px;
+    font-size: 0.95rem;
     font-weight: 600;
-    border-radius: 6px;
+    border-radius: 8px;
     background: #f6f8fa;
-    color: #57606a;
+    color: #1a1f26;
     text-decoration: none;
-    border: 1px solid #e1e8ed;
+    border: 2px solid #e1e8ed;
     display: inline-block;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 
 .admin-table .btn-edit:hover {
-    background: rgba(0, 201, 167, 0.15);
-    color: #00c9a7;
+    background: rgba(0, 201, 167, 0.12);
+    color: #0d7a6c;
     border-color: #00c9a7;
 }
 
 .admin-table .btn-delete,
 .btn-delete {
-    padding: 6px 12px;
-    font-size: 0.85rem;
+    padding: 10px 18px;
+    font-size: 0.95rem;
     font-weight: 600;
-    border-radius: 6px;
-    background: transparent;
+    border-radius: 8px;
+    background: #fff;
     color: #b02a37;
-    border: 1px solid rgba(220, 53, 69, 0.4);
+    border: 2px solid rgba(220, 53, 69, 0.4);
     cursor: pointer;
     font-family: inherit;
+    transition: background 0.2s, border-color 0.2s;
 }
 
 .admin-table .btn-delete:hover,
 .btn-delete:hover {
-    background: rgba(220, 53, 69, 0.1);
+    background: rgba(220, 53, 69, 0.08);
+    border-color: #b02a37;
+}
+
+.admin-table .btn-update {
+    padding: 10px 18px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    background: #00c9a7;
+    color: #0b0f14;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.admin-table .btn-update:hover {
+    background: #00ddb8;
+    transform: translateY(-1px);
+}
+
+.admin-table select {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    border: 1px solid #e1e8ed;
+    border-radius: 8px;
+    background: #fff;
+    min-width: 100px;
 }
 
 .admin-form .form-group {

@@ -22,10 +22,10 @@
         </header>
 
         <nav class="admin-nav">
-            <a href="{{ url_for('admin.users') }}">Manage users</a>
-            <a href="{{ url_for('admin.products') }}">Manage products</a>
+            <a href="{{ url_for('admin.users') }}" class="admin-nav-btn--primary">Manage users</a>
+            <a href="{{ url_for('admin.products') }}" class="admin-nav-btn--secondary">Manage products</a>
             {% if user.role == 'super_admin' %}
-            <a href="{{ url_for('admin.add_admin_user') }}">Add admin user</a>
+            <a href="{{ url_for('admin.add_admin_user') }}" class="admin-nav-btn--secondary">Add admin user</a>
             {% endif %}
         </nav>
 
