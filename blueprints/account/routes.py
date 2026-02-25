@@ -8,7 +8,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from . import account_bp
 from database import db
-from models import User, Product, Order, OrderItem, Transaction
+from models import User, Product, Order, OrderItem, Transaction, CreditTopup
 from forms import CheckoutForm
 
 
@@ -67,6 +67,48 @@ def my_account():
                 session["email"] = new_email
                 db.session.commit()
                 flash("Email updated!", "success")
+
+        elif action == "deposit_credits":
+            amount_str = (request.form.get("amount") or "").strip()
+            try:
+                amount = Decimal(amount_str)
+            except Exception:
+                flash("Please enter a valid deposit amount.", "error")
+                return redirect(url_for("account.my_account"))
+
+            if amount <= 0:
+                flash("Deposit amount must be greater than zero.", "error")
+                return redirect(url_for("account.my_account"))
+
+            current_balance = user.credits_balance or Decimal("0.00")
+            user.credits_balance = current_balance + amount
+
+            topup = CreditTopup(
+                user_id=user.user_id,
+                topup_amount=amount,
+                payment_reference="manual_deposit",
+            )
+            db.session.add(topup)
+
+            tx = Transaction(
+                user_id=user.user_id,
+                transaction_type="credit_topup",
+                amount=amount,
+            )
+            db.session.add(tx)
+
+            db.session.commit()
+            flash("Credits deposited successfully!", "success")
+
+        elif action == "become_seller" and user.role == "buyer":
+            user.role = "seller"
+            db.session.commit()
+            flash("Your account is now a seller account.", "success")
+
+        elif action == "remove_seller_role" and user.role == "seller":
+            user.role = "buyer"
+            db.session.commit()
+            flash("Seller role removed. Your account is now a buyer account.", "success")
 
         elif action == "update_address":
             new_address = (request.form.get("shipping_address") or "").strip()
