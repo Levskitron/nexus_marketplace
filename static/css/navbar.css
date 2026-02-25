@@ -99,7 +99,7 @@ html, body {
 
 .user-dropdown {
     position: absolute;
-    top: calc(100% + 6px);
+    top: 100%;
     right: 0;
     background: #161b22;
     border: 1px solid rgba(0, 201, 167, 0.25);
@@ -180,7 +180,7 @@ html, body {
 
 .shop-dropdown {
     position: absolute;
-    top: calc(100% + 8px);
+    top: 100%;
     left: 50%;
     transform: translateX(-50%);
 

@@ -1,163 +1,287 @@
-/* Global look & feel (same as Aidan's) */
-body {
+/* My Account – match Nexus (dark + teal) */
+.account-page {
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f6f8fa;
+    min-height: 100vh;
+    color: #1a1f26;
+}
+
+.account-main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 24px 48px;
+}
+
+/* ---- Header ---- */
+.account-header {
+    background: #0b0f14;
+    color: #e6edf3;
+    padding: 32px 28px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+}
+
+.account-title {
     margin: 0;
-    background: #f4f1fa;
-    font-family: Arial, sans-serif;
-    color: #2a2344;
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
 }
 
-/* Center the heading a bit like his mockup */
-body > h1 {
-    text-align: center;
-    margin-top: 20px;
+.account-subtitle {
+    margin: 6px 0 0;
+    font-size: 0.95rem;
+    color: #8b949e;
 }
 
-/* === MAIN ACCOUNT LAYOUT ===================================== */
-/* This is your big wrapper div with inline flex styles */
-body > div:last-of-type {
-    display: grid !important;            /* override inline display:flex */
-    grid-template-columns: 1fr 1fr;
-    gap: 40px !important;               /* override inline gap */
-    padding: 40px;
-    box-sizing: border-box;
+/* ---- Flash messages ---- */
+.account-flash {
+    list-style: none;
+    margin: 0 0 24px;
+    padding: 0;
 }
 
-/* LEFT COLUMN: profile + user info */
-body > div:last-of-type > div:first-of-type {
-    text-align: left;
+.account-flash-item {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-weight: 500;
 }
 
-/* Profile placeholder box */
-body > div:last-of-type > div:first-of-type > div {
-    width: 250px;
-    height: 250px;
-    border: 3px solid #3d2b77;
-    margin-bottom: 20px;
-    background: #e8e2f7;
+.account-flash-success {
+    background: rgba(0, 201, 167, 0.15);
+    color: #0d7a6c;
+    border: 1px solid rgba(0, 201, 167, 0.35);
+}
+
+.account-flash-error {
+    background: rgba(220, 53, 69, 0.1);
+    color: #b02a37;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+/* ---- Grid ---- */
+.account-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 32px;
+    align-items: start;
+}
+
+@media (max-width: 768px) {
+    .account-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ---- Profile (left) ---- */
+.account-profile {
+    background: #fff;
+    border: 1px solid #e1e8ed;
+    border-radius: 12px;
+    padding: 24px;
+    position: sticky;
+    top: 24px;
+}
+
+.account-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0b0f14 0%, #161b22 100%);
+    border: 2px solid #00c9a7;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
-    color: #3d2b77;
-}
-
-/* User info text under the box */
-body > div:last-of-type > div:first-of-type p {
-    margin: 4px 0;
-}
-
-/* Seller buttons on the left */
-body > div:last-of-type > div:first-of-type form button {
-    padding: 10px 20px;
-    background: #5c3fbc;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 14px;
-    margin-top: 5px;
-}
-
-body > div:last-of-type > div:first-of-type form button:hover {
-    background: #472f93;
-}
-
-/* === RIGHT COLUMN: forms ===================================== */
-body > div:last-of-type > div:last-of-type {
-    max-width: 450px;
-}
-
-/* Each form block */
-body > div:last-of-type > div:last-of-type form {
     margin-bottom: 20px;
 }
 
-/* Labels */
-body > div:last-of-type > div:last-of-type form label {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 15px;
-    font-weight: bold;
+.account-avatar-text {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #00c9a7;
 }
 
-/* Text / email / password inputs */
-body > div:last-of-type > div:last-of-type form input[type="text"],
-body > div:last-of-type > div:last-of-type form input[type="email"],
-body > div:last-of-type > div:last-of-type form input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    border: 2px solid #c7b8ec;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    font-size: 15px;
-    outline: none;
-    box-sizing: border-box;
+.account-info {
+    margin-bottom: 20px;
 }
 
-body > div:last-of-type > div:last-of-type form input[type="text"]:focus,
-body > div:last-of-type > div:last-of-type form input[type="email"]:focus,
-body > div:last-of-type > div:last-of-type form input[type="password"]:focus {
-    border-color: #5c3fbc;
+.account-dl {
+    margin: 0;
 }
 
-/* Standard small action buttons on the right column */
-body > div:last-of-type > div:last-of-type form button {
-    padding: 8px 16px;
-    background: #5c3fbc;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: 0.2s;
+.account-dl dt {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #57606a;
+    margin-top: 12px;
 }
 
-body > div:last-of-type > div:last-of-type form button:hover {
-    background: #472f93;
-}
-
-/* === SETTINGS BOX (last form's inner div) ==================== */
-body > div:last-of-type > div:last-of-type form:last-of-type > div {
-    width: 100%;
-    padding: 20px;
-    border: 2px solid #c7b8ec;
-    border-radius: 12px;
-    background: #faf9ff;
-    box-sizing: border-box;
-}
-
-body > div:last-of-type > div:last-of-type form:last-of-type > div p {
+.account-dl dt:first-child {
     margin-top: 0;
-    margin-bottom: 10px;
 }
 
-/* Checkbox labels inside settings */
-body > div:last-of-type > div:last-of-type form:last-of-type > div input[type="checkbox"] {
-    margin-right: 8px;
+.account-dl dd {
+    margin: 4px 0 0;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #1a1f26;
 }
 
-/* "Save Settings" button at bottom of settings form */
-body > div:last-of-type > div:last-of-type form:last-of-type > button {
-    margin-top: 10px;
-    padding: 12px 20px;
-    background: #5c3fbc;
-    color: white;
+.account-role {
+    text-transform: capitalize;
+}
+
+.account-credits {
+    font-family: 'JetBrains Mono', monospace;
+    color: #00c9a7;
+}
+
+.account-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.account-form-inline {
+    margin: 0;
+}
+
+.account-link {
+    display: inline-block;
+    margin-top: 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #00c9a7;
+    text-decoration: none;
+}
+
+.account-link:hover {
+    text-decoration: underline;
+}
+
+/* ---- Forms (right) ---- */
+.account-forms {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.account-card {
+    background: #fff;
+    border: 1px solid #e1e8ed;
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.account-card-title {
+    margin: 0 0 16px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a1f26;
+}
+
+.account-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.account-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #57606a;
+}
+
+.account-input {
+    width: 100%;
+    max-width: 360px;
+    padding: 10px 14px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    border: 1px solid #e1e8ed;
+    border-radius: 8px;
+    background: #fff;
+    color: #1a1f26;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.account-input:focus {
+    outline: none;
+    border-color: #00c9a7;
+}
+
+.account-input::placeholder {
+    color: #8b949e;
+}
+
+.account-input-amount {
+    max-width: 140px;
+}
+
+.account-card-desc {
+    margin: 0 0 14px;
+    font-size: 0.9rem;
+    color: #57606a;
+}
+
+.account-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
     border: none;
-    border-radius: 10px;
-    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, transform 0.15s;
+    width: fit-content;
+}
+
+.account-btn-primary {
+    background: #00c9a7;
+    color: #0b0f14;
+}
+
+.account-btn-primary:hover {
+    background: #00ddb8;
+    transform: translateY(-1px);
+}
+
+.account-btn-outline {
+    background: transparent;
+    color: #57606a;
+    border: 2px solid #e1e8ed;
+}
+
+.account-btn-outline:hover {
+    border-color: #00c9a7;
+    color: #00c9a7;
+}
+
+/* Settings checkboxes */
+.account-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 4px;
+}
+
+.account-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+    color: #1a1f26;
     cursor: pointer;
 }
 
-body > div:last-of-type > div:last-of-type form:last-of-type > button:hover {
-    background: #472f93;
-}
-
-/* Center the entire account layout on the page */
-body > div:last-of-type {
-    max-width: 1100px;          /* limits width so it doesn’t stretch full screen */
-    margin: 0 auto !important;  /* center horizontally */
-    display: grid !important;   /* override inline flex */
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    padding: 40px;
+.account-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #00c9a7;
+    cursor: pointer;
 }

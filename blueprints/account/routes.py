@@ -8,7 +8,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from . import account_bp
 from database import db
-from models import User, Product, Order, OrderItem, Transaction
+from models import User, Product, Order, OrderItem, Transaction, CreditTopup
 from forms import CheckoutForm
 
 
@@ -76,6 +76,30 @@ def my_account():
 
         elif action == "update_settings":
             flash("Settings saved.", "success")
+
+        elif action == "add_credits":
+            try:
+                amount = Decimal(request.form.get("topup_amount") or "0")
+            except Exception:
+                amount = Decimal("0")
+            if amount > 0 and amount <= Decimal("99999.99"):
+                user.credits_balance += amount
+                topup = CreditTopup(
+                    user_id=user.user_id,
+                    topup_amount=amount,
+                    payment_reference=request.form.get("payment_reference") or None,
+                )
+                db.session.add(topup)
+                tx = Transaction(
+                    user_id=user.user_id,
+                    transaction_type="credit_topup",
+                    amount=amount,
+                )
+                db.session.add(tx)
+                db.session.commit()
+                flash(f"Added £{amount:.2f} to your account. New balance: £{user.credits_balance:.2f}", "success")
+            else:
+                flash("Please enter a valid amount (e.g. 10.00).", "error")
 
         return redirect(url_for("account.my_account"))
 

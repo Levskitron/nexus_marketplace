@@ -3,126 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Account - Nexus</title>
-
-    <!-- Navbar stylesheet -->
+    <title>My Account – Nexus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/my_account.css') }}">
 </head>
-<body>
+<body class="account-page">
 
     {% include "components/navbar.html" %}
 
-    <h1>My Account</h1>
-    <hr>
+    <main class="account-main">
 
-    <!-- Flash Messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <ul style="color: red;">
-                {% for category, message in messages %}
-                    <li><strong>{{ message }}</strong></li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
+        <header class="account-header">
+            <h1 class="account-title">My Account</h1>
+            <p class="account-subtitle">Manage your profile and settings</p>
+        </header>
 
-    <div style="display:flex; gap:50px; margin-top:20px;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="account-flash">
+                    {% for category, message in messages %}
+                        <li class="account-flash-item account-flash-{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
 
-        <!-- LEFT: Profile Info -->
-        <div>
+        <div class="account-grid">
 
-            <!-- Profile Image Placeholder -->
-            <div style="
-                width:250px; 
-                height:250px; 
-                border:2px solid black; 
-                display:flex; 
-                justify-content:center; 
-                align-items:center;">
-                <span>Profile Image Placeholder</span>
+            <!-- Left: Profile card -->
+            <aside class="account-profile">
+                <div class="account-avatar">
+                    <span class="account-avatar-text">{{ user.username[0]|upper if user.username else '?' }}</span>
+                </div>
+                <div class="account-info">
+                    <dl class="account-dl">
+                        <dt>Username</dt>
+                        <dd>{{ user.username }}</dd>
+                        <dt>Email</dt>
+                        <dd>{{ user.email }}</dd>
+                        <dt>Role</dt>
+                        <dd class="account-role">{{ user.role }}</dd>
+                        <dt>Credits</dt>
+                        <dd class="account-credits">£{{ "%.2f"|format(user.credits_balance or 0) }}</dd>
+                    </dl>
+                </div>
+                <div class="account-actions">
+                    {% if user.role == "buyer" %}
+                        <form method="POST" class="account-form-inline">
+                            <input type="hidden" name="action" value="become_seller">
+                            <button type="submit" class="account-btn account-btn-primary">Become a seller</button>
+                        </form>
+                    {% endif %}
+                    {% if user.role == "seller" %}
+                        <form method="POST" class="account-form-inline">
+                            <input type="hidden" name="action" value="remove_seller_role">
+                            <button type="submit" class="account-btn account-btn-outline">Remove seller role</button>
+                        </form>
+                    {% endif %}
+                </div>
+                <a href="{{ url_for('account.order_history') }}" class="account-link">View order history →</a>
+            </aside>
+
+            <!-- Right: Update forms -->
+            <div class="account-forms">
+
+                <section class="account-card">
+                    <h2 class="account-card-title">Add credits</h2>
+                    <p class="account-card-desc">Top up your account balance to use at checkout.</p>
+                    <form method="POST" class="account-form">
+                        <input type="hidden" name="action" value="add_credits">
+                        <label class="account-label" for="topup_amount">Amount (£)</label>
+                        <input type="number" id="topup_amount" name="topup_amount" class="account-input account-input-amount" placeholder="e.g. 25.00" min="0.01" max="99999.99" step="0.01" required>
+                        <button type="submit" class="account-btn account-btn-primary">Add credits</button>
+                    </form>
+                </section>
+
+                <section class="account-card">
+                    <h2 class="account-card-title">Change username</h2>
+                    <form method="POST" class="account-form">
+                        <input type="hidden" name="action" value="update_username">
+                        <label class="account-label" for="new_username">New username</label>
+                        <input type="text" id="new_username" name="new_username" class="account-input" placeholder="Enter new username" autocomplete="username">
+                        <button type="submit" class="account-btn account-btn-primary">Update username</button>
+                    </form>
+                </section>
+
+                <section class="account-card">
+                    <h2 class="account-card-title">Change password</h2>
+                    <form method="POST" class="account-form">
+                        <input type="hidden" name="action" value="update_password">
+                        <label class="account-label" for="new_password">New password</label>
+                        <input type="password" id="new_password" name="new_password" class="account-input" placeholder="Enter new password" autocomplete="new-password">
+                        <button type="submit" class="account-btn account-btn-primary">Update password</button>
+                    </form>
+                </section>
+
+                <section class="account-card">
+                    <h2 class="account-card-title">Change email</h2>
+                    <form method="POST" class="account-form">
+                        <input type="hidden" name="action" value="update_email">
+                        <label class="account-label" for="new_email">New email</label>
+                        <input type="email" id="new_email" name="new_email" class="account-input" placeholder="Enter new email" autocomplete="email">
+                        <button type="submit" class="account-btn account-btn-primary">Update email</button>
+                    </form>
+                </section>
+
+                <section class="account-card">
+                    <h2 class="account-card-title">Shipping address</h2>
+                    <form method="POST" class="account-form">
+                        <input type="hidden" name="action" value="update_address">
+                        <label class="account-label" for="shipping_address">Default shipping address</label>
+                        <input type="text" id="shipping_address" name="shipping_address" class="account-input" placeholder="Street, city, postcode" value="{{ user.shipping_address or '' }}">
+                        <button type="submit" class="account-btn account-btn-primary">Save address</button>
+                    </form>
+                </section>
+
+                <section class="account-card">
+                    <h2 class="account-card-title">Settings</h2>
+                    <form method="POST" class="account-form">
+                        <input type="hidden" name="action" value="update_settings">
+                        <div class="account-settings">
+                            <label class="account-checkbox"><input type="checkbox" name="notifications"> Enable notifications</label>
+                            <label class="account-checkbox"><input type="checkbox" name="dark_mode"> Dark mode</label>
+                            <label class="account-checkbox"><input type="checkbox" name="email_alerts"> Email alerts</label>
+                        </div>
+                        <button type="submit" class="account-btn account-btn-primary">Save settings</button>
+                    </form>
+                </section>
+
             </div>
 
-            <br>
-
-            <!-- USER INFO -->
-            <p><strong>User ID:</strong> {{ user.user_id }}</p>
-            <p><strong>Username:</strong> {{ user.username }}</p>
-            <p><strong>Email:</strong> {{ user.email }}</p>
-            <p><strong>Account Role:</strong> {{ user.role }}</p>
-            <p><strong>Credits Balance:</strong> £{{ "%.2f"|format(user.credits_balance or 0) }}</p>
-
-            <br>
-
-            <!-- Become a Seller (only if buyer) -->
-            {% if user.role == "buyer" %}
-                <form method="POST" style="margin-top:20px;">
-                    <input type="hidden" name="action" value="become_seller">
-                    <button type="submit" style="padding:10px 20px;">
-                        Become a Seller
-                    </button>
-                </form>
-            {% endif %}
-
-            <!-- Remove Seller Role (if seller) -->
-            {% if user.role == "seller" %}
-                <form method="POST" style="margin-top:20px;">
-                    <input type="hidden" name="action" value="remove_seller_role">
-                    <button type="submit" style="padding:10px 20px;">
-                        Remove Seller Role
-                    </button>
-                </form>
-            {% endif %}
         </div>
 
-        <!-- RIGHT: Update Forms -->
-        <div>
-
-            <!-- Change Username -->
-            <form method="POST">
-                <input type="hidden" name="action" value="update_username">
-                <label>Change Username</label><br>
-                <input type="text" name="new_username" placeholder="New username"><br><br>
-                <button type="submit">Update Username</button>
-            </form>
-
-            <br>
-
-            <!-- Change Password -->
-            <form method="POST">
-                <input type="hidden" name="action" value="update_password">
-                <label>Change Password</label><br>
-                <input type="password" name="new_password" placeholder="New password"><br><br>
-                <button type="submit">Update Password</button>
-            </form>
-
-            <br>
-
-            <!-- Change Email -->
-            <form method="POST">
-                <input type="hidden" name="action" value="update_email">
-                <label>Change Email</label><br>
-                <input type="email" name="new_email" placeholder="New email"><br><br>
-                <button type="submit">Update Email</button>
-            </form>
-
-            <br><br>
-
-            <!-- Checkbox Settings -->
-            <form method="POST">
-                <input type="hidden" name="action" value="update_settings">
-                <div style="width:300px; height:150px; border:2px solid black; padding:10px;">
-                    <p><strong>Settings</strong></p>
-                    <input type="checkbox"> Enable Notifications<br>
-                    <input type="checkbox"> Dark Mode<br>
-                    <input type="checkbox"> Email Alerts<br>
-                </div><br>
-                <button type="submit">Save Settings</button>
-            </form>
-
-        </div>
-
-    </div>
+    </main>
 
 </body>
 </html>
