@@ -6,8 +6,8 @@
 
     <!-- Navbar CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
-
-    <!-- Temporary layout styling -->
+    <!-- Support page CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/support.css') }}">
 </head>
 
 <body>
@@ -37,26 +37,40 @@
                 troubleshooting steps, category buttons, live chat links, or 
                 anything else the final design requires.
             </p>
+            <div class="support-highlights">
+                <div class="support-pill">Account & billing</div>
+                <div class="support-pill">Orders & delivery</div>
+                <div class="support-pill">Selling on Nexus</div>
+                <div class="support-pill">Technical issues</div>
+            </div>
         </div>
 
         <!-- Contact form -->
-        <h2>Contact Our Support Team</h2>
+        <div class="support-form-card">
+            <h2>Contact Our Support Team</h2>
+            <p>If you have a question, issue, or suggestion, send us a message below.</p>
 
-        <p>If you have a question, issue, or suggestion, send us a message below.</p>
+            <!-- This form currently does nothing. Backend can be added later. -->
+            <form method="POST" action="#">
+                <div>
+                    <label>Name</label>
+                    <input type="text" name="name" placeholder="Your name">
+                </div>
 
-        <!-- This form currently does nothing. Backend can be added later. -->
-        <form method="POST" action="#">
-            <label>Name</label>
-            <input type="text" name="name" placeholder="Your name">
+                <div>
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="Your email address">
+                </div>
 
-            <label>Email</label>
-            <input type="email" name="email" placeholder="Your email address">
+                <div>
+                    <label>Your Message</label>
+                    <textarea name="message" rows="6" placeholder="How can we help you?"></textarea>
+                </div>
 
-            <label>Your Message</label>
-            <textarea name="message" rows="6" placeholder="How can we help you?"></textarea>
-
-            <button type="submit">Send Message</button>
-        </form>
+                <button type="submit">Send Message</button>
+                <div class="support-meta">We usually reply within one business day.</div>
+            </form>
+        </div>
 
     </div>
 
