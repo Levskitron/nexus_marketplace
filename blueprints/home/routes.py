@@ -1,10 +1,12 @@
-from flask import render_template, session
+from flask import render_template, session, request, flash, redirect, url_for, current_app
 from . import home_bp
 
 from database import db
 from models import Product, OrderItem
 from sqlalchemy import func
 import random
+import smtplib
+from email.message import EmailMessage
 
 
 # -------------------------------------------
@@ -59,6 +61,39 @@ def our_story():
     return render_template("home/our_story.html")
 
 
-@home_bp.route("/support")
+@home_bp.route("/support", methods=["GET", "POST"])
 def support():
+    if request.method == "POST":
+        name = (request.form.get("name") or "").strip()
+        email = (request.form.get("email") or "").strip()
+        message = (request.form.get("message") or "").strip()
+
+        if not name or not email or not message:
+            flash("Please fill in all fields before sending your message.", "error")
+            return redirect(url_for("home.support"))
+
+        try:
+            app = current_app
+            support_email = app.config.get("SUPPORT_EMAIL")
+
+            msg = EmailMessage()
+            msg["Subject"] = f"Nexus support request from {name}"
+            msg["From"] = app.config.get("MAIL_USERNAME") or support_email
+            msg["To"] = support_email
+            body = f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
+            msg.set_content(body)
+
+            with smtplib.SMTP(app.config.get("MAIL_SERVER"), app.config.get("MAIL_PORT")) as server:
+                if app.config.get("MAIL_USE_TLS"):
+                    server.starttls()
+                if app.config.get("MAIL_USERNAME") and app.config.get("MAIL_PASSWORD"):
+                    server.login(app.config.get("MAIL_USERNAME"), app.config.get("MAIL_PASSWORD"))
+                server.send_message(msg)
+
+            flash("Your message has been sent. We'll get back to you soon.", "success")
+        except Exception:
+            flash("Something went wrong while sending your message. Please try again later.", "error")
+
+        return redirect(url_for("home.support"))
+
     return render_template("account/support.html")

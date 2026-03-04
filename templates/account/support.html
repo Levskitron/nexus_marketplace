@@ -42,8 +42,18 @@
             <h2>Contact our support team</h2>
             <p>If you have a question, issue, or suggestion, send us a message below.</p>
 
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash {{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
             <!-- Form HTML kept as-is; backend can be added later -->
-            <form method="POST" action="#" class="support-form">
+            <form method="POST" action="{{ url_for('home.support') }}" class="support-form">
                 <label for="support-name">Name</label>
                 <input type="text" id="support-name" name="name" placeholder="Your name">
 
