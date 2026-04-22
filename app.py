@@ -6,9 +6,18 @@ from blueprints.shop import shop_bp
 from blueprints.account import account_bp
 from blueprints.seller import seller_bp
 from blueprints.admin import admin_bp
+import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
+
+# Email / support configuration
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 587
+app.config["MAIL_USE_TLS"] = True
+app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
+app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
+app.config["SUPPORT_EMAIL"] = os.getenv("SUPPORT_EMAIL", "l3888198@gmail.com")
 
 # Make user and cart available in ALL templates
 @app.context_processor
