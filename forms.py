@@ -135,13 +135,7 @@ class CheckoutForm(FlaskForm):
     city = StringField("City", validators=[DataRequired()])
     postcode = StringField("Postcode", validators=[DataRequired()])
     country = StringField("Country", validators=[DataRequired()])
-
-    card_number = StringField("Card Number", validators=[DataRequired()])
-    card_expiry = StringField("Expiry Date (MM/YY)", validators=[DataRequired()])
-    card_cvv = StringField("CVV", validators=[DataRequired()])
-    card_name = StringField("Name on Card", validators=[DataRequired()])
-
-    submit = SubmitField("Complete Purchase")
+    submit = SubmitField("Pay with Stripe")
 
 
 class ConsultationForm(FlaskForm):

@@ -8,8 +8,15 @@ from blueprints.seller import seller_bp
 from blueprints.admin import admin_bp
 import os
 
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv()
+except Exception:
+    pass
+
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your_secret_key'
+app.config["SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY", "dev-secret-key")
 
 # Email / support configuration
 app.config["MAIL_SERVER"] = "smtp.gmail.com"

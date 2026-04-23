@@ -43,7 +43,7 @@
                 </tbody>
             </table>
             <p class="checkout-total checkout-total-row">Total: <span class="amount">£{{ "%.2f"|format(cart_total) }}</span></p>
-            <p class="checkout-balance">Your credit balance: <strong>£{{ "%.2f"|format(user.credits_balance or 0) }}</strong> — payment will be taken from this balance. <a href="{{ url_for('account.my_account') }}">Add credits</a></p>
+            <p class="checkout-balance">You’ll be redirected to Stripe to complete payment securely.</p>
         </section>
 
         <section class="checkout-form-card">
@@ -70,27 +70,6 @@
                 <div class="form-group">
                     {{ form.country.label }}
                     {{ form.country() }}
-                </div>
-
-                <hr class="form-divider">
-
-                <h2>Payment details</h2>
-                <p style="font-size:0.9rem; color:#57606a; margin:0 0 16px;">Payment is taken from your account credits. Card details are for record only.</p>
-                <div class="form-group">
-                    {{ form.card_number.label }}
-                    {{ form.card_number() }}
-                </div>
-                <div class="form-group">
-                    {{ form.card_expiry.label }}
-                    {{ form.card_expiry() }}
-                </div>
-                <div class="form-group">
-                    {{ form.card_cvv.label }}
-                    {{ form.card_cvv() }}
-                </div>
-                <div class="form-group">
-                    {{ form.card_name.label }}
-                    {{ form.card_name() }}
                 </div>
 
                 <hr class="form-divider">

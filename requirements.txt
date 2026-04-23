@@ -6,3 +6,5 @@ email-validator>=2.0
 Werkzeug>=3.0
 SQLAlchemy>=2.0
 gunicorn
+stripe>=9.0.0
+python-dotenv>=1.0.0

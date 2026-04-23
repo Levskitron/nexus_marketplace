@@ -1,14 +1,17 @@
 from decimal import Decimal
+import os
+import json
 
 from flask import (
     render_template, request, redirect,
     url_for, session, flash, abort
 )
 from werkzeug.security import generate_password_hash, check_password_hash
+import stripe
 
 from . import account_bp
 from database import db
-from models import User, Product, Order, OrderItem, Transaction, CreditTopup
+from models import User, Product, Order, OrderItem, Transaction, CreditTopup, StripeCheckoutSession
 from forms import CheckoutForm
 
 
@@ -30,6 +33,109 @@ def save_cart(cart):
     """Save cart back into session."""
     session["cart"] = cart
     session.modified = True
+
+
+def _stripe_configured() -> bool:
+    return bool(os.getenv("STRIPE_SECRET_KEY"))
+
+
+def _stripe_set_api_key():
+    stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+
+
+def _stripe_webhook_secret() -> str | None:
+    return os.getenv("STRIPE_WEBHOOK_SECRET") or None
+
+
+def _fulfill_paid_checkout(stripe_session_id: str, *, user_id: int | None = None) -> list[int]:
+    """
+    Create orders for a paid Stripe Checkout Session exactly once.
+    Returns list of created order IDs (may be empty).
+    """
+    record = StripeCheckoutSession.query.get(stripe_session_id)
+    if not record:
+        return []
+
+    if user_id is not None and record.user_id != user_id:
+        return []
+
+    if record.fulfilled:
+        try:
+            return json.loads(record.order_ids_json or "[]")
+        except Exception:
+            return []
+
+    if record.payment_status != "paid":
+        return []
+
+    try:
+        cart = json.loads(record.cart_json or "{}")
+    except Exception:
+        cart = {}
+
+    if not isinstance(cart, dict) or not cart:
+        return []
+
+    product_ids = [int(pid) for pid in cart.keys()]
+    products = Product.query.filter(Product.product_id.in_(product_ids)).all()
+    product_map = {p.product_id: p for p in products}
+    user = User.query.get(record.user_id)
+
+    created_order_ids: list[int] = []
+
+    for pid_str, qty in cart.items():
+        qty = int(qty)
+        if qty <= 0:
+            continue
+
+        product = product_map.get(int(pid_str))
+        if not product:
+            continue
+
+        if product.status != "active" or qty > product.stock_quantity:
+            continue
+
+        line_total = product.price * qty
+
+        order = Order(
+            buyer_id=user.user_id,
+            seller_id=product.seller_id,
+            total_amount=line_total,
+            payment_status="completed",
+            shipping_address=record.shipping_address,
+            delivery_status="processing",
+        )
+        db.session.add(order)
+        db.session.flush()
+
+        order_item = OrderItem(
+            order_id=order.order_id,
+            product_id=product.product_id,
+            quantity=qty,
+            unit_price=product.price,
+            subtotal=line_total,
+        )
+        db.session.add(order_item)
+
+        product.stock_quantity -= qty
+        if product.stock_quantity <= 0:
+            product.status = "sold_out"
+
+        tx = Transaction(
+            user_id=user.user_id,
+            related_order_id=order.order_id,
+            transaction_type="purchase",
+            amount=line_total,
+        )
+        db.session.add(tx)
+
+        created_order_ids.append(order.order_id)
+
+    record.fulfilled = True
+    record.order_ids_json = json.dumps(created_order_ids)
+    db.session.commit()
+
+    return created_order_ids
 
 
 # --- PAGE: My Account ---
@@ -245,39 +351,9 @@ def checkout():
     # POST — Process checkout
     if form.validate_on_submit():
 
-        # Compute cart total and check credits before creating any orders
-        cart_total_amount = Decimal("0.00")
-        for pid_str, qty in cart.items():
-            qty = int(qty)
-            if qty <= 0:
-                continue
-            product = product_map.get(int(pid_str))
-            if product:
-                cart_total_amount += product.price * qty
-
-        balance = (user.credits_balance or Decimal("0.00"))
-        if balance < cart_total_amount:
-            flash(
-                f"You don't have enough credits. Your balance: £{balance:.2f}. Required: £{cart_total_amount:.2f}. Add credits in My Account.",
-                "error",
-            )
-            items = []
-            total = Decimal("0.00")
-            for pid_str, qty in cart.items():
-                product = product_map.get(int(pid_str))
-                if not product:
-                    continue
-                qty = int(qty)
-                line_total = product.price * qty
-                total += line_total
-                items.append({"product": product, "quantity": qty, "line_total": line_total})
-            return render_template(
-                "account/checkout.html",
-                cart_items=items,
-                cart_total=total,
-                user=user,
-                form=form,
-            )
+        if not _stripe_configured():
+            flash("Stripe is not configured. Add STRIPE_SECRET_KEY to your environment.", "error")
+            return redirect(url_for("account.checkout"))
 
         shipping_address = f"""
 {form.full_name.data}
@@ -287,64 +363,76 @@ def checkout():
 {form.country.data}
 """.strip()
 
-        created_order_ids = []
-
+        # Validate stock now (before sending user to Stripe)
         for pid_str, qty in cart.items():
             qty = int(qty)
             if qty <= 0:
                 continue
+            product = product_map.get(int(pid_str))
+            if not product:
+                continue
+            if product.status != "active" or qty > product.stock_quantity:
+                flash(f"Not enough stock for {product.name}.", "error")
+                return redirect(url_for("account.view_cart"))
 
+        _stripe_set_api_key()
+
+        line_items = []
+        for pid_str, qty in cart.items():
+            qty = int(qty)
+            if qty <= 0:
+                continue
             product = product_map.get(int(pid_str))
             if not product:
                 continue
 
-            if qty > product.stock_quantity:
-                flash(f"Not enough stock for {product.name}.", "error")
-                return redirect(url_for("account.view_cart"))
+            unit_amount_pence = int((Decimal(product.price) * Decimal("100")).quantize(Decimal("1")))
+            if unit_amount_pence < 0:
+                continue
 
-            line_total = product.price * qty
-
-            order = Order(
-                buyer_id=user.user_id,
-                seller_id=product.seller_id,
-                total_amount=line_total,
-                payment_status="completed",  # always succeed
-                shipping_address=shipping_address,
-                delivery_status="processing",
+            line_items.append(
+                {
+                    "price_data": {
+                        "currency": "gbp",
+                        "product_data": {"name": product.name},
+                        "unit_amount": unit_amount_pence,
+                    },
+                    "quantity": qty,
+                }
             )
-            db.session.add(order)
-            db.session.flush()
 
-            order_item = OrderItem(
-                order_id=order.order_id,
-                product_id=product.product_id,
-                quantity=qty,
-                unit_price=product.price,
-                subtotal=line_total,
-            )
-            db.session.add(order_item)
+        if not line_items:
+            flash("Your cart is empty.", "error")
+            return redirect(url_for("account.view_cart"))
 
-            product.stock_quantity -= qty
-            if product.stock_quantity <= 0:
-                product.status = "sold_out"
+        # Save a snapshot so success handler can fulfill safely
+        session["pending_checkout_cart"] = {str(k): int(v) for k, v in cart.items()}
+        session["pending_checkout_shipping_address"] = shipping_address
+        session.modified = True
 
-            tx = Transaction(
-                user_id=user.user_id,
-                related_order_id=order.order_id,
-                transaction_type="purchase",
-                amount=line_total,
-            )
-            db.session.add(tx)
+        checkout_session = stripe.checkout.Session.create(
+            mode="payment",
+            line_items=line_items,
+            success_url=url_for("account.stripe_success", _external=True) + "?session_id={CHECKOUT_SESSION_ID}",
+            cancel_url=url_for("account.stripe_cancel", _external=True),
+            metadata={"user_id": str(user.user_id)},
+        )
 
-            created_order_ids.append(order.order_id)
-
-        user.credits_balance -= cart_total_amount
+        record = StripeCheckoutSession(
+            stripe_session_id=checkout_session.id,
+            user_id=user.user_id,
+            cart_json=json.dumps({str(k): int(v) for k, v in cart.items()}),
+            shipping_address=shipping_address,
+            payment_status="pending",
+            fulfilled=False,
+        )
+        db.session.add(record)
         db.session.commit()
 
-        session.pop("cart", None)
-        session["last_order_ids"] = created_order_ids
+        session["pending_stripe_session_id"] = checkout_session.id
+        session.modified = True
 
-        return redirect(url_for("account.order_confirmation"))
+        return redirect(checkout_session.url, code=303)
 
     # GET — Show checkout page
     items = []
@@ -372,6 +460,84 @@ def checkout():
         user=user,
         form=form
     )
+
+
+@account_bp.route("/stripe/success")
+def stripe_success():
+    if not require_login():
+        return redirect(url_for("auth.register_page"))
+
+    if not _stripe_configured():
+        flash("Stripe is not configured.", "error")
+        return redirect(url_for("account.checkout"))
+
+    session_id = request.args.get("session_id")
+    pending_session_id = session.get("pending_stripe_session_id")
+    if not session_id or not pending_session_id or session_id != pending_session_id:
+        flash("Invalid checkout session.", "error")
+        return redirect(url_for("account.view_cart"))
+
+    _stripe_set_api_key()
+    checkout_session = stripe.checkout.Session.retrieve(session_id)
+    if getattr(checkout_session, "payment_status", None) != "paid":
+        flash("Payment not completed.", "error")
+        return redirect(url_for("account.checkout"))
+
+    record = StripeCheckoutSession.query.get(session_id)
+    if record and record.payment_status != "paid":
+        record.payment_status = "paid"
+        db.session.commit()
+
+    created_order_ids = _fulfill_paid_checkout(session_id, user_id=session["user_id"])
+
+    # Clear cart + pending checkout snapshot
+    session.pop("cart", None)
+    session.pop("pending_stripe_session_id", None)
+    session["last_order_ids"] = created_order_ids
+
+    return redirect(url_for("account.order_confirmation"))
+
+
+@account_bp.route("/stripe/cancel")
+def stripe_cancel():
+    flash("Checkout cancelled.", "error")
+    return redirect(url_for("account.checkout"))
+
+
+@account_bp.route("/stripe/webhook", methods=["POST"])
+def stripe_webhook():
+    if not _stripe_configured():
+        return ("Stripe not configured", 400)
+
+    secret = _stripe_webhook_secret()
+    if not secret:
+        return ("Webhook secret not configured", 400)
+
+    payload = request.get_data(as_text=False)
+    sig_header = request.headers.get("Stripe-Signature")
+    if not sig_header:
+        return ("Missing Stripe-Signature", 400)
+
+    try:
+        event = stripe.Webhook.construct_event(payload=payload, sig_header=sig_header, secret=secret)
+    except Exception:
+        return ("Invalid signature", 400)
+
+    # `event` is a StripeObject (not a dict), so use attribute access.
+    event_type = getattr(event, "type", None)
+    if event_type == "checkout.session.completed":
+        data_obj = getattr(event, "data", None)
+        session_obj = getattr(data_obj, "object", None)
+        stripe_session_id = getattr(session_obj, "id", None)
+        payment_status = getattr(session_obj, "payment_status", None)
+        if stripe_session_id and payment_status == "paid":
+            record = StripeCheckoutSession.query.get(stripe_session_id)
+            if record and record.payment_status != "paid":
+                record.payment_status = "paid"
+                db.session.commit()
+            _fulfill_paid_checkout(stripe_session_id)
+
+    return ("ok", 200)
 
 
 
@@ -448,10 +614,7 @@ def order_cancel(order_id):
             if product.status == "sold_out":
                 product.status = "active"
 
-    # Refund credits
-    user.credits_balance = (user.credits_balance or Decimal("0.00")) + order.total_amount
-
-    # Record refund transaction
+    # Record refund transaction (note: Stripe refunds are not automated here)
     tx = Transaction(
         user_id=user.user_id,
         related_order_id=order.order_id,
@@ -461,8 +624,8 @@ def order_cancel(order_id):
     db.session.add(tx)
 
     order.delivery_status = "cancelled"
-    order.payment_status = "refunded"
+    order.payment_status = "cancelled"
     db.session.commit()
 
-    flash("Order cancelled. Your credits have been refunded.", "success")
+    flash("Order cancelled.", "success")
     return redirect(url_for("account.order_detail", order_id=order_id))

@@ -311,6 +311,27 @@ class CreditTopup(db.Model):
         return f"<CreditTopup {self.topup_id} user={self.user_id}>"
 
 
+class StripeCheckoutSession(db.Model):
+    __tablename__ = "stripe_checkout_sessions"
+
+    stripe_session_id = db.Column(db.String(255), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=False)
+
+    cart_json = db.Column(db.Text, nullable=False)
+    shipping_address = db.Column(db.Text, nullable=False)
+
+    payment_status = db.Column(db.String(20), nullable=False, default="pending")  # pending/paid
+    fulfilled = db.Column(db.Boolean, nullable=False, default=False)
+    order_ids_json = db.Column(db.Text, nullable=True)
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship("User")
+
+    def __repr__(self):
+        return f"<StripeCheckoutSession {self.stripe_session_id} user={self.user_id}>"
+
+
 class SupportTicket(db.Model):
     __tablename__ = "support_tickets"
 
