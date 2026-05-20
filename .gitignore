@@ -29,3 +29,6 @@ Thumbs.db
 
 # Flask-specific
 *.log
+
+# Wakatime
+.wakatime-project
