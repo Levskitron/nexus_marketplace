@@ -134,11 +134,6 @@
     text-transform: capitalize;
 }
 
-.account-credits {
-    font-family: 'JetBrains Mono', monospace;
-    color: #00c9a7;
-}
-
 .account-actions {
     display: flex;
     flex-direction: column;

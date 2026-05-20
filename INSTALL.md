@@ -158,6 +158,8 @@ You do **not** need to run `seed_categories.py` for a normal first start unless 
 
 To reset the database: stop the app, delete `nexus.db`, start the app again (you will lose all data).
 
+If you pull changes that alter table definitions (for example removed columns) and see database errors, treat that the same way: delete `nexus.db` and restart, or apply your own SQL migration so the file matches the models.
+
 ---
 
 ## 8. Admin accounts (optional)

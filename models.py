@@ -1,7 +1,7 @@
 # models.py
 
 from datetime import datetime
-from decimal import Decimal
+
 from database import db
 
 
@@ -15,7 +15,6 @@ class User(db.Model):
 
     # Stored as strings (logical enums)
     role = db.Column(db.String(20), nullable=False, default="buyer")  # buyer/seller/admin/super_admin
-    credits_balance = db.Column(db.Numeric(10, 2), nullable=False, default=Decimal("0.00"))
     shipping_address = db.Column(db.String(200))
 
     date_joined = db.Column(db.DateTime, default=datetime.utcnow)
@@ -52,12 +51,6 @@ class User(db.Model):
 
     transactions = db.relationship(
         "Transaction",
-        back_populates="user",
-        lazy="dynamic",
-    )
-
-    credit_topups = db.relationship(
-        "CreditTopup",
         back_populates="user",
         lazy="dynamic",
     )
@@ -272,7 +265,7 @@ class Transaction(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=False)
     related_order_id = db.Column(db.Integer, db.ForeignKey("orders.order_id"))
 
-    transaction_type = db.Column(db.String(20))  # purchase/sale/credit_topup/refund
+    transaction_type = db.Column(db.String(20))  # purchase/sale/refund
     amount = db.Column(db.Numeric(10, 2))
     date = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -289,26 +282,6 @@ class Transaction(db.Model):
 
     def __repr__(self):
         return f"<Transaction {self.transaction_id} user={self.user_id}>"
-
-
-class CreditTopup(db.Model):
-    __tablename__ = "credit_topups"
-
-    topup_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=False)
-
-    topup_amount = db.Column(db.Numeric(10, 2), nullable=False)
-    date_purchased = db.Column(db.DateTime, default=datetime.utcnow)
-    payment_reference = db.Column(db.String(255))
-
-    # Relationships
-    user = db.relationship(
-        "User",
-        back_populates="credit_topups",
-    )
-
-    def __repr__(self):
-        return f"<CreditTopup {self.topup_id} user={self.user_id}>"
 
 
 class StripeCheckoutSession(db.Model):

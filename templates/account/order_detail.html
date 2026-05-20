@@ -69,10 +69,10 @@
 
         {% if order.delivery_status == 'processing' %}
         <div class="order-detail-actions">
-            <form method="POST" action="{{ url_for('account.order_cancel', order_id=order.order_id) }}" onsubmit="return confirm('Cancel this order? Your credits will be refunded.');">
+            <form method="POST" action="{{ url_for('account.order_cancel', order_id=order.order_id) }}" onsubmit="return confirm('Cancel this order? Stock will be restored. Card payments are not refunded automatically here.');">
                 <button type="submit" class="btn-cancel">Cancel order</button>
             </form>
-            <p class="order-detail-note">Cancelling will refund £{{ order.total_amount }} to your account and restore stock.</p>
+            <p class="order-detail-note">Cancelling updates this order and restores seller stock. Refunds to the card go through Stripe separately (not wired in this app).</p>
         </div>
         {% endif %}
 

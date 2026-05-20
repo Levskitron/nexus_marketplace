@@ -307,7 +307,7 @@ Submit the form. A success message confirms the request was recorded.
 | Shop search | `/shop/search` | Browse / search products |
 | Product | `/shop/product/<id>` | Product detail and reviews |
 | Category | `/shop/category/<slug>` | Listings or service form |
-| My Account | `/account/my-account` | Profile, seller toggle, credits |
+| My Account | `/account/my-account` | Profile, seller toggle |
 | Cart | `/account/cart` | Full cart |
 | Checkout | `/account/checkout` | Shipping form + Stripe |
 | Order history | `/account/order-history` | Buyer orders |

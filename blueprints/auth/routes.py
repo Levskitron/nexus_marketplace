@@ -50,7 +50,6 @@ def api_register():
         role="buyer",
         account_status="active",
         date_joined=datetime.utcnow(),
-        credits_balance=0.00,
     )
 
     db.session.add(user)
