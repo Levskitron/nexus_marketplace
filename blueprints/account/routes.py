@@ -180,9 +180,6 @@ def my_account():
             db.session.commit()
             flash("Shipping address updated.", "success")
 
-        elif action == "update_settings":
-            flash("Settings saved.", "success")
-
         elif action == "become_seller":
             if user.role == "buyer":
                 user.role = "seller"

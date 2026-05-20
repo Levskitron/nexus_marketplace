@@ -18,7 +18,7 @@
 
         <header class="account-header">
             <h1 class="account-title">My Account</h1>
-            <p class="account-subtitle">Manage your profile and settings</p>
+            <p class="account-subtitle">Manage your profile</p>
         </header>
 
         <div class="account-grid">
@@ -95,19 +95,6 @@
                         <label class="account-label" for="shipping_address">Default shipping address</label>
                         <input type="text" id="shipping_address" name="shipping_address" class="account-input" placeholder="Street, city, postcode" value="{{ user.shipping_address or '' }}">
                         <button type="submit" class="account-btn account-btn-primary">Save address</button>
-                    </form>
-                </section>
-
-                <section class="account-card">
-                    <h2 class="account-card-title">Settings</h2>
-                    <form method="POST" class="account-form">
-                        <input type="hidden" name="action" value="update_settings">
-                        <div class="account-settings">
-                            <label class="account-checkbox"><input type="checkbox" name="notifications"> Enable notifications</label>
-                            <label class="account-checkbox"><input type="checkbox" name="dark_mode"> Dark mode</label>
-                            <label class="account-checkbox"><input type="checkbox" name="email_alerts"> Email alerts</label>
-                        </div>
-                        <button type="submit" class="account-btn account-btn-primary">Save settings</button>
                     </form>
                 </section>
 

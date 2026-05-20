@@ -256,27 +256,3 @@
     border-color: #00c9a7;
     color: #00c9a7;
 }
-
-/* Settings checkboxes */
-.account-settings {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 4px;
-}
-
-.account-checkbox {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.95rem;
-    color: #1a1f26;
-    cursor: pointer;
-}
-
-.account-checkbox input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: #00c9a7;
-    cursor: pointer;
-}
